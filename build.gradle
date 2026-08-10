@@ -1,0 +1,54 @@
+plugins {
+    id 'systems.manifold.manifold-gradle-plugin' version '0.0.2-alpha'
+    id 'io.freefair.lombok' version '9.5.0'
+}
+
+group = 'dev.cmosher01'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of 21
+        vendor = JvmVendorSpec.ADOPTIUM
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    testAnnotationProcessor.extendsFrom annotationProcessor
+}
+
+dependencies {
+    implementation 'systems.manifold:manifold-ext-rt:latest.release'
+    annotationProcessor 'systems.manifold:manifold-ext:latest.release'
+
+    implementation 'systems.manifold:manifold-params-rt:latest.release'
+    annotationProcessor 'systems.manifold:manifold-params:latest.release'
+
+    annotationProcessor 'systems.manifold:manifold-preprocessor:latest.release'
+
+    implementation 'systems.manifold:manifold-json-rt:latest.release'
+    annotationProcessor 'systems.manifold:manifold-json:latest.release'
+
+    implementation 'systems.manifold:manifold-props-rt:latest.release'
+    annotationProcessor 'systems.manifold:manifold-props:latest.release'
+
+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:latest.release'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += [
+        '-Xplugin:Manifold',
+        '-implicit:class'
+    ]
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
