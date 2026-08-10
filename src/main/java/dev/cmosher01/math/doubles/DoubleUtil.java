@@ -147,4 +147,8 @@ public final class DoubleUtil {
     public static boolean between(final Double dMin, final Double d, final Double dMax) {
         return dMin <= d && d <= dMax;
     }
+
+    public static int compareTo(final @NonNull Double a, final @NonNull Double b) {
+        return DoubleExtUtil.compareTo(a, b);
+    }
 }

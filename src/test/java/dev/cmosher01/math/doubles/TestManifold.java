@@ -195,7 +195,7 @@ public class TestManifold {
     @Test
     void primitive() {
         assertFalse(.1D+.2D == .3D);
-        assertTrue(Double.valueOf(.1D+.2D) == fp(.3D));
+        assertTrue(Double.valueOf(.1D+.2D) == Double.valueOf(.3D));
         assertTrue((Double)(.1D+.2D) == (Double)(.3D));
         assertTrue((Double)(.1D+.2D) == (.3D));
         assertTrue((.1D+.2D) == (Double)(.3D));

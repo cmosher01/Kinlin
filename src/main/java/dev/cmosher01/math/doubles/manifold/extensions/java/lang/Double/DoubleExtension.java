@@ -43,6 +43,11 @@ public abstract class DoubleExtension implements ComparableUsing<Double> {
     }
 
     @Extension
+    public static boolean isZero(final @This Double self) {
+        return DoubleExtUtil.isZero(self);
+    }
+
+    @Extension
     public static @NonNull Double inv(final @This Double self) {
         return DoubleExtUtil.inv(self);
     }

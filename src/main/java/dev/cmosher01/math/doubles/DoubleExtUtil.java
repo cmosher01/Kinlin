@@ -62,4 +62,8 @@ public final class DoubleExtUtil {
     public static @NonNull Double inv(final Double d) {
         return ONE/d;
     }
+
+    public static boolean isZero(final Double d) {
+        return 0L == Double.doubleToRawLongBits(Math.abs(d));
+    }
 }

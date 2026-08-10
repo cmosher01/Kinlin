@@ -5,6 +5,7 @@ import manifold.ext.rt.api.auto;
 import org.junit.jupiter.api.*;
 
 import java.math.BigDecimal;
+import java.util.OptionalDouble;
 
 import static dev.cmosher01.math.doubles.DoubleUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +16,15 @@ public class TestDoubleUtil {
     void nominal() {
         auto x = fp(-3.0D);
         assertEquals(-3D, x);
+
+        final Double a = fp(0.1D+0.2D);
+        final Double b = fp(0.3D);
+        assertTrue(a == b);
+        assertTrue(b == a);
+        assertFalse(a < b);
+        assertFalse(a > b);
+        assertFalse(b < a);
+        assertFalse(b > a);
     }
 
     @Test
@@ -272,5 +282,81 @@ public class TestDoubleUtil {
         assertNotEquals(77.0D, 76.999999999D);
         assertTrue((Double)77.0D == 76.999999999D);
         assertEquals(77.0D, clearAt(76.999999999D, 77));
+    }
+
+    @Test
+    void zero() {
+        final Double pz = Double.valueOf(POSITIVE_ZERO);
+        final Double nz = Double.valueOf(NEGATIVE_ZERO);
+
+        final long pb = Double.doubleToRawLongBits(pz);
+        final long nb = Double.doubleToRawLongBits(nz);
+
+        assertEquals(0L, pb);
+        assertEquals(0x8000000000000000L, nb);
+
+        final long signBit = 1L << (Double.SIZE-1);
+        assertEquals(0x8000000000000000L, signBit);
+        boolean negativeZeroIsNegative = (Double.doubleToRawLongBits(NEGATIVE_ZERO) & signBit) != 0;
+        assertTrue(negativeZeroIsNegative);
+        negativeZeroIsNegative = NEGATIVE_ZERO.isNegative();
+        assertTrue(negativeZeroIsNegative);
+        boolean positiveZeroIsNegative = (Double.doubleToRawLongBits(POSITIVE_ZERO) & signBit) != 0;
+        assertFalse(positiveZeroIsNegative);
+        positiveZeroIsNegative = POSITIVE_ZERO.isNegative();
+        assertFalse(positiveZeroIsNegative);
+
+        assertFalse(NEGATIVE_ZERO.isPositive());
+        assertTrue(POSITIVE_ZERO.isPositive());
+
+        assertTrue(Double.valueOf(0D).isZero());
+        assertTrue(Double.valueOf(+0D).isZero());
+        assertTrue(Double.valueOf(-0D).isZero());
+        assertTrue(POSITIVE_ZERO.isZero());
+        assertTrue(NEGATIVE_ZERO.isZero());
+        assertTrue(ZERO.isZero());
+        assertTrue(pz.isZero());
+        assertTrue(nz.isZero());
+
+        assertEquals(+0.0D, POSITIVE_ZERO);
+        assertNotEquals(-0.0D, POSITIVE_ZERO);
+        assertEquals(-0.0D, NEGATIVE_ZERO);
+        assertNotEquals(+0.0D, NEGATIVE_ZERO);
+        assertNotEquals(-0.0D, +0.0D);
+        assertNotEquals(NEGATIVE_ZERO, POSITIVE_ZERO);
+
+        assertTrue(+0.0D == +0.0D);
+        assertTrue(+0.0D == -0.0D);
+        assertTrue(-0.0D == +0.0D);
+        assertTrue(-0.0D == -0.0D);
+
+        assertFalse(Double.valueOf(+1D).isZero());
+        assertFalse(Double.valueOf(-1D).isZero());
+        assertFalse(Double.valueOf(1e-20D).isZero());
+        assertFalse(Double.valueOf(1e-200D).isZero());
+        assertFalse(Double.valueOf(-1e-20D).isZero());
+        assertFalse(Double.valueOf(-1e-200D).isZero());
+        assertFalse(Double.valueOf(Double.MIN_VALUE).isZero());
+        assertFalse(Double.valueOf(-Double.MIN_VALUE).isZero());
+        assertFalse(Double.valueOf(Double.MIN_NORMAL).isZero());
+        assertFalse(Double.valueOf(-Double.MIN_NORMAL).isZero());
+        assertFalse(Double.valueOf(Double.MAX_VALUE).isZero());
+        assertFalse(Double.valueOf(-Double.MAX_VALUE).isZero());
+        assertFalse(Double.valueOf(Double.POSITIVE_INFINITY).isZero());
+        assertFalse(Double.valueOf(Double.NEGATIVE_INFINITY).isZero());
+        assertFalse(Double.valueOf(Double.NaN).isZero());
+    }
+
+    @Test
+    void inv() {
+        assertEquals(0.5, ~(Double)2.0);
+        assertEquals(2.0, ~(Double)0.5);
+        assertEquals(0.1, ~(Double)10.0);
+        assertEquals(10.0, ~(Double)0.1);
+        assertEquals(Double.doubleToRawLongBits(0.1), Double.doubleToRawLongBits(~(Double)10.0));
+        assertNotEquals(Double.doubleToRawLongBits(0.3), Double.doubleToRawLongBits(~(Double)3.3333333333333));
+        assertNotEquals(0.3, ~(Double)3.3333333333333);
+        assertTrue((Double)0.3 == ~(Double)3.3333333333333);
+        assertTrue(~(Double)3.3333333333333 == (Double)0.3);
     }
 }

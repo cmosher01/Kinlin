@@ -17,7 +17,7 @@
 
 package dev.cmosher01.geom;
 
-import dev.cmosher01.math.doubles.DoubleUtil;
+import dev.cmosher01.math.doubles.*;
 import lombok.NonNull;
 import manifold.ext.rt.api.*;
 
@@ -40,6 +40,7 @@ public record Dim(@NonNull Double n = DoubleUtil.ZERO) implements ComparableUsin
     public static final Dim INFINITE = new Dim(Double.POSITIVE_INFINITY);
 
     public Dim {
+        n = Math.clamp(n, 0D, Double.POSITIVE_INFINITY);
         n = Domain.ABS0.filter(n);
     }
 
@@ -53,7 +54,7 @@ public record Dim(@NonNull Double n = DoubleUtil.ZERO) implements ComparableUsin
     }
     @Override
     public int compareTo(final @NonNull Dim that) {
-        return Double.compare(this.n, that.n);
+        return DoubleUtil.compareTo(this.n, that.n);
     }
 
     // Dim <- Dim + GrowTerm

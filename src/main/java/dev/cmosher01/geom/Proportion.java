@@ -34,7 +34,7 @@ public record Proportion(@NonNull Double k = identity) implements ComparableUsin
 
     @Override
     public int compareTo(final @NonNull Proportion o) {
-        return Double.compare(k, o.k);
+        return DoubleUtil.compareTo(k, o.k);
     }
 
     public @NonNull Proportion inv() {

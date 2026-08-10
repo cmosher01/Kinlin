@@ -17,6 +17,7 @@
 
 package dev.cmosher01.geom;
 
+import dev.cmosher01.math.doubles.DoubleUtil;
 import lombok.NonNull;
 import manifold.ext.rt.api.*;
 
@@ -36,7 +37,7 @@ public record Coord(@NonNull Double u = 0) implements ComparableUsing<Coord> {
     }
     @Override
     public int compareTo(final @NonNull Coord that) {
-        return Double.compare(this.u, that.u);
+        return DoubleUtil.compareTo(this.u, that.u);
     }
 
 
