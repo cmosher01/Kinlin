@@ -31,17 +31,16 @@ import java.util.Objects;
 // not meant to be used in a set or as a key in a map
 // (beware the distinction between positive and negative zero for doubles: here we always store zero as positive)
 // (beware can be infinite (positive) or NaN)
-// DOMAIN OF ALLOWABLE VALUES: NaN, positive zero, any positive normal double number, positive infinity
-// NON-ALLOWABLE VALUES: negative zero, any negative normal double number, negative infinity
+// DOMAIN OF ALLOWABLE VALUES: NaN, positive zero, any positive normal double number
+// NON-ALLOWABLE VALUES: negative zero, any negative normal double number, negative infinity, positive infinity
 public record Dim(@NonNull Double n = DoubleUtil.ZERO) implements ComparableUsing<Dim> {
     public static final Dim NULL = new Dim(Double.NaN);
     public static final Dim ZERO = new Dim();
     public static final Dim ONE = new Dim(DoubleUtil.ONE);
-    public static final Dim INFINITE = new Dim(Double.POSITIVE_INFINITY);
 
     public Dim {
-        n = Math.clamp(n, 0D, Double.POSITIVE_INFINITY);
-        n = Domain.ABS0.filter(n);
+//        n = Math.clamp(n, 0D, Double.POSITIVE_INFINITY);
+        n = Domain.ABS0_FIN.filter(n);
     }
 
     @Override

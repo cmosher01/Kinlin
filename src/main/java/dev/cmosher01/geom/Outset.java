@@ -25,11 +25,9 @@ public record Outset(@NonNull GrowTerm w = GrowTerm.IDENTITY, @NonNull GrowTerm 
     public @NonNull Outset unaryMinus() {
         return new Outset(-w, -h);
     }
-
     public boolean identity() {
         return w.identity() && h.identity();
     }
-
     public @NonNull Outset abs() {
         return new Outset(w.abs(), h.abs());
     }

@@ -51,7 +51,8 @@ public record GrowTerm(@NonNull Double d = identity) {
     }
     // Double = Double + GrowTerm
     public @NonNull Double plus(final @NonNull Double n) {
-        return d + n;
+        // guard against shrinking to below zero (dimensions can't be negative)
+        return Math.max(0, d + n);
     }
 
     // don't need operator minus

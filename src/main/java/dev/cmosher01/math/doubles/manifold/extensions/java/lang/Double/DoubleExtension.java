@@ -43,8 +43,8 @@ public abstract class DoubleExtension implements ComparableUsing<Double> {
     }
 
     @Extension
-    public static boolean isZero(final @This Double self) {
-        return DoubleExtUtil.isZero(self);
+    public static boolean isExactlyZero(final @This Double self) {
+        return DoubleExtUtil.isExactlyZero(self);
     }
 
     @Extension

@@ -14,5 +14,9 @@ public class TestMoveTerm {
 
         val x2 = 983_389D;
         assertEquals(942_492D, x2 + -dx);
+
+        assertEquals(-(dx.d()), (-dx).d());
+
+        assertEquals(dx, (-dx).abs());
     }
 }

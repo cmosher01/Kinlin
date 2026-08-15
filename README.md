@@ -31,23 +31,23 @@ better comes along.
 
 
 ```
-FEATURE TYPE      1D                 2D
+FEATURE TYPE         1D                   2D
 
-measurement     m n Dim                w,h RectDim
-resizing (abs)  g d GrowTerm           w,h Outset
-resizing (rel)  s k ScaleFactor        [locked to proportional]
+measurement     m    n Dim                w,h RectDim
+resizing (abs)  g    d GrowTerm           w,h Outset
+resizing (rel)  s    k ScaleFactor        [locked to proportional]
 
-location/post'n p u Coord              x,y Point
-movement/delta  d d MoveTerm           x,y Xlation
+location/post'n p    u Coord              x,y Point
+movement/delta  d    d MoveTerm           x,y Xlation
 
-finite shapes     OrthLine           Rect
+othogonal shapes       OrthLine               Rect
 
-                  Line
-                  Bars
+oblique   shapes                              Line
+                                              Bars
+portion/ratio        k Proportion
 
-portion/ratio     k Proportion
+text                   AttributedString       HeadlessWordWrap
 
-text              AttributedString   HeadlessWordWrap
 
 
 operations:
@@ -66,6 +66,10 @@ d = p  - p
 Use Manifold library http://manifold.systems/
 - extend java.lang.Double to compare using Nearness
 - operator overloading on graphical features
+
+Tolerances for "nearness" comparisons are based on the domain
+of graphical computations we expect to handle efficiently for
+a drop-line chart of "small" to "huge" size family trees.
 
 
 

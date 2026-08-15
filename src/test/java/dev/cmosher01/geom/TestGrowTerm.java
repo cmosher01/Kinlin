@@ -47,5 +47,8 @@ public class TestGrowTerm {
         assertTrue((1D + - nan).isNaN());
         assertTrue((-nan).d().isNaN());
         assertTrue((nan + 1D).isNaN());
+
+        assertEquals(nan, new GrowTerm(Double.POSITIVE_INFINITY));
+        assertEquals(nan, new GrowTerm(Double.NEGATIVE_INFINITY));
     }
 }

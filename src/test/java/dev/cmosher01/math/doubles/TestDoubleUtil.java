@@ -5,7 +5,6 @@ import manifold.ext.rt.api.auto;
 import org.junit.jupiter.api.*;
 
 import java.math.BigDecimal;
-import java.util.OptionalDouble;
 
 import static dev.cmosher01.math.doubles.DoubleUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -309,14 +308,14 @@ public class TestDoubleUtil {
         assertFalse(NEGATIVE_ZERO.isPositive());
         assertTrue(POSITIVE_ZERO.isPositive());
 
-        assertTrue(Double.valueOf(0D).isZero());
-        assertTrue(Double.valueOf(+0D).isZero());
-        assertTrue(Double.valueOf(-0D).isZero());
-        assertTrue(POSITIVE_ZERO.isZero());
-        assertTrue(NEGATIVE_ZERO.isZero());
-        assertTrue(ZERO.isZero());
-        assertTrue(pz.isZero());
-        assertTrue(nz.isZero());
+        assertTrue(Double.valueOf(0D).isExactlyZero());
+        assertTrue(Double.valueOf(+0D).isExactlyZero());
+        assertTrue(Double.valueOf(-0D).isExactlyZero());
+        assertTrue(POSITIVE_ZERO.isExactlyZero());
+        assertTrue(NEGATIVE_ZERO.isExactlyZero());
+        assertTrue(ZERO.isExactlyZero());
+        assertTrue(pz.isExactlyZero());
+        assertTrue(nz.isExactlyZero());
 
         assertEquals(+0.0D, POSITIVE_ZERO);
         assertNotEquals(-0.0D, POSITIVE_ZERO);
@@ -330,21 +329,21 @@ public class TestDoubleUtil {
         assertTrue(-0.0D == +0.0D);
         assertTrue(-0.0D == -0.0D);
 
-        assertFalse(Double.valueOf(+1D).isZero());
-        assertFalse(Double.valueOf(-1D).isZero());
-        assertFalse(Double.valueOf(1e-20D).isZero());
-        assertFalse(Double.valueOf(1e-200D).isZero());
-        assertFalse(Double.valueOf(-1e-20D).isZero());
-        assertFalse(Double.valueOf(-1e-200D).isZero());
-        assertFalse(Double.valueOf(Double.MIN_VALUE).isZero());
-        assertFalse(Double.valueOf(-Double.MIN_VALUE).isZero());
-        assertFalse(Double.valueOf(Double.MIN_NORMAL).isZero());
-        assertFalse(Double.valueOf(-Double.MIN_NORMAL).isZero());
-        assertFalse(Double.valueOf(Double.MAX_VALUE).isZero());
-        assertFalse(Double.valueOf(-Double.MAX_VALUE).isZero());
-        assertFalse(Double.valueOf(Double.POSITIVE_INFINITY).isZero());
-        assertFalse(Double.valueOf(Double.NEGATIVE_INFINITY).isZero());
-        assertFalse(Double.valueOf(Double.NaN).isZero());
+        assertFalse(Double.valueOf(+1D).isExactlyZero());
+        assertFalse(Double.valueOf(-1D).isExactlyZero());
+        assertFalse(Double.valueOf(1e-20D).isExactlyZero());
+        assertFalse(Double.valueOf(1e-200D).isExactlyZero());
+        assertFalse(Double.valueOf(-1e-20D).isExactlyZero());
+        assertFalse(Double.valueOf(-1e-200D).isExactlyZero());
+        assertFalse(Double.valueOf(Double.MIN_VALUE).isExactlyZero());
+        assertFalse(Double.valueOf(-Double.MIN_VALUE).isExactlyZero());
+        assertFalse(Double.valueOf(Double.MIN_NORMAL).isExactlyZero());
+        assertFalse(Double.valueOf(-Double.MIN_NORMAL).isExactlyZero());
+        assertFalse(Double.valueOf(Double.MAX_VALUE).isExactlyZero());
+        assertFalse(Double.valueOf(-Double.MAX_VALUE).isExactlyZero());
+        assertFalse(Double.valueOf(Double.POSITIVE_INFINITY).isExactlyZero());
+        assertFalse(Double.valueOf(Double.NEGATIVE_INFINITY).isExactlyZero());
+        assertFalse(Double.valueOf(Double.NaN).isExactlyZero());
     }
 
     @Test

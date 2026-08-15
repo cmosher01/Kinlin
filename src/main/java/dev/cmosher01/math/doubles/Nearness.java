@@ -27,14 +27,12 @@ import static java.lang.Math.*;
  * We expect to do about 1x10^6 calculations at the absolute maximum.
  * Visible differences of up to one full pixel are acceptable (at the borders, for example)
  * We expect to compare any value against exactly zero a considerable number of times.
- *
  * The relative and absolute allowable tolerances (epsilon) are chosen
  * based on these criteria.
  */
 public class Nearness {
     private static final double E_REL = 1e-8;
     private static final double E_ABS = 1e-3;
-
 
     /**
      * Check if two double values are "near" (approximately equal within

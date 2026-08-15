@@ -12,7 +12,7 @@ public final class DoubleUtil {
     public static final Double POSITIVE_ZERO = ONE / Double.POSITIVE_INFINITY;
     public static final Double NEGATIVE_ZERO = ONE / Double.NEGATIVE_INFINITY;
     public static final Double ZERO = POSITIVE_ZERO; // a more convenient name
-    public static final Double DOUBLE_EPSILON = Math.ulp(ONE);
+    public static final Double EPSILON = Math.ulp(ONE);
 
     // these methods work with inputs of any double,
     // including NaN, +/-INF, +/-0, or any regular double
@@ -32,7 +32,8 @@ public final class DoubleUtil {
     // these fp methods allow for wrapping anything into a Double
     // using syntax like this:
     //     fp(73)
-    // note: a literal null argument needs to be cast to an Object
+    // note: a literal null argument needs to be cast to an Object:
+    //     fp((Object)null)
     public static @NonNull Double fp(final double d) {
         return d;
     }
@@ -68,7 +69,7 @@ public final class DoubleUtil {
     // rounds to nearest int (ties round towards +INF)
     // NaN-->0, +INF-->MAX_LONG, -INF-->MIN_LONG
     public static int asInt(final double d) {
-        return Math.clamp(asLong(d), Integer.MIN_VALUE, Integer.MAX_VALUE);
+        return StrictMath.clamp(asLong(d), Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
     public static long asLong(final double d) {
         return StrictMath.round(StrictMath.rint(d));

@@ -42,8 +42,8 @@ public record RectDim(@NonNull Dim w = Dim.ZERO, @NonNull Dim h = w) implements 
     }
 
 // will we need these? should there be static methods in Geom for these formulas?
-//    public FP perim() {
-//        return fp(2D * (w.d().n()+h.d().n()));
+//    public Dim perim() {
+//        return ScaleFactor.TWICE * (w+h);
 //    }
 // should this return DimSq:
 //    public FP area() {
@@ -96,14 +96,4 @@ public record RectDim(@NonNull Dim w = Dim.ZERO, @NonNull Dim h = w) implements 
     public @NonNull RectDim div(final @NonNull ScaleFactor k) {
         return times(~k);
     }
-    // ScaleFactor <- RectDim / RectDim [not implemented because need to account for different dx/dy scales? but we don't support it?]
-//    public @NonNull ScaleFactor div(final @NonNull RectDim that) {
-//        return new ScaleFactor(???);
-//    }
-
-
-    // do we need this?
-//    public @NonNull RectDim scale(final @NonNull ScaleFactor kw, final @NonNull ScaleFactor kh) {
-//        return new RectDim(kw * w, kh * h);
-//    }
 }

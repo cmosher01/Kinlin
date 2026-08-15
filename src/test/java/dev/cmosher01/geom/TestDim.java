@@ -18,7 +18,7 @@
 package dev.cmosher01.geom;
 
 import dev.cmosher01.math.doubles.DoubleUtil;
-import lombok.NonNull;
+import lombok.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
@@ -27,7 +27,7 @@ import java.util.*;
 import static dev.cmosher01.math.doubles.DoubleUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings({"PointlessBooleanExpression", "SimplifiableAssertion", "ConstantValue", "MismatchedQueryAndUpdateOfCollection", "SequencedCollectionMethodCanBeUsed", "UnnecessaryLocalVariable", "ExpressionComparedToItself"})
+@SuppressWarnings({"SimplifiableAssertion", "ConstantValue", "MismatchedQueryAndUpdateOfCollection", "SequencedCollectionMethodCanBeUsed", "UnnecessaryLocalVariable", "ExpressionComparedToItself"})
 public class TestDim {
     @Test
     void nominal() {
@@ -105,17 +105,25 @@ public class TestDim {
     void grow() {
         assertTrue(Dim.ONE == Dim.ZERO + new GrowTerm(+1.0D));
         assertTrue(Dim.ZERO == Dim.ONE + new GrowTerm(-1.0D));
-        assertTrue(Dim.ZERO == Dim.ZERO - new GrowTerm(+1.0D));
-        assertTrue(Dim.ONE == Dim.ZERO - new GrowTerm(-1.0D));
         assertTrue(Dim.ZERO == Dim.ONE + new GrowTerm(-2.0D));
         assertTrue(Dim.ONE == Dim.ONE + new GrowTerm(POSITIVE_ZERO));
         assertTrue(Dim.ONE == Dim.ONE + new GrowTerm(NEGATIVE_ZERO));
-        assertTrue(Dim.INFINITE == Dim.INFINITE + new GrowTerm(+1.0D));
+        assertEquals(Dim.ZERO, Dim.ZERO - new GrowTerm(+1.0D));
+        assertEquals(Dim.ONE, Dim.ZERO - new GrowTerm(-1.0D));
     }
+
     @Test
     void scale() {
         assertTrue(new Dim(fp(2D)) == Dim.ONE * ScaleFactor.TWICE);
         assertTrue(Dim.ONE == new Dim(fp(2D)) * ScaleFactor.HALF);
+    }
+
+    @Test
+    void diff() {
+        val a = new Dim(7D);
+        val b = new Dim(13D);
+        assertEquals(new Dim(6D), a - b);
+        assertEquals(new Dim(6D), b - a);
     }
 
     @Test

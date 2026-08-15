@@ -16,7 +16,7 @@
  */
 
 package dev.cmosher01.geom;
-
+import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,5 +61,18 @@ public class TestRectDim {
         assertEquals(1, RectDim.UNIT.h.n);
         assertEquals(Dim.ONE, RectDim.UNIT.h);
         assertEquals(new Dim(Math.sqrt(2)), RectDim.UNIT.diag());
+    }
+
+    @Test
+    void minus() {
+        assertEquals(RectDim.UNIT, RectDim.UNIT - RectDim.ZERO);
+        assertEquals(RectDim.UNIT, RectDim.ZERO - RectDim.UNIT);
+    }
+
+    @Test
+    void scale() {
+        val one = RectDim.UNIT;
+        val k = new ScaleFactor(3D);
+        assertEquals(new RectDim(new Dim(3D)), k * one);
     }
 }

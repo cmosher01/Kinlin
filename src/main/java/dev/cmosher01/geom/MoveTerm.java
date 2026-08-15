@@ -41,7 +41,6 @@ public record MoveTerm(@NonNull Double d = identity) {
     public @NonNull MoveTerm abs() {
         return new MoveTerm(Math.abs(d));
     }
-
     public @NonNull MoveTerm unaryMinus() {
         return new MoveTerm(-d);
     }
