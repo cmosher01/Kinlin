@@ -49,6 +49,7 @@ public class TestCoord {
     public void move() {
         val x = Coord.ORIGIN;
 //        val actual = w + 3D; //COMPILER ERROR, GOOD!
+//        val actual * (dx + new MoveTerm(.3D)); //COMPILER ERROR, GOOD!
         val actual = x + new MoveTerm(.3D);
         val expected = new Coord(.3D);
         assertTrue(expected == actual);
@@ -66,8 +67,11 @@ public class TestCoord {
     public void scale() {
         val x = new Coord(.1D);
 
-//        val actual = w * 3D; //COMPILER ERROR, GOOD!
-//        val actual = w * -3D; //COMPILER ERROR, GOOD!
+//        val actual = x * 3D; //COMPILER ERROR, GOOD!
+//        val actual = x * -3D; //COMPILER ERROR, GOOD!
+//        val actual = x * new GrowTerm(3D); //COMPILER ERROR, GOOD!
+//        val acutal = x + Outset.IDENTITY; //COMPILER ERROR, GOOD!
+//        val actual = x + ScaleFactor.IDENTITY; //COMPILER ERROR, GOOD!
 
         val actual = x * new ScaleFactor(3.0); // creates new ScaleFactor and applies it to w
         val expected = new Coord(.3);

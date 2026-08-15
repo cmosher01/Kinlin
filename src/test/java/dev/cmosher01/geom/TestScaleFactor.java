@@ -38,4 +38,11 @@ public class TestScaleFactor {
         assertEquals(Double.NaN, new ScaleFactor(Double.POSITIVE_INFINITY).k());
         assertEquals(Double.NaN, new ScaleFactor(Double.NEGATIVE_INFINITY).k());
     }
+
+    @Test
+    void inverse() {
+        val three = new ScaleFactor(3D);
+        val oneThird = ~three;
+        assertEquals(3D, oneThird * 9D);
+    }
 }

@@ -53,9 +53,9 @@ public record Rect(@NonNull RectDim dim, @NonNull Point center) implements Compa
         return new Rect(k * dim, center);
     }
     // do we need this?
-    public @NonNull Rect scale(final @NonNull ScaleFactor kw, final ScaleFactor kh) {
-        return new Rect(dim.scale(kw, kh), center);
-    }
+//    public @NonNull Rect scale(final @NonNull ScaleFactor kw, final ScaleFactor kh) {
+//        return new Rect(dim.scale(kw, kh), center);
+//    }
     public @NonNull Rect translate(final @NonNull Xlation d) {
         return new Rect(dim, center + d);
     }
@@ -63,7 +63,7 @@ public record Rect(@NonNull RectDim dim, @NonNull Point center) implements Compa
     public static boolean intersect(final @NonNull Rect a, final @NonNull Rect b) {
         val dif = (a.center - b.center).abs();
         val dim = (a.dim + b.dim) * ScaleFactor.HALF;
-        return dif.x.d < dim.w.n && dif.y.d < dim.h.n;
+        return dif.dx.d < dim.w.n && dif.dy.d < dim.h.n;
     }
 
     public boolean contains(final @NonNull Point p) {

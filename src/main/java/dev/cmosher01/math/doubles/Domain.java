@@ -1,4 +1,4 @@
-package dev.cmosher01.geom;
+package dev.cmosher01.math.doubles;
 
 import static dev.cmosher01.math.doubles.DoubleUtil.*;
 import static java.lang.Double.NaN;

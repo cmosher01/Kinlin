@@ -45,12 +45,12 @@ public record Point(@NonNull Coord x = Coord.ORIGIN, @NonNull Coord y = Coord.OR
 
     public @NonNull Dim distance(final @NonNull Point that) {
         val d = that - this;
-        return new Dim(Math.hypot(d.x.d, d.y.d));
+        return new Dim(Math.hypot(d.dx.d, d.dy.d));
     }
 
     // Point <- Point + Xlation
     public @NonNull Point plus(final @NonNull Xlation d) {
-        return new Point(x + d.x, y + d.y);
+        return new Point(x + d.dx, y + d.dy);
     }
     // Point <- Point - Xlation
     public @NonNull Point minus(final @NonNull Xlation d) {

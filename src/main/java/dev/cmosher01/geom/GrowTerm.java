@@ -18,7 +18,7 @@
 package dev.cmosher01.geom;
 
 
-import dev.cmosher01.math.doubles.DoubleUtil;
+import dev.cmosher01.math.doubles.*;
 import lombok.NonNull;
 
 /**
@@ -45,14 +45,17 @@ public record GrowTerm(@NonNull Double d = identity) {
     public @NonNull GrowTerm abs() {
         return new GrowTerm(Math.abs(d));
     }
-
+    // GrowTerm = -GrowTerm
     public @NonNull GrowTerm unaryMinus() {
         return new GrowTerm(-d);
     }
+    // Double = Double + GrowTerm
     public @NonNull Double plus(final @NonNull Double n) {
         return d + n;
     }
-    public @NonNull Double minus(final @NonNull Double n) {
-        return d - n;
-    }
+
+    // don't need operator minus
+    // we can do "Double = Double + -GrowTerm"
+    // we don't want to allow "Double = GrowTerm - Double"
+    // and we can't do "Double = Double - GrowTerm" because that would be Double.minus(GrowTerm)
 }

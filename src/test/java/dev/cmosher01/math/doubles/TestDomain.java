@@ -1,6 +1,5 @@
-package dev.cmosher01.geom;
+package dev.cmosher01.math.doubles;
 
-import dev.cmosher01.math.doubles.DoubleUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

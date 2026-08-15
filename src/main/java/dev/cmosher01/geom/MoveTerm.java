@@ -18,7 +18,7 @@
 package dev.cmosher01.geom;
 
 
-import dev.cmosher01.math.doubles.DoubleUtil;
+import dev.cmosher01.math.doubles.*;
 import lombok.NonNull;
 
 /**
@@ -47,8 +47,5 @@ public record MoveTerm(@NonNull Double d = identity) {
     }
     public @NonNull Double plus(final @NonNull Double n) {
         return d + n;
-    }
-    public @NonNull Double minus(final @NonNull Double n) {
-        return d - n;
     }
 }

@@ -43,15 +43,13 @@ public final class DoubleUtil {
         val v = fp(Character.getNumericValue(c));
         return v < 0D ? Double.NaN : v;
     }
-    public static @NonNull Double fp(final @NonNull Number n) {
-        return fp(n.doubleValue());
-    }
-    public static @NonNull Double fp(final @NonNull Boolean b) {
-        return fp(b.booleanValue());
-    }
     public static @NonNull Double fp(final /*@Nullable*/ Object o) {
         try {
-            return fp(Double.valueOf(o.toString()));
+            return switch (o) {
+                case Boolean b -> fp(b.booleanValue());
+                case Number n -> n.doubleValue();
+                default -> fp(Double.valueOf(o.toString()));
+            };
         } catch (final Throwable e) {
             return Double.NaN;
         }

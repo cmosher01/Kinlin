@@ -19,18 +19,18 @@ package dev.cmosher01.geom;
 
 import lombok.NonNull;
 
-public record Xlation(@NonNull MoveTerm x = MoveTerm.IDENTITY, @NonNull MoveTerm y = x) {
+public record Xlation(@NonNull MoveTerm dx= MoveTerm.IDENTITY, @NonNull MoveTerm dy= dx) {
     public static final Xlation IDENTITY = new Xlation();
 
     public @NonNull Xlation unaryMinus() {
-        return new Xlation(-x, -y);
+        return new Xlation(-dx, -dy);
     }
 
     public boolean identity() {
-        return x.identity() && y.identity();
+        return dx.identity() && dy.identity();
     }
 
     public @NonNull Xlation abs() {
-        return new Xlation(x.abs(), y.abs());
+        return new Xlation(dx.abs(), dy.abs());
     }
 }

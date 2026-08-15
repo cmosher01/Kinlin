@@ -17,11 +17,9 @@
 
 package dev.cmosher01.geom;
 
-import dev.cmosher01.math.doubles.DoubleUtil;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static dev.cmosher01.math.doubles.DoubleUtil.fp;
 
 public class TestRectDim {
     @Test
@@ -44,6 +42,7 @@ public class TestRectDim {
 //        assertEquals(DoubleUtil.ZERO, RectDim.ZERO.perim());
 //        assertEquals(DoubleUtil.ZERO, RectDim.ZERO.area());
         assertEquals(Dim.ZERO, RectDim.ZERO.diag());
+        assertTrue(RectDim.ZERO.zero());
     }
 
     @Test
@@ -51,6 +50,16 @@ public class TestRectDim {
         assertTrue(RectDim.ZERO.empty());
         assertTrue((RectDim.ZERO + new Outset(GrowTerm.IDENTITY, new GrowTerm(1D))).empty());
         assertTrue((RectDim.ZERO + new Outset(new GrowTerm(1D), GrowTerm.IDENTITY)).empty());
+    }
+
+    @Test
+    void unit() {
         assertFalse(RectDim.UNIT.empty());
+        assertFalse(RectDim.UNIT.zero());
+        assertEquals(1, RectDim.UNIT.w.n);
+        assertEquals(Dim.ONE, RectDim.UNIT.w);
+        assertEquals(1, RectDim.UNIT.h.n);
+        assertEquals(Dim.ONE, RectDim.UNIT.h);
+        assertEquals(new Dim(Math.sqrt(2)), RectDim.UNIT.diag());
     }
 }

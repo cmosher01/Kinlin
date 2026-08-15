@@ -1,6 +1,6 @@
 package dev.cmosher01.geom;
 
-import dev.cmosher01.math.doubles.DoubleUtil;
+import dev.cmosher01.math.doubles.*;
 import lombok.NonNull;
 import manifold.ext.rt.api.*;
 

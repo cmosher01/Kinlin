@@ -9,9 +9,7 @@ import static dev.cmosher01.math.doubles.DoubleUtil.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings({"SimplifiableAssertion", "WrapperTypeMayBePrimitive", "DataFlowIssue", "ConstantValue", "BoxingBoxedValue", "SameParameterValue", "MismatchedQueryAndUpdateOfCollection"})
-public class TestManifold {
-
-
+public class TestDoubleExtension {
     @Test
     public void t() {
         val a = Double.valueOf(.3D);
@@ -26,9 +24,6 @@ public class TestManifold {
         assertFalse(a > b);
         assertTrue(a.isPositive());
 
-
-
-
         //default Java behavior:
 //        assertFalse(a.equals(b));
 //        assertFalse(a == b);
@@ -37,6 +32,7 @@ public class TestManifold {
 //        assertFalse(a >= b);
 //        assertTrue(a < b);
 //        assertFalse(a > b);
+
 
 
         assertFalse((Double)a == (Double)null);

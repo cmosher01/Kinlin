@@ -20,7 +20,7 @@ package dev.cmosher01.geom;
 import dev.cmosher01.math.doubles.DoubleUtil;
 import lombok.NonNull;
 
-import static dev.cmosher01.geom.Domain.ABS0_FIN;
+import static dev.cmosher01.math.doubles.Domain.ABS0_FIN;
 
 /**
  * Represents a scaling factor.
