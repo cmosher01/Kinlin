@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -17,12 +17,18 @@
 
 package dev.cmosher01.geom;
 
+import dev.cmosher01.math.doubles.DoubleUtil;
 import lombok.*;
 import manifold.ext.rt.api.*;
 
 import java.util.Objects;
 
-
+/**
+ * A rectangle is defined in terms of its center point and its width and height dimensions.
+ *
+ * @param dim dimensions of this rectangle
+ * @param center center point of this rectangle
+ */
 public record Rect(@NonNull RectDim dim, @NonNull Point center) implements ComparableUsing<Rect> {
     private static final @NonNull Coord HALF = new Coord(0.5D);
     public static final @NonNull Rect UNIT_SQUARE = new Rect(RectDim.UNIT, new Point(HALF, HALF));
@@ -41,35 +47,33 @@ public record Rect(@NonNull RectDim dim, @NonNull Point center) implements Compa
         throw new UnsupportedOperationException();
     }
 
-
-    public static @NonNull Rect square(final @NonNull Dim n, final @NonNull Point center) {
-        return new Rect(new RectDim(n), center);
+    public @NonNull Rect plus(final @NonNull Outset d) {
+        return new Rect(dim + d, center);
     }
-
-    public @NonNull Rect grow(final @NonNull Outset d) {
-        return new Rect(new RectDim(dim.w + d.w, dim.h + d.h), center);
-    }
-    public @NonNull Rect scale(final @NonNull ScaleFactor k) {
+    public @NonNull Rect times(final @NonNull ScaleFactor k) {
         return new Rect(k * dim, center);
     }
-    // do we need this?
-//    public @NonNull Rect scale(final @NonNull ScaleFactor kw, final ScaleFactor kh) {
-//        return new Rect(dim.scale(kw, kh), center);
-//    }
-    public @NonNull Rect translate(final @NonNull Xlation d) {
+    public @NonNull Rect plus(final @NonNull Xlation d) {
         return new Rect(dim, center + d);
+    }
+
+    public @NonNull Rect moveTo(final @NonNull Point center) {
+        return new Rect(dim, center);
+    }
+    public @NonNull Rect resize(final @NonNull RectDim dim) {
+        return new Rect(dim, center);
     }
 
     public static boolean intersect(final @NonNull Rect a, final @NonNull Rect b) {
         val dif = (a.center - b.center).abs();
-        val dim = (a.dim + b.dim) * ScaleFactor.HALF;
+        val dim = ScaleFactor.HALF * (a.dim + b.dim);
         return dif.dx.d < dim.w.n && dif.dy.d < dim.h.n;
     }
 
     public boolean contains(final @NonNull Point p) {
         val half = ScaleFactor.HALF * dim;
         return
-            center.x.u - half.w.n <= p.x.u && p.x.u <= center.x.u + half.w.n &&
-            center.y.u - half.h.n <= p.y.u && p.y.u <= center.y.u + half.h.n;
+            DoubleUtil.within(p.x.u, center.x.u, half.w.n) &&
+            DoubleUtil.within(p.y.u, center.y.u, half.h.n);
     }
 }

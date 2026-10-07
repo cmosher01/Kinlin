@@ -15,20 +15,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.cmosher01.geom;
+package dev.cmosher01.genealogy.xy;
 
-import lombok.NonNull;
+import dev.cmosher01.geom.*;
+import lombok.*;
 
-public record OrthogonalLine(@NonNull Orient or, @NonNull Coord a, @NonNull Coord b, @NonNull Coord pos = Coord.ORIGIN) {
-    public enum Orient {H, V}
-
-    public @NonNull OrthogonalLine scale(final @NonNull ScaleFactor k) {
-        return new OrthogonalLine(or, k * a, k * b, k * pos);
-    }
-    public @NonNull OrthogonalLine translate(final @NonNull Xlation d) {
-        return switch (or) {
-            case H -> new OrthogonalLine(or, a + d.dx, b + d.dx, pos + d.dy);
-            case V -> new OrthogonalLine(or, a + d.dy, b + d.dy, pos + d.dx);
-        };
+public record MovableRect(@NonNull RectDim dim, @NonNull MovablePoint center) {
+    public @NonNull Rect get() {
+        return new Rect(this.dim, this.center.get());
     }
 }

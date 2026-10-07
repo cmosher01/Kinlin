@@ -1,3 +1,20 @@
+/*
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package dev.cmosher01.math.doubles;
 
 import lombok.*;
@@ -66,7 +83,7 @@ public final class DoubleUtil {
     // when the underlying graphics subsystem uses integral types.
     // These two methods round to the nearest long or integer.
     // See StrictMath.clamp(long,int,int), StrictMath.round, and StrictMath.rint
-    // rounds to nearest int (ties round towards +INF)
+    // rounds to nearest int (ties round to even number)
     // NaN-->0, +INF-->MAX_LONG, -INF-->MIN_LONG
     public static int asInt(final double d) {
         return StrictMath.clamp(asLong(d), Integer.MIN_VALUE, Integer.MAX_VALUE);
@@ -143,8 +160,15 @@ public final class DoubleUtil {
 //    public static Double min0(Double n) {
 //        return clearToPosZero(Math.abs(n));
 //    }
+
+    /** dMin <= d && d <= dMax */
     public static boolean between(final Double dMin, final Double d, final Double dMax) {
         return dMin <= d && d <= dMax;
+    }
+
+    /** mid-tol <= d && d <= mid+tol */
+    public static boolean within(final Double d, final Double mid, final Double tol) {
+        return between(mid-tol, d, mid+tol);
     }
 
     public static int compareTo(final @NonNull Double a, final @NonNull Double b) {

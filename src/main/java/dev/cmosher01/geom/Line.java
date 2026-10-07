@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -54,4 +54,30 @@ public record Line(@NonNull Point a, @NonNull Point b) implements ComparableUsin
             new Coord(~p * a.x.u + p * b.x.u),
             new Coord(~p * a.y.u + p * b.y.u));
     }
+
+    /*
+    // Two given points
+    double x1 = 50.0;
+    double y1 = 50.0;
+    double x2 = 250.0;
+    double y2 = 180.0;
+
+    // 1. CALCULATE differences, length, and angle
+    double dx = x2 - x1;
+    double dy = y2 - y1;
+
+    double length = Math.sqrt(dx * dx + dy * dy);
+    double radians = Math.atan2(dy, dx);
+
+    // 2. ROTATE around the first point (pivot)
+    g2d.rotate(radians, x1, y1);
+
+    // 3. DRAW a straight horizontal line starting from (x1, y1)
+    // extending to the calculated length
+    g2d.setColor(Color.RED);
+    g2d.drawLine((int) x1, (int) y1, (int) (x1 + length), (int) y1);
+
+    // 4. CLEAN UP
+    g2d.dispose();
+    */
 }

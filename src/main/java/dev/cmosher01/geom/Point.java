@@ -1,5 +1,5 @@
 /*
- *     Copyright © 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
  *
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
@@ -41,6 +41,9 @@ public record Point(@NonNull Coord x = Coord.ORIGIN, @NonNull Coord y = Coord.OR
 
     public boolean origin() {
         return this == ORIGIN;
+    }
+    public boolean empty() {
+        return this == NULL;
     }
 
     public @NonNull Dim distance(final @NonNull Point that) {
