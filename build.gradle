@@ -31,6 +31,10 @@ java {
     }
 }
 
+application {
+    mainClass = 'dev.cmosher01.genealogy.xy.FamilyTreeXyEditor'
+}
+
 repositories {
     mavenCentral()
     maven {

@@ -17,6 +17,7 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
+import dev.cmosher01.geom.*;
 import lombok.*;
 
 import java.awt.geom.Point2D;
@@ -26,8 +27,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class XyValue {
     private final boolean exists;
-    private final double x;
-    private final double y;
+    private final Coord x;
+    private final Coord y;
     private final String error;
 
     public static XyValue create(final @NonNull String s) {
@@ -60,10 +61,10 @@ public class XyValue {
             exists = false;
             error = e.toString();
         }
-        return new XyValue(x, y, exists, error);
+        return new XyValue(new Coord(x), new Coord(y), exists, error);
     }
 
-    private XyValue(double x, double y, boolean exists, String error) {
+    private XyValue(Coord x, Coord y, boolean exists, String error) {
         this.x = x;
         this.y = y;
         this.exists = exists;
@@ -89,10 +90,10 @@ public class XyValue {
         return this.exists;
     }
 
-    public @NonNull Optional<Point2D.Double> get() {
-        final Optional<Point2D.Double> ret;
+    public @NonNull Optional<Point> get() {
+        final Optional<Point> ret;
         if (this.exists) {
-            ret = Optional.of(new Point2D.Double(this.x, this.y));
+            ret = Optional.of(new Point(this.x, this.y));
         } else {
             ret = Optional.empty();
         }

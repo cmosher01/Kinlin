@@ -17,6 +17,7 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import dev.cmosher01.geom.*;
 import lombok.val;
 
 import java.awt.geom.*;
@@ -50,8 +51,10 @@ public class InteractiveRectsModel {
     }
 
     public void readFrom(final Path path) throws IOException, InputMismatchException {
-        final GridOLD grid = new GridOLD(25,0);
-//        grid.deactivate();// TODO
+        final Grid grid = new Grid();
+        grid.setX(new Quantizer(new ScaleFactor(25D), MoveTerm.IDENTITY));
+        grid.setY(new Quantizer(new ScaleFactor(25D), MoveTerm.IDENTITY));
+        grid.setActive(true);
 
         try (val in = new Scanner(path.toFile())) {
             while (in.hasNextDouble()) {

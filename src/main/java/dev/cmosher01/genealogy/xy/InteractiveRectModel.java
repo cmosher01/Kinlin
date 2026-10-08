@@ -17,6 +17,9 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import dev.cmosher01.geom.*;
+import lombok.val;
+
 import java.awt.geom.*;
 
 public class InteractiveRectModel {
@@ -27,29 +30,18 @@ public class InteractiveRectModel {
     private final double h;
     private final String tag;
 
-    private final GridOLD grid;
-
-    private double xOrg;
-    private double yOrg;
-    private double xRaw;
-    private double yRaw;
-    private double xCur;
-    private double yCur;
+    private final MovablePoint pt;
 
     private boolean selected;
 
 
 
-    public InteractiveRectModel(final double x, final double y, final String tag, final GridOLD grid) {
+    public InteractiveRectModel(final double x, final double y, final String tag, final Grid grid) {
         this.w = ITEM_WIDTH;
         this.h = ITEM_HEIGHT;
         this.tag = tag;
-        this.grid = grid;
 
-        this.xCur = x;
-        this.yCur = y;
-        anchor();
-        flip();
+        this.pt = new MovablePoint(grid, new Point(new Coord(x), new Coord(y)));
     }
 
     public String tag() {
@@ -65,27 +57,23 @@ public class InteractiveRectModel {
     }
 
     public void move(final Point2D.Double d) {
-        this.xRaw += d.getX();
-        this.yRaw += d.getY();
-        this.xCur = this.grid.snap(this.xRaw);
-        this.yCur = this.grid.snap(this.yRaw);
+        this.pt.move(new Xlation(new MoveTerm(d.getX()), new MoveTerm(d.getY())));
     }
 
     public boolean isModified() {
-        return this.xCur != this.xOrg || this.yCur != this.yOrg;
+        return this.pt.dirty();
     }
 
     public void anchor() {
-        this.xRaw = this.xCur;
-        this.yRaw = this.yCur;
+        this.pt.anchor();
     }
 
     public void flip() {
-        this.xOrg = this.xCur;
-        this.yOrg = this.yCur;
+        this.pt.flip();
     }
 
     public Rectangle2D.Double rect() {
-        return new Rectangle2D.Double(this.xCur, this.yCur, this.w, this.h);
+        val p = this.pt.get();
+        return new Rectangle2D.Double(p.x().u(), p.y().u(), this.w, this.h);
     }
 }

@@ -17,14 +17,14 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
+import dev.cmosher01.genealogy.xy.MovablePoint;
+import dev.cmosher01.geom.Grid;
 import lombok.*;
 
 import java.util.ArrayList;
 
 public class Indi {
     private final IndividualId id;
-
-//    private final MovablePoint xy;
 
     private final int sex;
     private final long birth;
@@ -34,11 +34,14 @@ public class Indi {
 
     private final Plaque plaque;
 
+    private final MovablePoint xy;
+    private boolean selected;
 
 
-    public Indi(final @NonNull IndividualId id, final @NonNull String xy, @NonNull String name, @NonNull String lifespan, @NonNull String place, final int sex, final long birth) {
+
+    public Indi(final @NonNull IndividualId id, final @NonNull String xy, @NonNull String name, @NonNull String lifespan, @NonNull String place, final int sex, final long birth, final Grid g) {
         this.id = id;
-//        this.xy = new XyValue(xy).get();
+        this.xy = new MovablePoint(g, XyValue.create(xy).get());
         this.sex = sex;
         this.birth = birth;
         this.plaque = Plaque.create(name, lifespan, place);
@@ -59,5 +62,15 @@ public class Indi {
             return this.id.pkid();
         }
         return this.id.node().getObject().getID();
+    }
+
+
+
+    public boolean selected() {
+        return this.selected;
+    }
+
+    public void select(final boolean selected) {
+        this.selected = selected;
     }
 }

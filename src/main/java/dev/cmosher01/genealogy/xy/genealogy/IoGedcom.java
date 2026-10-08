@@ -17,6 +17,7 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
+import dev.cmosher01.geom.Grid;
 import lombok.val;
 import nu.mine.mosher.collection.TreeNode;
 import nu.mine.mosher.gedcom.*;
@@ -31,10 +32,14 @@ public class IoGedcom {
         val tree = Gedcom.readFile(new BufferedInputStream(Files.newInputStream(path)));
         new GedcomConcatenator(tree).concatenate();
 
+        val grid = new Grid();
+
         val mapIdToIndi = new HashMap<String, Indi>();
 
-        val indis = buildIndis(tree, mapIdToIndi);
+        val indis = buildIndis(tree, mapIdToIndi, grid);
         val famis = buildFamis(tree, Collections.unmodifiableMap(mapIdToIndi));
+
+        // update grid
     }
 
 
@@ -43,11 +48,11 @@ public class IoGedcom {
 
 
 
-    private static ArrayList<Indi> buildIndis(final GedcomTree tree, final Map<String, Indi> mapIdToIndi) {
+    private static ArrayList<Indi> buildIndis(final GedcomTree tree, final Map<String, Indi> mapIdToIndi, final Grid grid) {
         val indis = new ArrayList<Indi>();
         tree.getRoot().forEach(nodeIndi -> {
             if (nodeIndi.getObject().getTag().equals(GedcomTag.INDI)) {
-                val indi = buildIndi(nodeIndi);
+                val indi = buildIndi(nodeIndi, grid);
                 mapIdToIndi.put(indi.getId(), indi);
                 indis.add(indi);
             }
@@ -55,7 +60,7 @@ public class IoGedcom {
         return indis;
     }
 
-    private static Indi buildIndi(final TreeNode<GedcomLine> node) {
+    private static Indi buildIndi(final TreeNode<GedcomLine> node, final Grid grid) {
         val xy = getValue(node, "_XY");
 
         // these get displayed on the plaque
@@ -67,7 +72,7 @@ public class IoGedcom {
         val sex = toSex(getValue(node, "SEX"));
         val birth = GedcomDateUtil.calcBirthForSort(getEventDate(node, "BIRT"));
 
-        return new Indi(new IndividualId(node), xy, name, lifespan, place, sex, birth);
+        return new Indi(new IndividualId(node), xy, name, lifespan, place, sex, birth, grid);
     }
 
 

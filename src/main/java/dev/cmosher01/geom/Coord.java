@@ -65,7 +65,7 @@ public record Coord(@NonNull Double u = 0) implements ComparableUsing<Coord> {
     }
     // Coord <- Coord / ScaleFactor
     public @NonNull Coord div(final @NonNull ScaleFactor k) {
-        return new Coord(k / u);
+        return new Coord(~k * u);
     }
     // ScaleFactor <- Coord / Coord
     public @NonNull ScaleFactor div(final @NonNull Coord k) {
