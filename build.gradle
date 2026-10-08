@@ -18,10 +18,11 @@
 plugins {
     id 'systems.manifold.manifold-gradle-plugin' version '0.0.2-alpha'
     id 'io.freefair.lombok' version '9.5.0'
+    id 'application'
 }
 
-group = 'dev.cmosher01'
-version = '1.0.0'
+group = 'dev.cmosher01.genealogy'
+version = '0.0.1'
 
 java {
     toolchain {
@@ -32,13 +33,22 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri('https://public:\u0067hp_fya6Kseu3XOBMg2icbg7f1LP6ZFYjj35v4Zj@maven.pkg.github.com/cmosher01/*')
+    }
 }
 
 configurations {
     testAnnotationProcessor.extendsFrom annotationProcessor
 }
 
+
+
 dependencies {
+    implementation 'nu.mine.mosher.gedcom:gedcom-lib:latest.release', {
+        exclude group: 'nu.mine.mosher.mopper', module: 'mopper'
+    }
+
     implementation 'systems.manifold:manifold-ext-rt:latest.release'
     annotationProcessor 'systems.manifold:manifold-ext:latest.release'
 
@@ -53,17 +63,18 @@ dependencies {
     implementation 'systems.manifold:manifold-props-rt:latest.release'
     annotationProcessor 'systems.manifold:manifold-props:latest.release'
 
+    implementation 'org.slf4j:slf4j-api:latest.release'
+
 
 
     testImplementation 'org.junit.jupiter:junit-jupiter:latest.release'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-tasks.withType(JavaCompile) {
-    options.compilerArgs += [
-        '-Xplugin:Manifold',
-        '-implicit:class'
-    ]
+
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-Xplugin:Manifold', '-implicit:class']
 }
 
 tasks.withType(Test).configureEach {
