@@ -49,14 +49,11 @@ public record GrowTerm(@NonNull Double d = identity) {
     public @NonNull GrowTerm unaryMinus() {
         return new GrowTerm(-d);
     }
-    // Double = Double + GrowTerm
+
+
+    // Double = GrowTerm + Double
     public @NonNull Double plus(final @NonNull Double n) {
         // guard against shrinking to below zero (dimensions can't be negative)
         return Math.max(0, d + n);
     }
-
-    // don't need operator minus
-    // we can do "Double = Double + -GrowTerm"
-    // we don't want to allow "Double = GrowTerm - Double"
-    // and we can't do "Double = Double - GrowTerm" because that would be Double.minus(GrowTerm)
 }

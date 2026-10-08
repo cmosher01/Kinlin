@@ -19,11 +19,14 @@ package dev.cmosher01.geom;
 
 import lombok.*;
 
-/**
+/*
  * A set of two bars, above and below a line segment. Looks like = for segment -
  * center line: *----------------------------*
  *        bars: *============================*
  * vertical is the total height of the set of bars
+ */
+
+/**
  *
  * @param center
  * @param vertical

@@ -32,8 +32,10 @@ import java.util.*;
 
     indi coord model (all are optional):
         write-once orig contains the (first) _XY, or nothing if there is no _XY, from the file/db
-        layout contains the automatic laid-out position
+        layout contains the automatic laid-out position, or nothing if not automatically laid out
         user contains the current position (due to user dragging)
+
+        raw is used to track the dragging position while displaying at the snapped-to-grid position
 
     get():   first of: user, layout, orig
     dirty(): get() != orig

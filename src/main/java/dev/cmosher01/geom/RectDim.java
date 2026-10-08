@@ -41,20 +41,6 @@ public record RectDim(@NonNull Dim w = Dim.ZERO, @NonNull Dim h = w) implements 
         throw new UnsupportedOperationException();
     }
 
-// will we need these? should there be static methods in Geom for these formulas?
-//    public Dim perim() {
-//        return ScaleFactor.TWICE * (w+h);
-//    }
-// should this return DimSq:
-//    public FP area() {
-//        return fp(w.d().n() * h.d().n());
-//    }
-
-//    // this is not needed, but is it nice to have?
-//    public static RectDim square(final @NonNull Dim n) {
-//        return new RectDim(n);
-//    }
-
     public Dim diag() {
         return new Dim(Math.hypot(w.n, h.n));
     }
