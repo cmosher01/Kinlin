@@ -152,6 +152,7 @@ and write to that file (or do nothing on Cancel)
 
 */
 
+import dev.cmosher01.genealogy.xy.genealogy.ChartView;
 import lombok.*;
 
 import java.nio.file.Path;
@@ -167,7 +168,7 @@ public class DocumentController {
     private final FrameView viewFrame;
     private final MenuView viewMenu;
     private final MainView viewMain;
-    private final InteractiveRectsView viewInteractiveRects;
+    private final ChartView viewChart; // TODO can this refer to a DocumentView instead?
 
 
 
@@ -189,10 +190,11 @@ public class DocumentController {
         } catch (final Exception e) {
             // TODO log and show error message
             System.out.println("WARNING file may not be fully loaded");
+            throw new IllegalStateException(e);
         }
         this.zp.setZoomOutMinFromBounds(this.document.bounds());
 
-        this.viewInteractiveRects.refresh();
+        this.viewChart.refresh();
         this.viewMain.repaint();
         this.viewFrame.refresh();
         this.viewMenu.refresh();
@@ -246,7 +248,7 @@ public class DocumentController {
             }
         }
 
-        this.viewInteractiveRects.refresh();
+        this.viewChart.refresh();
         this.viewMain.repaint();
         this.viewFrame.refresh();
         this.viewMenu.refresh();

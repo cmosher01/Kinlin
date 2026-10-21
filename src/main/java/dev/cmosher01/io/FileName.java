@@ -102,6 +102,16 @@ public final class FileName {
         return extension().orElse("");
     }
 
+    public @NonNull String extensionWithDotOrEmpty() {
+        final String ret;
+        if (extension().isPresent()) {
+            ret = "." + extension().get();
+        } else {
+            ret = "";
+        }
+        return ret;
+    }
+
 
 
     @Override

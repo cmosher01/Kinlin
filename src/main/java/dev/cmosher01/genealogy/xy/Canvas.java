@@ -32,18 +32,18 @@ public abstract class Canvas extends JPanel {
     }
 
     @Override
-    protected void paintComponent(final Graphics g) {
-        if (!(g instanceof Graphics2D g2)) {
+    protected void paintComponent(final Graphics g0) {
+        super.paintComponent(g0);
+
+        if (!(g0 instanceof Graphics2D g)) {
             throw new IllegalStateException("Graphics2D context is required.");
         }
 
-        super.paintComponent(g2);
+        g.addRenderingHints(Swings.GLOBAL_RENDERING_HINTS);
+        g.setStroke(Swings.simpleStroke());
+        g.setClip(viewportClip());
 
-        g2.addRenderingHints(Swings.GLOBAL_RENDERING_HINTS);
-        g2.setStroke(Swings.simpleStroke());
-        g2.setClip(viewportClip());
-
-        paint(g2);
+        paint(g);
     }
 
     /**
@@ -58,5 +58,5 @@ public abstract class Canvas extends JPanel {
 
 
 
-    protected abstract void paint(final Graphics2D g);
+    protected abstract void paint(Graphics2D g);
 }

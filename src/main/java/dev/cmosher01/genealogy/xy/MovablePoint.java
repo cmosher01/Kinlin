@@ -83,6 +83,9 @@ public class MovablePoint {
         return this.original;
     }
 
+    private static final boolean FAIL_SAFE = true; // TODO
+//    private static final boolean FAIL_SAFE = false;
+    private static final Point POINT_RANDOM = new Point(new Coord(73D), new Coord(37D));
     /**
      * Gets the resulting point, in this order of priority:
      * user modified, layout modified, original point.
@@ -94,6 +97,9 @@ public class MovablePoint {
      */
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public @NonNull Point get() {
+        if (FAIL_SAFE && this.cache.isEmpty()) {
+            return POINT_RANDOM;
+        }
         return this.cache.get();
     }
 
@@ -142,6 +148,9 @@ public class MovablePoint {
     public void move(final @NonNull Xlation d) {
         if (this.raw.empty()) {
             anchor();
+            if (FAIL_SAFE && this.raw.empty()) {
+                this.raw = get();
+            }
         }
         (this.raw) += d;
         userMoveTo(this.g.snap(this.raw));

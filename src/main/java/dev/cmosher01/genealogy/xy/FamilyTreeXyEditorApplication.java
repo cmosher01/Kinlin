@@ -17,6 +17,8 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import dev.cmosher01.genealogy.xy.genealogy.*;
+import dev.cmosher01.geom.Grid;
 import lombok.*;
 
 import javax.swing.*;
@@ -37,32 +39,33 @@ public class FamilyTreeXyEditorApplication {
         val modelZoomPan = new ZoomPanModel();
         val modelStatusBar = new StatusBarModel(modelZoomPan);
         val modelDragSelection = new DragSelectionModel();
-        val modelInteractiveRects = new InteractiveRectsModel();
-        val modelDocument = new DocumentModel(modelInteractiveRects);
+        val modelGrid = new Grid();
+        val modelFont = new FontModel();
+        val modelDocument = new DocumentModel(modelFont, modelGrid);
 
         // VIEW
         val viewMouse = new MouseView();
         val viewStatusBar = new StatusBarView(modelStatusBar);
         val viewAxes = new AxesView(modelZoomPan);
         val viewZoomPan = new ZoomPanView(modelZoomPan);
-        val viewInteractiveRects = new InteractiveRectsView(modelInteractiveRects, modelZoomPan);
+        val viewChart = new ChartView(modelDocument, modelZoomPan);
         val viewDragSelection = new DragSelectionView(modelDragSelection);
-        val viewMain = new MainView(modelZoomPan, viewZoomPan, modelInteractiveRects, viewInteractiveRects, viewDragSelection, viewAxes);
+        val viewMain = new MainView(modelZoomPan, viewZoomPan, modelDocument, viewChart, viewDragSelection, viewAxes);
         val viewMenu = new MenuView(modelDocument);
         val viewFrame = new FrameView(modelDocument, viewMenu, viewMouse, viewMain, viewStatusBar);
 
         // CONTROLLER
         val controllerZoomPan = new ZoomPanMouseController(modelZoomPan);
-        val controllerInteractiveRects = new InteractiveRectsController(modelInteractiveRects, modelZoomPan, modelDocument);
-        val controllerDragSelection = new DragSelectionController<>(modelDragSelection, modelInteractiveRects.selection(), modelZoomPan);
+        val controllerChart = new ChartController(modelZoomPan, modelDocument);
+        val controllerDragSelection = new DragSelectionController<>(modelDragSelection, modelDocument, modelZoomPan);
         val controllerStatusBar = new StatusBarController(modelStatusBar, viewStatusBar, viewMain);
         val controllerCommands = new CommandController(viewFrame, viewMenu);
-        val controllerDocument = new DocumentController(modelDocument, modelZoomPan, viewFrame, viewMenu, viewMain, viewInteractiveRects);
+        val controllerDocument = new DocumentController(modelDocument, modelZoomPan, viewFrame, viewMenu, viewMain, viewChart);
         val controllerQuit = new QuitController(controllerDocument, viewFrame, modelDocument, controllerStatusBar);
         val controllerKill = new KillController(controllerDocument, controllerQuit);
         val controllerDesktop = new DesktopController(controllerCommands, controllerDocument, controllerQuit);
         val controllerMenu = new MenuController(viewMenu, controllerDocument, controllerCommands, controllerQuit);
-        val controllerMouse = new MouseController(viewMouse, viewMain, viewFrame, viewStatusBar, modelZoomPan, controllerZoomPan, modelStatusBar, controllerInteractiveRects, controllerDragSelection);
+        val controllerMouse = new MouseController(viewMouse, viewMain, viewFrame, viewStatusBar, modelZoomPan, controllerZoomPan, modelStatusBar, controllerChart, controllerDragSelection);
 
         viewFrame.display();
     }

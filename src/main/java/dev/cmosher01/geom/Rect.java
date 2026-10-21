@@ -21,7 +21,7 @@ import dev.cmosher01.math.doubles.DoubleUtil;
 import lombok.*;
 import manifold.ext.rt.api.*;
 
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A rectangle is defined in terms of its center point and its width and height dimensions.
@@ -64,16 +64,55 @@ public record Rect(@NonNull RectDim dim, @NonNull Point center) implements Compa
         return new Rect(dim, center);
     }
 
+    public boolean contains(final @NonNull Point p) {
+        val half = ScaleFactor.HALF * dim;
+        return
+            DoubleUtil.within(p.x.u, center.x.u, half.w.n) &&
+            DoubleUtil.within(p.y.u, center.y.u, half.h.n);
+    }
+
+
+
+    public @NonNull Double xMin() { return center.x().u() - dim.w().half().n(); }
+    public @NonNull Double xMax() { return center.x().u() + dim.w().half().n(); }
+    public @NonNull Double yMin() { return center.y().u() - dim.h().half().n(); }
+    public @NonNull Double yMax() { return center.y().u() + dim.h().half().n(); }
+
+
+
+
     public static boolean intersect(final @NonNull Rect a, final @NonNull Rect b) {
         val dif = (a.center - b.center).abs();
         val dim = ScaleFactor.HALF * (a.dim + b.dim);
         return dif.dx.d < dim.w.n && dif.dy.d < dim.h.n;
     }
 
-    public boolean contains(final @NonNull Point p) {
-        val half = ScaleFactor.HALF * dim;
-        return
-            DoubleUtil.within(p.x.u, center.x.u, half.w.n) &&
-            DoubleUtil.within(p.y.u, center.y.u, half.h.n);
+    public static @NonNull Rect bounds(final @NonNull Collection<Rect> rs) {
+        if (rs.isEmpty) {
+            return new Rect(new RectDim(), Point.ORIGIN);
+        }
+        double xMin = Double.MAX_VALUE;
+        double xMax = -Double.MAX_VALUE;
+        double yMin = Double.MAX_VALUE;
+        double yMax = -Double.MAX_VALUE;
+        for (val r : rs) {
+            if (r.xMin() < xMin) {
+                xMin = r.xMin();
+            }
+            if (xMax < r.xMax()) {
+                xMax = r.xMax();
+            }
+            if (r.yMin() < yMin) {
+                yMin = r.yMin();
+            }
+            if (yMax < r.yMax()) {
+                yMax = r.yMax();
+            }
+        }
+        val w = new Dim(xMax - xMin);
+        val h = new Dim(yMax - yMin);
+        val x = new Coord(xMin + w.half().n());
+        val y = new Coord(yMin + h.half().n());
+        return new Rect(new RectDim(w, h), new Point(x, y));
     }
 }

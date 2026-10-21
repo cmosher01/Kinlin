@@ -17,20 +17,72 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
-import lombok.NonNull;
+import dev.cmosher01.font.TextBlock;
+import dev.cmosher01.genealogy.xy.*;
+import dev.cmosher01.geom.*;
+import lombok.*;
+
+import java.awt.Graphics2D;
+import java.text.AttributedString;
+import java.util.*;
+
 
 public class Plaque {
-    private final @NonNull String name;
+    private final @NonNull GedcomIndiName name;
     private final @NonNull String lifespan;
     private final @NonNull String place;
 
-    public static Plaque create(final @NonNull String name, final @NonNull String lifespan, final @NonNull String place) {
-        return new Plaque(name, lifespan, place);
-    }
+    private TextBlock text;
 
-    private Plaque(String name, String lifespan, String place) {
+
+
+    private Plaque(final @NonNull GedcomIndiName name, final @NonNull String lifespan, final @NonNull String place) {
         this.name = name;
         this.lifespan = lifespan;
         this.place = place;
+    }
+
+
+
+    public static Plaque create(final @NonNull FontModel fonts, final @NonNull GedcomIndiName name, final @NonNull String lifespan, final @NonNull String place) {
+        val o =  new Plaque(name, lifespan, place);
+        o.refresh(fonts);
+        return o;
+    }
+
+
+
+    public void refresh(final @NonNull FontModel fonts) {
+        val palette = fonts.palette();
+
+        val attrsPlain = palette.plain().getAttributes();
+        val attrsSmall = palette.small().getAttributes();
+
+        val paragraphs = new ArrayList<AttributedString>();
+
+        {
+            val asName = new AttributedString(this.name.simple(), attrsPlain); // TODO fix name
+            paragraphs.add(asName);
+        }
+        if (!this.lifespan.isBlank()) {
+            val asLifespan = new AttributedString(this.lifespan, attrsSmall);
+            paragraphs.add(asLifespan);
+        }
+        if (!this.place.isBlank()) {
+            val asPlace = new AttributedString(this.place, attrsPlain);
+            paragraphs.add(asPlace);
+        }
+
+        this.text = TextBlock.create(paragraphs, palette.widthMax());
+    }
+
+
+
+    public void paint(final @NonNull Graphics2D g, final @NonNull Point c) {
+        this.text.paint(g, c);
+    }
+
+    public RectDim dim() {
+        return this.text.dim();
     }
 }

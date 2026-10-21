@@ -15,61 +15,62 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.cmosher01.genealogy.xy;
+package dev.cmosher01.genealogy.xy.genealogy;
 
+import dev.cmosher01.genealogy.xy.*;
 import lombok.*;
 
 import java.awt.geom.*;
 import java.util.*;
 
 @RequiredArgsConstructor
-public class InteractiveRectsSelectionModel implements Selectable<InteractiveRectModel> {
-    private final ArrayList<InteractiveRectModel> universe;
+public class IndiSelectionModel implements Selectable<Indi> {
+    private final List<Indi> universe;
 
     /**
-     * Set of currently selected items. Redundant with InteractiveRectModel::selected property.
+     * Set of currently selected items. Redundant with Indi::selected property.
      */
-    private final Set<InteractiveRectModel> selection = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final Set<Indi> selection = Collections.newSetFromMap(new IdentityHashMap<>());
 
 
     @Override
     public void clear() {
-        this.selection.forEach(sq -> sq.select(false));
+        this.selection.forEach(indi -> indi.select(false));
         this.selection.clear();
     }
 
     @Override
-    public void select(final InteractiveRectModel sq, final boolean select) {
-        sq.select(select);
+    public void select(final Indi indi, final boolean select) {
+        indi.select(select);
         if (select) {
-            this.selection.add(sq);
+            this.selection.add(indi);
         } else {
-            this.selection.remove(sq);
+            this.selection.remove(indi);
         }
     }
 
     @Override
     public void setFromRectangle(final Rectangle2D.Double r) {
-        for (val sq : this.universe.reversed()) {
-            val hit = sq.rect().intersects(r);
-            select(sq, hit);
+        for (val indi : this.universe.reversed()) {
+            val hit = indi.intersects(r);
+            select(indi, hit);
         }
     }
 
     @Override
     public void move(final Point2D.Double delta) {
-        this.selection.forEach(sq -> sq.move(delta));
+        this.selection.forEach(indi -> indi.move(delta));
     }
 
     @Override
     public void anchor() {
-        this.selection.forEach(InteractiveRectModel::anchor);
+        this.selection.forEach(Indi::anchor);
     }
 
     @Override
     public boolean isModified() {
-        for (val sq : this.selection) {
-            if (sq.isModified()) {
+        for (val indi : this.selection) {
+            if (indi.isModified()) {
                 return true;
             }
         }

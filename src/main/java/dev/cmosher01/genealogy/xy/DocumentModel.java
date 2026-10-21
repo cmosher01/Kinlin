@@ -17,7 +17,11 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import dev.cmosher01.genealogy.xy.genealogy.*;
+import dev.cmosher01.geom.*;
+import dev.cmosher01.io.FileName;
 import lombok.*;
+import nu.mine.mosher.gedcom.exception.InvalidLevel;
 
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
@@ -26,44 +30,56 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@RequiredArgsConstructor
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class DocumentModel {
-    private static class FileName {
-        final String name;
-        final String ext;
-        FileName(final String f) {
-            val p = List.of(f.split("\\.",-1));
-            if (0 < p.size()) {
-                name = p.getFirst();
-                if (1 < p.size()) {
-                    ext = p.getLast();
-                } else {
-                    ext = "";
-                }
-            } else {
-                name = "";
-                ext = "";
-            }
-        }
-    }
-
-    private final InteractiveRectsModel model;
+    @Getter
+    private Optional<ChartModel> model = Optional.empty();
 
     private @NonNull Optional<Path> file = Optional.empty();
-    private @NonNull FileName filename = new FileName("");
+    private FileName filename;
+    private final @NonNull FontModel modelFont;
+    private final @NonNull Grid grid;
     private boolean dirty ;
 
-    public void open(final @NonNull Path file) throws IOException {
+    public DocumentModel(final @NonNull FontModel modelFont, final @NonNull Grid grid) {
+        this.modelFont = modelFont;
+        this.grid = grid;
+    }
+
+
+
+
+
+
+    public boolean isPresent() {
+        return this.model.isPresent();
+    }
+
+    public boolean isEmpty() {
+        return this.model.isEmpty();
+    }
+
+    public ChartModel model() {
+        if (this.model.isEmpty()) {
+            throw new IllegalStateException("no chart is loaded");
+        }
+        return this.model.get();
+    }
+
+
+    public void open(final @NonNull Path file) throws IOException, InvalidLevel {
         this.file = Optional.of(file);
-        this.filename = new FileName(file.getFileName().toString());
-        this.model.readFrom(file);
+        this.filename = FileName.of(file.getFileName().toString());
+
+        // TODO choose FTM or Gedcom
+        this.model = Optional.of(IoGedcom.read(file, this.grid, this.modelFont));
+        // TODO update grid based on heuristic detection from tree
     }
 
     public @NonNull String getTitle() {
         String ret = "(no file open)";
         if (isOpen()) {
-            ret = this.filename.name;
+            ret = this.filename.name();
             if (isModified()) {
                 ret += " *";
             }
@@ -77,7 +93,7 @@ public class DocumentModel {
 
     public void setPath(final @NonNull Path path) {
         this.file = Optional.of(path);
-        this.filename = new FileName(path.getFileName().toString());
+        this.filename = FileName.of(path.getFileName().toString());
     }
 
     public @NonNull Path suggestSaveAsPath() {
@@ -85,8 +101,8 @@ public class DocumentModel {
             // should never happen
             return Path.of(timestamp()+".ged");
         }
-        val name = removeTimestamp(this.filename.name);
-        return Path.of(name+"-"+timestamp()+"."+this.filename.ext);
+        val name = removeTimestamp(this.filename.name());
+        return Path.of(name+"-"+timestamp()+this.filename.extensionWithDotOrEmpty());
     }
 
     public boolean save() {
@@ -96,15 +112,15 @@ public class DocumentModel {
 
     public void onSaved() {
         this.dirty = false;
-        this.model.flip();
+        this.model.get().flip();
     }
 
     public boolean isFileReadOnly() {
-        return this.filename.ext.equalsIgnoreCase("ged");
+        return !this.filename.extensionOrEmpty().equalsIgnoreCase("ftm");
     }
 
     public void refreshModified() {
-        this.dirty = this.model.isModified();
+        this.dirty = this.model.get().isModified();
     }
 
     public boolean isModified() {
@@ -126,11 +142,11 @@ public class DocumentModel {
     public void close() {
         this.dirty = false;
         this.file = Optional.empty();
-        this.model.clear();
+        this.model = Optional.empty();
     }
 
     public Rectangle2D bounds() {
-        return this.model.bounds();
+        return Awts.rect(this.model.get().bounds());
     }
 
 
@@ -148,4 +164,7 @@ public class DocumentModel {
     private static String removeTimestamp(final String name) {
         return name.replaceAll(REGEX_TS, "");
     }
+
+
+
 }

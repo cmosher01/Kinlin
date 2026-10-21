@@ -42,7 +42,7 @@ public class InteractiveRectsModel {
     private Rectangle2D.Double bounds;
     private Rectangle2D.Double boundsOutset;
 
-    private final Selectable<InteractiveRectModel> selection = new InteractiveRectsSelectionModel(this.sqs);
+    private final Selectable<InteractiveRectModel> selection = new InteractiveRectSelectionModel(this.sqs);
 
 
 

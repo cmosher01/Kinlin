@@ -18,59 +18,83 @@
 package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.MovablePoint;
-import dev.cmosher01.geom.Grid;
+import dev.cmosher01.geom.*;
 import lombok.*;
 
+import java.awt.geom.*;
 import java.util.ArrayList;
 
+@RequiredArgsConstructor
 public class Indi {
-    private final IndividualId id;
+    private final @NonNull IndividualId id;
 
-    private final int sex;
-    private final long birth;
+    @Getter private final int sex;
+    @Getter private final long birth;
 
-    private final ArrayList<Fami> rFamiChildTo = new ArrayList<>(1);
-    private final ArrayList<Fami> rFamiSpouseTo = new ArrayList<>(1);
+    private final @NonNull ArrayList<@NonNull Fami> rFamiChildTo = new ArrayList<>(1);
+    private final @NonNull ArrayList<@NonNull Fami> rFamiSpouseTo = new ArrayList<>(1);
 
-    private final Plaque plaque;
+    private final @NonNull Plaque plaque;
 
-    private final MovablePoint xy;
+    private final @NonNull MovablePoint pt;
     private boolean selected;
 
 
 
-    public Indi(final @NonNull IndividualId id, final @NonNull String xy, @NonNull String name, @NonNull String lifespan, @NonNull String place, final int sex, final long birth, final Grid g) {
-        this.id = id;
-        this.xy = new MovablePoint(g, XyValue.create(xy).get());
-        this.sex = sex;
-        this.birth = birth;
-        this.plaque = Plaque.create(name, lifespan, place);
-    }
 
-    public void addAsChildTo(final Fami fami) {
+
+    public void addAsChildTo(final @NonNull Fami fami) {
         this.rFamiChildTo.add(fami);
     }
 
-    public void addAsSpouseTo(final Fami fami) {
+    public void addAsSpouseTo(final @NonNull Fami fami) {
         this.rFamiSpouseTo.add(fami);
     }
 
 
 
-    public String getId() {
-        if (this.id.isFtm()) {
-            return this.id.pkid();
-        }
-        return this.id.node().getObject().getID();
+
+
+    public @NonNull String key() {
+        return this.id.key();
     }
 
 
+
+    public @NonNull Rect bounds() {
+        return new Rect(this.plaque.dim(), this.pt.get());
+    }
+
+    Plaque plaque() {
+        return this.plaque;
+    }
+    Point point() {
+        return this.pt.get();
+    }
+
+
+
+    public void move(final @NonNull Point2D.Double d) {
+        this.pt.move(new Xlation(new MoveTerm(d.getX()), new MoveTerm(d.getY())));
+    }
+    public boolean isModified() {
+        return this.pt.dirty();
+    }
+    public void anchor() {
+        this.pt.anchor();
+    }
+    public void flip() {
+        this.pt.flip();
+    }
 
     public boolean selected() {
         return this.selected;
     }
-
     public void select(final boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean intersects(final Rectangle2D.Double r) {
+        return Rect.intersect(bounds(), Awts.rect(r));
     }
 }

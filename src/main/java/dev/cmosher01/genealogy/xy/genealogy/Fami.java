@@ -17,20 +17,22 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
+import lombok.NonNull;
+
 import java.util.ArrayList;
 
 public class Fami {
-    private final ArrayList<Indi> rIndiSpouses = new ArrayList<>(2);
-    private final ArrayList<Indi> rIndiChildren = new ArrayList<>(2);
+    private final @NonNull ArrayList<@NonNull Indi> rIndiSpouses = new ArrayList<>(2);
+    private final @NonNull ArrayList<@NonNull Indi> rIndiChildren = new ArrayList<>(2);
 
 
 
-    public void addSpouse(final Indi indi) {
+    public void addSpouse(final @NonNull Indi indi) {
         this.rIndiSpouses.add(indi);
         indi.addAsSpouseTo(this);
     }
 
-    public void addChild(final Indi indi) {
+    public void addChild(final @NonNull Indi indi) {
         this.rIndiChildren.add(indi);
         indi.addAsChildTo(this);
     }

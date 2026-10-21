@@ -23,7 +23,7 @@ import java.awt.*;
 
 @RequiredArgsConstructor
 public class InteractiveRectView {
-    private static final Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 7);
+    private static final Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 6);
     private static final Color RECT_FILL_COLOR = Swings.mix(Solarized.MAGENTA, Solarized.BASE__2_BEIGE_DRK, .2);
 
     private final InteractiveRectModel model;

@@ -17,6 +17,7 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import dev.cmosher01.geom.*;
 import lombok.val;
 
 import java.awt.geom.*;
@@ -99,6 +100,10 @@ public class ZoomPanModel {
         final var vBR = new Point2D.Double(v.getX()+v.getWidth(), v.getY()+v.getHeight());
         final var cBR = viewportToCanvas(vBR);
         return new Rectangle2D.Double(cTL.x, cTL.y, cBR.x-cTL.x, cBR.y-cTL.y);
+    }
+
+    public void setZoomOutMinFromBounds(final Rect b) {
+        setZoomOutMinFromBounds(Awts.rect(b));
     }
 
     public void setZoomOutMinFromBounds(final Rectangle2D b) {

@@ -17,8 +17,8 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import nu.mine.mosher.gedcom.date.*;
 import nu.mine.mosher.gedcom.date.parser.*;
 
@@ -41,7 +41,7 @@ public class GedcomDateUtil {
         return 100L*year+month;
     }
 
-    public static String getLifespan(final String birth, final String death) {
+    public static @NonNull String getLifespan(final String birth, final String death) {
         val db = toDateLenient(birth);
         val dd = toDateLenient(death);
         if (db.equals("?") && dd.equals("?")) {

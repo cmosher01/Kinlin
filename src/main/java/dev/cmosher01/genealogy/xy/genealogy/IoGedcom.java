@@ -17,8 +17,9 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
+import dev.cmosher01.genealogy.xy.*;
 import dev.cmosher01.geom.Grid;
-import lombok.val;
+import lombok.*;
 import nu.mine.mosher.collection.TreeNode;
 import nu.mine.mosher.gedcom.*;
 import nu.mine.mosher.gedcom.exception.InvalidLevel;
@@ -27,19 +28,37 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
-public class IoGedcom {
-    public void read(final Path path) throws IOException, InvalidLevel {
-        val tree = Gedcom.readFile(new BufferedInputStream(Files.newInputStream(path)));
-        new GedcomConcatenator(tree).concatenate();
+public final class IoGedcom {
+    @Deprecated
+    private IoGedcom() {
+        throw new UnsupportedOperationException();
+    }
 
-        val grid = new Grid();
+
+
+
+
+    public static ChartModel read(final @NonNull Path path, final @NonNull Grid grid, final @NonNull FontModel fonts) throws IOException, InvalidLevel {
+        val tree = readTree(path);
 
         val mapIdToIndi = new HashMap<String, Indi>();
 
-        val indis = buildIndis(tree, mapIdToIndi, grid);
+        val indis = buildIndis(tree, mapIdToIndi, grid, fonts);
         val famis = buildFamis(tree, Collections.unmodifiableMap(mapIdToIndi));
 
-        // update grid
+        return new ChartModel(indis, famis);
+    }
+
+
+
+
+
+    private static GedcomTree readTree(final @NonNull Path path) throws IOException, InvalidLevel {
+        try (val input = new BufferedInputStream(Files.newInputStream(path))) {
+            val tree = Gedcom.readFile(input);
+            new GedcomConcatenator(tree).concatenate();
+            return tree;
+        }
     }
 
 
@@ -48,47 +67,56 @@ public class IoGedcom {
 
 
 
-    private static ArrayList<Indi> buildIndis(final GedcomTree tree, final Map<String, Indi> mapIdToIndi, final Grid grid) {
+
+
+
+
+    private static @NonNull ArrayList<Indi> buildIndis(final @NonNull GedcomTree tree, final @NonNull Map<String, Indi> mapIdToIndi, final @NonNull Grid grid, final @NonNull FontModel fonts) {
         val indis = new ArrayList<Indi>();
         tree.getRoot().forEach(nodeIndi -> {
             if (nodeIndi.getObject().getTag().equals(GedcomTag.INDI)) {
-                val indi = buildIndi(nodeIndi, grid);
-                mapIdToIndi.put(indi.getId(), indi);
+                val indi = buildIndi(nodeIndi, grid, fonts);
+                mapIdToIndi.put(indi.key(), indi);
                 indis.add(indi);
             }
         });
         return indis;
     }
 
-    private static Indi buildIndi(final TreeNode<GedcomLine> node, final Grid grid) {
-        val xy = getValue(node, "_XY");
+    private static @NonNull Indi buildIndi(final @NonNull TreeNode<GedcomLine> node, final @NonNull Grid grid, final @NonNull FontModel fonts) {
+        val id = new IndividualId(node);
 
-        // these get displayed on the plaque
-        val name = getValue(node, "NAME");
-        val lifespan = GedcomDateUtil.getLifespan(getEventDate(node, "BIRT"), getEventDate(node, "DEAT"));
-        val place = getPlace(node);
-
-        // birthdate and sex are only used as hints by the automatic layout algorithms
+        // sex and birthdate are only used as hints by the automatic layout algorithms
         val sex = toSex(getValue(node, "SEX"));
         val birth = GedcomDateUtil.calcBirthForSort(getEventDate(node, "BIRT"));
 
-        return new Indi(new IndividualId(node), xy, name, lifespan, place, sex, birth, grid);
+        val plaque = buildPlaque(node, fonts);
+        val pt = new MovablePoint(grid, XyValue.create(getValue(node, "_XY")).get());
+
+        return new Indi(id, sex, birth, plaque, pt);
+    }
+
+    private static Plaque buildPlaque(TreeNode<GedcomLine> node, FontModel fonts) {
+        final Plaque plaque;
+        val name = GedcomIndiName.create(getValue(node, "NAME"));
+        val lifespan = GedcomDateUtil.getLifespan(getEventDate(node, "BIRT"), getEventDate(node, "DEAT"));
+        val place = getPlace(node);
+        plaque = Plaque.create(fonts, name, lifespan, place);
+        return plaque;
     }
 
 
 
-
-
-    private static String getPlace(final TreeNode<GedcomLine> nodeIndi) {
-        val birthplace = getBirthPlace(nodeIndi).strip();
+    private static @NonNull String getPlace(final @NonNull TreeNode<GedcomLine> nodeIndi) {
+        @NonNull val birthplace = getBirthPlace(nodeIndi).strip();
         if (!birthplace.isBlank()) {
             return birthplace;
         }
         return getAnyPlace(nodeIndi);
     }
 
-    private static String getBirthPlace(final TreeNode<GedcomLine> node) {
-        for (val c : node) {
+    private static @NonNull String getBirthPlace(final @NonNull TreeNode<GedcomLine> node) {
+        for (@NonNull val c : node) {
             if (c.getObject().getTagString().equals("BIRT")) {
                 return getValue(c, "PLAC");
             }
@@ -96,9 +124,9 @@ public class IoGedcom {
         return "";
     }
 
-    private static String getAnyPlace(final TreeNode<GedcomLine> node) {
-        for (val c : node) {
-            val p = getValue(c, "PLAC");
+    private static @NonNull String getAnyPlace(final @NonNull TreeNode<GedcomLine> node) {
+        for (@NonNull val c : node) {
+            @NonNull val p = getValue(c, "PLAC");
             if (!p.isBlank()) {
                 return p;
             }
@@ -108,8 +136,8 @@ public class IoGedcom {
 
 
 
-    private static String getEventDate(final TreeNode<GedcomLine> node, final String tag) {
-        for (val c : node) {
+    private static @NonNull String getEventDate(final @NonNull TreeNode<GedcomLine> node, final @NonNull String tag) {
+        for (@NonNull val c : node) {
             if (c.getObject().getTagString().equals(tag)) {
                 return getValue(c, "DATE");
             }
@@ -119,8 +147,8 @@ public class IoGedcom {
 
 
 
-    private static String getValue(final TreeNode<GedcomLine> node, final String tag) {
-        for (val c : node) {
+    private static @NonNull String getValue(final @NonNull TreeNode<GedcomLine> node, final @NonNull String tag) {
+        for (@NonNull val c : node) {
             if (c.getObject().getTagString().equals(tag)) {
                 val p = c.getObject().getValue().strip();
                 if (!p.isBlank()) {
@@ -133,7 +161,7 @@ public class IoGedcom {
 
 
 
-    private static int toSex(final String sex) {
+    private static int toSex(final @NonNull String sex) {
         if (!sex.isEmpty()) {
             val c = sex.toUpperCase().charAt(0);
             if (c == 'M') {
@@ -156,7 +184,7 @@ public class IoGedcom {
 
 
 
-    private static ArrayList<Fami> buildFamis(final GedcomTree tree, final Map<String, Indi> mapIdToIndi) {
+    private static @NonNull ArrayList<Fami> buildFamis(final @NonNull GedcomTree tree, final @NonNull Map<String, Indi> mapIdToIndi) {
         val famis = new ArrayList<Fami>();
         tree.getRoot().forEach(nodeFami -> {
             if (nodeFami.getObject().getTag().equals(GedcomTag.FAM)) {
@@ -167,7 +195,7 @@ public class IoGedcom {
         return famis;
     }
 
-    private static Fami buildFami(final TreeNode<GedcomLine> nodeFami, final Map<String, Indi> mapIdToIndi) {
+    private static @NonNull Fami buildFami(final @NonNull TreeNode<GedcomLine> nodeFami, final @NonNull Map<String, Indi> mapIdToIndi) {
         val fami = new Fami();
         for (val c : nodeFami) {
             val child = c.getObject();

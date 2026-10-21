@@ -17,6 +17,8 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import dev.cmosher01.genealogy.xy.genealogy.ChartView;
+
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
@@ -29,18 +31,18 @@ public final class MainView extends Canvas {
 
     private final ZoomPanModel modelZoomPan;
     private final ZoomPanView viewZoomPan;
-    private final InteractiveRectsModel modelRects;
-    private final InteractiveRectsView viewRects;
+    private final DocumentModel modelDocument;
+    private final ChartView viewChart;
     private final DragSelectionView viewDragSelection;
     private final AxesView viewAxes;
 
 
-    public MainView(final ZoomPanModel modelZoomPan, final ZoomPanView viewZoomPan, InteractiveRectsModel modelRects, final InteractiveRectsView viewRects, final DragSelectionView viewDragSelection, final AxesView viewAxes) {
+    public MainView(final ZoomPanModel modelZoomPan, final ZoomPanView viewZoomPan, final DocumentModel modelDocument, final ChartView viewChart, final DragSelectionView viewDragSelection, final AxesView viewAxes) {
         super(BACKGROUND_COLOR);
         this.modelZoomPan = modelZoomPan;
         this.viewZoomPan = viewZoomPan;
-        this.modelRects = modelRects;
-        this.viewRects = viewRects;
+        this.modelDocument = modelDocument;
+        this.viewChart = viewChart;
         this.viewDragSelection = viewDragSelection;
         this.viewAxes = viewAxes;
     }
@@ -49,11 +51,11 @@ public final class MainView extends Canvas {
 
     @Override
     public void paint(final Graphics2D g) {
-        if (this.modelRects.isPresent()) {
+        if (this.modelDocument.isPresent()) {
             this.viewZoomPan.paint(g);
-            this.viewRects.paintBackground(g);
+            this.viewChart.paintBackground(g);
 //            this.viewAxes.paint(g, super.getWidth(), super.getHeight());
-            this.viewRects.paint(g, clip());
+            this.viewChart.paint(g, clip());
             this.viewDragSelection.paint(g, this.modelZoomPan);
         }
     }

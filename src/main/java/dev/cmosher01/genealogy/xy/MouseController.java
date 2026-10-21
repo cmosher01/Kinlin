@@ -17,6 +17,7 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import dev.cmosher01.genealogy.xy.genealogy.*;
 import lombok.val;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ import java.awt.geom.Point2D;
 
 import static dev.cmosher01.genealogy.xy.Swings.pointOf;
 
-/**
+/*
  * mouse press
  * if [SHIFT]
  *     (same action whether or not clicking on a plaque)
@@ -121,8 +122,8 @@ public class MouseController {
         final ZoomPanModel modelZoomPan,
         final ZoomPanMouseController controllerZoomPan,
         final StatusBarModel modelStatus,
-        final InteractiveRectsController controllerRects,
-        final DragSelectionController<InteractiveRectModel> controllerDragSelection) {
+        final ChartController controllerChart,
+        final DragSelectionController<?> controllerDragSelection) {
         val mouse = new MouseAdapter() {
             private boolean dragged;
 
@@ -143,8 +144,8 @@ public class MouseController {
                 this.dragged = false;
                 if (e.isShiftDown()) {
                     controllerDragSelection.press(clipPoint(e.getPoint(), viewMouse));
-                } else if (controllerRects.want(cnvAt)) {
-                    controllerRects.press();
+                } else if (controllerChart.want(cnvAt)) {
+                    controllerChart.press();
                 } else {
                     controllerZoomPan.press(at);
                 }
@@ -160,9 +161,9 @@ public class MouseController {
                 this.dragged = true;
                 if (controllerDragSelection.selecting()) {
                     controllerDragSelection.drag(clipPoint(e.getPoint(), viewMouse));
-                } else if (controllerRects.has()) {
+                } else if (controllerChart.has()) {
                     val cnvAt = modelZoomPan.viewportToCanvas(at);
-                    controllerRects.drag(cnvAt);
+                    controllerChart.drag(cnvAt);
                     viewFrame.refresh();
                 } else {
                     controllerZoomPan.drag(at);
@@ -178,12 +179,12 @@ public class MouseController {
             public void mouseReleased(final MouseEvent e) {
                 if (controllerDragSelection.selecting()) {
                     controllerDragSelection.release();
-                } else if (controllerRects.has()) {
-                    controllerRects.release(this.dragged);
+                } else if (controllerChart.has()) {
+                    controllerChart.release(this.dragged);
                 } else if (this.dragged) {
                     controllerZoomPan.release();
                 } else {
-                    controllerRects.release(this.dragged);
+                    controllerChart.release(this.dragged);
                 }
                 this.dragged = false;
 

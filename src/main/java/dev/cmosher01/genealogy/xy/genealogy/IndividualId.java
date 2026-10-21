@@ -52,4 +52,10 @@ public class IndividualId {
     public @NonNull TreeNode<GedcomLine> node() {
         return Objects.requireNonNull(this.node);
     }
+
+
+
+    public @NonNull String key() {
+        return isFtm() ? Objects.requireNonNull(this.pkid) : Objects.requireNonNull(node).getObject().getID();
+    }
 }
