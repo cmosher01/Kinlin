@@ -17,5 +17,52 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
+import dev.cmosher01.genealogy.xy.*;
+import dev.cmosher01.geom.*;
+import lombok.*;
+
+import java.awt.*;
+import java.util.*;
+
 public class FamiView {
+    private final @NonNull Fami model;
+
+    public FamiView(final @NonNull Fami model, final @NonNull ZoomPanModel modelZoomPan) {
+        this.model = model;
+    }
+
+    public void paint(final @NonNull Graphics2D g) {
+        if (this.model.selected()) {
+            g.setColor(Solarized.MAGENTA);
+        } else {
+            g.setColor(Solarized.BASE_02_BLACK_BRT);
+        }
+
+        val barSpouses = this.model.getBarSpouses();
+        if (barSpouses.isPresent()) {
+            g.draw(Awts.line(barSpouses.get().one(true)));
+            g.draw(Awts.line(barSpouses.get().one(false)));
+        }
+
+        draw(g, this.model.getDescentBarParent());
+        draw(g, this.model.getDescentBarChilds());
+        draw(g, this.model.getDescentBarMiddle());
+
+        draw(g, this.model.getBarChildren());
+        this.model.getRBarChild().forEach(olin -> draw(g, olin));
+    }
+
+    @NonNull Fami model() {
+        return this.model;
+    }
+
+    private static void draw(final @NonNull Graphics2D g, final @NonNull Optional<OrthogonalLine> olin) {
+        if (olin.isPresent()) {
+            draw(g, olin.get());
+        }
+    }
+
+    private static void draw(final @NonNull Graphics2D g, final @NonNull OrthogonalLine olin) {
+        g.draw(Awts.line(olin));
+    }
 }

@@ -23,6 +23,8 @@ import lombok.NonNull;
 
 import java.awt.*;
 
+import static dev.cmosher01.genealogy.xy.Solarized.BASE__1_GRAY__BRT;
+
 public class IndiView {
     private static final double MIN_ZOOM_DETAIL = 0.1D;
     private static final Color SELECTED_FILL_COLOR = Swings.mix(Solarized.MAGENTA, Solarized.BASE__2_BEIGE_DRK, .2);
@@ -35,7 +37,7 @@ public class IndiView {
         this.modelZoomPan = modelZoomPan;
     }
 
-    Indi model() {
+    @NonNull Indi model() {
         return this.model;
     }
 
@@ -44,7 +46,8 @@ public class IndiView {
             g.setColor(SELECTED_FILL_COLOR);
         } else {
             if (showDetails()) {
-                g.setColor(Solarized.BASE__3_BEIGE_BRT);
+//                g.setColor(Solarized.BASE__3_BEIGE_BRT);
+                g.setColor(Solarized.BASE__2_BEIGE_DRK); // TODO visible background for indis, or not?
             } else {
                 g.setColor(Solarized.BASE__1_GRAY__BRT);
             }

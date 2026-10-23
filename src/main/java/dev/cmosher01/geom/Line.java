@@ -49,6 +49,10 @@ public record Line(@NonNull Point a, @NonNull Point b) implements ComparableUsin
         return new Line(a + d, b + d);
     }
 
+    public @NonNull Dim length() {
+        return a.distance(b);
+    }
+
     public @NonNull Point section(final Proportion p) {
         return new Point(
             new Coord(~p * a.x.u + p * b.x.u),

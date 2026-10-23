@@ -91,6 +91,10 @@ public record Dim(@NonNull Double n = DoubleUtil.ZERO) implements ComparableUsin
         return ScaleFactor.HALF * this;
     }
 
+    public @NonNull Dim twice() {
+        return ScaleFactor.TWICE * this;
+    }
+
     public boolean zero() {
         return this == ZERO;
     }

@@ -189,13 +189,13 @@ public final class IoGedcom {
         tree.getRoot().forEach(nodeFami -> {
             if (nodeFami.getObject().getTag().equals(GedcomTag.FAM)) {
                 val fami = buildFami(nodeFami, mapIdToIndi);
-                famis.add(fami);
+                fami.ifPresent(famis::add);
             }
         });
         return famis;
     }
 
-    private static @NonNull Fami buildFami(final @NonNull TreeNode<GedcomLine> nodeFami, final @NonNull Map<String, Indi> mapIdToIndi) {
+    private static @NonNull Optional<Fami> buildFami(final @NonNull TreeNode<GedcomLine> nodeFami, final @NonNull Map<String, Indi> mapIdToIndi) {
         val fami = new Fami();
         for (val c : nodeFami) {
             val child = c.getObject();
@@ -208,6 +208,10 @@ public final class IoGedcom {
                 }
             }
         }
-        return fami;
+        if (fami.isEmpty()) {
+            System.err.printf("empty family: %s\n", nodeFami.getObject().toString());
+            return Optional.empty();
+        }
+        return Optional.of(fami);
     }
 }

@@ -37,7 +37,8 @@ public class ChartView {
 
 
     private final DocumentModel doc;
-    private final ArrayList<IndiView> views = new ArrayList<>();
+    private final ArrayList<IndiView> viewIndis = new ArrayList<>();
+    private final ArrayList<FamiView> viewFamis = new ArrayList<>();
     private final ZoomPanModel modelZoomPan;
 
     public ChartView(final DocumentModel doc, final ZoomPanModel modelZoomPan) {
@@ -65,7 +66,15 @@ public class ChartView {
     }
 
     public void paint(final Graphics2D g, final Rectangle2D clip) {
-        this.views.forEach(i -> {
+        g.setStroke(Swings.simpleStroke());
+        g.setColor(Solarized.BASE_02_BLACK_BRT);
+        this.viewFamis.forEach(i -> {
+            // TODO
+//            if (Awts.rect(i.model().getBounds()).intersects(clip)) {
+                i.paint(g);
+//            }
+        });
+        this.viewIndis.forEach(i -> {
             if (Awts.rect(i.model().bounds()).intersects(clip)) {
                 i.paint(g);
             }
@@ -73,10 +82,13 @@ public class ChartView {
     }
 
     public void refresh() {
-        this.views.clear();
+        this.viewIndis.clear();
+        this.viewFamis.clear();
         if (this.doc.isPresent()) {
             this.doc.model().indis().forEach(i ->
-                this.views.add(new IndiView(i, this.modelZoomPan)));
+                this.viewIndis.add(new IndiView(i, this.modelZoomPan)));
+            this.doc.model().famis().forEach(i ->
+                this.viewFamis.add(new FamiView(i, this.modelZoomPan)));
         }
     }
 }

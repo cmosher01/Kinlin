@@ -17,7 +17,7 @@
 
 package dev.cmosher01.geom;
 
-import lombok.NonNull;
+import lombok.*;
 
 import java.awt.geom.*;
 
@@ -28,7 +28,7 @@ public class Awts {
             rect.dim().w().n(), rect.dim().h().n());
     }
 
-    public static @NonNull Rect rect(final @NonNull Rectangle2D.Double rect) {
+    public static @NonNull Rect rect(final @NonNull Rectangle2D rect) {
         return new Rect(
             new RectDim(new Dim(rect.getWidth()), new Dim(rect.getHeight())),
             new Point(new Coord(rect.getCenterX()), new Coord(rect.getCenterY())));
@@ -40,7 +40,31 @@ public class Awts {
         return new Point2D.Double(pt.x().u(), pt.y().u());
     }
 
-    public static @NonNull Point point(final @NonNull Point2D.Double pt) {
+    public static @NonNull Point point(final @NonNull Point2D pt) {
         return new Point(new Coord(pt.getX()), new Coord(pt.getY()));
+    }
+
+
+
+    public static @NonNull Line2D.Double line(final @NonNull Line line) {
+        return new Line2D.Double(point(line.a()), point(line.b()));
+    }
+
+    public static @NonNull Line line(final @NonNull Line2D line) {
+        return new Line(point(line.p1), point(line.p2));
+    }
+
+
+
+    public static @NonNull Line2D.Double line(final @NonNull OrthogonalLine line) {
+        final Line2D.Double ret;
+        if (line.or == OrthogonalLine.Orient.H) {
+            final double y = line.pos().u();
+            ret = new Line2D.Double(line.a().u(), y, line.b().u(), y);
+        } else {
+            final double x = line.pos().u();
+            ret = new Line2D.Double(x, line.a().u(), x, line.b().u());
+        }
+        return ret;
     }
 }

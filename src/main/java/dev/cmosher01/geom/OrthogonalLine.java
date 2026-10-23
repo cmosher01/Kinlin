@@ -17,7 +17,11 @@
 
 package dev.cmosher01.geom;
 
-import lombok.NonNull;
+import lombok.*;
+
+import java.awt.*;
+import java.util.Collection;
+import java.util.stream.DoubleStream;
 
 public record OrthogonalLine(@NonNull Orient or, @NonNull Coord a, @NonNull Coord b, @NonNull Coord pos = Coord.ORIGIN) {
     public enum Orient {H, V}
@@ -30,5 +34,41 @@ public record OrthogonalLine(@NonNull Orient or, @NonNull Coord a, @NonNull Coor
             case H -> new OrthogonalLine(or, a + d.dx, b + d.dx, pos + d.dy);
             case V -> new OrthogonalLine(or, a + d.dy, b + d.dy, pos + d.dx);
         };
+    }
+
+    public @NonNull Point midpoint() {
+        val m = new Coord((a.u + b.u) / 2D);
+        final Point ret;
+        if (or == Orient.H) {
+            ret = new Point(m, pos);
+        } else {
+            ret = new Point(pos, m);
+        }
+        return ret;
+    }
+
+    public Dim length() {
+        return new Dim((b-a).d());
+    }
+
+
+
+    public static @NonNull Rect bounds(final @NonNull Collection<OrthogonalLine> lines) {
+        val sx = lines.stream()
+            .flatMapToDouble(l -> l.or == Orient.H ? DoubleStream.of(l.a.u, l.b.u) : DoubleStream.of(l.pos.u))
+            .summaryStatistics();
+
+        // Collect all Y coordinates
+        val sy = lines.stream()
+            .flatMapToDouble(l -> l.or == Orient.H ? DoubleStream.of(l.pos.u) : DoubleStream.of(l.a.u, l.b.u))
+            .summaryStatistics();
+
+        val x = new Coord((sx.getMin() + sx.getMax())/2);
+        val y = new Coord((sy.getMin() + sy.getMax())/2);
+        val center = new Point(x, y);
+        val w = new Dim(sx.getMax() - sx.getMin());
+        val h = new Dim(sy.getMax() - sy.getMin());
+        val dim = new RectDim(w, h);
+        return new Rect(dim, center);
     }
 }

@@ -21,7 +21,6 @@ import dev.cmosher01.genealogy.xy.*;
 import dev.cmosher01.geom.*;
 import lombok.*;
 
-import java.awt.geom.*;
 import java.util.*;
 
 public class ChartModel {
@@ -42,8 +41,13 @@ public class ChartModel {
     public ChartModel(final @NonNull List<Indi> indis, final @NonNull List<Fami> famis) {
         this.indis = indis;
         this.famis = famis;
+        refreshFamis(famis);
         this.selection = new IndiSelectionModel(indis);
         this.bounds = bounds(indis);
+    }
+
+    private static void refreshFamis(@NonNull List<Fami> famis) {
+        famis.forEach(Fami::refresh);
     }
 
     public void updateBounds() {
@@ -94,6 +98,9 @@ public class ChartModel {
         return this.indis;
     }
 
+    List<Fami> famis() {
+        return this.famis;
+    }
 
     public void flip() {
         this.indis.forEach(Indi::flip);

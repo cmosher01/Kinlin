@@ -65,18 +65,39 @@ public class Indi {
         return new Rect(this.plaque.dim(), this.pt.get());
     }
 
-    Plaque plaque() {
+    @NonNull Plaque plaque() {
         return this.plaque;
     }
-    Point point() {
+
+    public @NonNull Point point() {
         return this.pt.get();
     }
 
+    public double xOffsetForParent(final @NonNull Fami parent) {
+        return this.pt.get().x().u()+offset(this.rFamiChildTo.indexOf(parent));
+    }
+
+    public double yOffsetForParent(final @NonNull Fami parent) {
+        return this.pt.get().y().u()-offset(this.rFamiChildTo.indexOf(parent));
+    }
+
+    private static final double PARENT_OFFSET = 3D;
+
+    private static double offset(final int i) {
+        return i * PARENT_OFFSET;
+    }
 
 
     public void move(final @NonNull Point2D.Double d) {
         this.pt.move(new Xlation(new MoveTerm(d.getX()), new MoveTerm(d.getY())));
+        refreshFamis();
     }
+
+    private void refreshFamis() {
+        this.rFamiSpouseTo.forEach(Fami::refresh);
+        this.rFamiChildTo.forEach(Fami::refresh);
+    }
+
     public boolean isModified() {
         return this.pt.dirty();
     }
@@ -92,6 +113,9 @@ public class Indi {
     }
     public void select(final boolean selected) {
         this.selected = selected;
+
+        this.rFamiChildTo.forEach(f -> f.select(selected));
+        this.rFamiSpouseTo.forEach(f -> f.select(selected));
     }
 
     public boolean intersects(final Rectangle2D.Double r) {
