@@ -107,7 +107,9 @@ public class ZoomPanModel {
     }
 
     public void setZoomOutMinFromBounds(final Rectangle2D b) {
-        this.zoomOutMin = DIMENSION_MIN / Math.min(b.getWidth(), b.getHeight());
+        if (!b.isEmpty()) {
+            this.zoomOutMin = DIMENSION_MIN / Math.min(b.getWidth(), b.getHeight());
+        }
         clampZoom();
     }
 

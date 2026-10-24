@@ -103,7 +103,7 @@ public class Fami {
             ret = Optional.empty();
         } else if (parents.size() == 1) {
             // only one parent, degenerate case zero-length bar
-            val pt = parents.getFirst().point();
+            val pt = parents.getFirst().point(); // TODO TwoUnknownSpouses.ged (can we move point for subsequent spouses?)
             ret = Optional.of(buildSpousesBar(pt, pt));
         } else {
             // two parents, nominal case

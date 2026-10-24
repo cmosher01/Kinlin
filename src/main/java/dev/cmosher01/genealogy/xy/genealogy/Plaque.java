@@ -23,6 +23,7 @@ import dev.cmosher01.geom.*;
 import lombok.*;
 
 import java.awt.Graphics2D;
+import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.*;
 
@@ -60,17 +61,12 @@ public class Plaque {
 
         val paragraphs = new ArrayList<AttributedString>();
 
-        {
-            val asName = new AttributedString(this.name.simple(), attrsPlain); // TODO fix name
-            paragraphs.add(asName);
-        }
+        paragraphs.add(buildAttributedName(this.name, attrsPlain));
         if (!this.lifespan.isBlank()) {
-            val asLifespan = new AttributedString(this.lifespan, attrsSmall);
-            paragraphs.add(asLifespan);
+            paragraphs.add(new AttributedString(this.lifespan, attrsSmall));
         }
         if (!this.place.isBlank()) {
-            val asPlace = new AttributedString(this.place, attrsPlain);
-            paragraphs.add(asPlace);
+            paragraphs.add(new AttributedString(this.place, attrsPlain));
         }
 
         this.text = TextBlock.create(paragraphs, palette.widthMax());
@@ -84,5 +80,55 @@ public class Plaque {
 
     public RectDim dim() {
         return this.text.dim();
+    }
+
+
+
+
+
+
+
+
+
+
+    private record Range(int begin, int end) {
+        public Range(StringBuilder sb, String s) {
+            this(sb.length(), sb.length()+s.length());
+        }
+    }
+
+    private static @NonNull AttributedString buildAttributedName(final @NonNull GedcomIndiName name,  final @NonNull Map<TextAttribute,?> plain) {
+        val sb = new StringBuilder(32);
+
+        val bolds = new ArrayList<@NonNull Range>(2);
+
+        for (val tok : name.tokenized()) {
+            sb.append(switch (tok) {
+                case NULL, UNKNOWN -> "";
+                case SPACE -> " ";
+                case GIVEN0 -> {
+                    val s = name.given0();
+                    bolds.add(new Range(sb, s));
+                    yield s;
+                }
+                case SUR -> name.sur();
+                case GIVEN1 -> {
+                    val s = name.given1();
+                    bolds.add(new Range(sb, s));
+                    yield s;
+                }
+            });
+        }
+        if (sb.isEmpty()) {
+            sb.append("?");
+        }
+
+        val ret = new AttributedString(sb.toString(), plain);
+
+        for (val bold : bolds) {
+            ret.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD, bold.begin(), bold.end());
+        }
+
+        return ret;
     }
 }

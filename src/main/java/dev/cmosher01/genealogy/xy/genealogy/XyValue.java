@@ -32,6 +32,10 @@ public class XyValue {
     private final String error;
 
     public static XyValue create(final @NonNull String s) {
+        if (s.isBlank()) {
+            return new XyValue(Coord.NULL, Coord.NULL, false, "");
+        }
+
         double x;
         double y;
         boolean exists;

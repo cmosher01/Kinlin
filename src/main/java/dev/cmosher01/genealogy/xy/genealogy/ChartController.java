@@ -36,8 +36,8 @@ public class ChartController {
 
 
     public boolean want(final Point2D.Double at) {
-        // TODO what if no chart
-        this.optItem = this.model.getModel().get().getAt(Awts.point(at));
+        val optModel = this.model.getModel();
+        this.optItem = optModel.isPresent() ? optModel.get().getAt(Awts.point(at)) : Optional.empty();
         val want = this.optItem.isPresent();
         if (want) {
             this.optptDragPivot = Optional.of(at);
@@ -80,21 +80,23 @@ public class ChartController {
     }
 
     public void release(final boolean dragged) {
-        // TODO what if no chart
-        val chart = this.model.getModel().get();
-        if (has()) {
-            if (dragged) {
-                chart.getSelection().anchor();
-                chart.updateBounds();
-                this.zp.setZoomOutMinFromBounds(this.model.bounds());
-            } else if (this.wasSelected) {
-                val item = this.optItem.get();
-                chart.getSelection().select(item, false);
+        val optModel = this.model.getModel();
+        if (optModel.isPresent()) {
+            val chart = optModel.get();
+            if (has()) {
+                if (dragged) {
+                    chart.getSelection().anchor();
+                    chart.updateBounds();
+                    this.zp.setZoomOutMinFromBounds(this.model.bounds());
+                } else if (this.wasSelected) {
+                    val item = this.optItem.get();
+                    chart.getSelection().select(item, false);
+                }
+                this.optItem = Optional.empty();
+                this.optptDragPivot = Optional.empty();
+            } else if (!dragged) {
+                chart.getSelection().clear();
             }
-            this.optItem = Optional.empty();
-            this.optptDragPivot = Optional.empty();
-        } else if (!dragged) {
-            chart.getSelection().clear();
         }
     }
 }
