@@ -60,7 +60,6 @@ public class Fami {
 
 
 
-
     public boolean isEmpty() {
         return this.rIndiSpouses.isEmpty() && this.rIndiChildren.isEmpty();
     }
@@ -326,12 +325,39 @@ public class Fami {
 
 
 
-//    /*  ==+==              */ @Getter private @NonNull Optional<Bars> barSpouses = Optional.empty();
-//    /*    |                */ @Getter private @NonNull Optional<OrthogonalLine> descentBarParent = Optional.empty();
-//    /*    +-----+          */ @Getter private @NonNull Optional<OrthogonalLine> descentBarMiddle = Optional.empty();
-//    /*          |          */ @Getter private @NonNull Optional<OrthogonalLine> descentBarChilds = Optional.empty();
-//    /*  +----+--+--+----+  */ @Getter private @NonNull Optional<OrthogonalLine> barChildren = Optional.empty();
-//    /*  |    |     |    |  */ @Getter private @NonNull ArrayList<OrthogonalLine> rBarChild = new ArrayList<>();
+
+
+    // These three methods are used only by the Layout algorithms
+    List<@NonNull Indi> getChildren() {
+        return new ArrayList<>(this.rIndiChildren);
+    }
+    Optional<Indi> getHusb() {
+        for (val parent : this.rIndiSpouses) {
+            if (parent.getSex() == 1) {
+                return Optional.of(parent);
+            }
+        }
+        return Optional.empty();
+    }
+    Optional<Indi> getWife() {
+        for (val parent : this.rIndiSpouses) {
+            if (parent.getSex() == 2) {
+                return Optional.of(parent);
+            }
+        }
+        return Optional.empty();
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     private void calcBounds() {
         val orthos = new ArrayList<>(rBarChild);

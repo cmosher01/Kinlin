@@ -46,6 +46,8 @@ public final class IoGedcom {
         val indis = buildIndis(tree, mapIdToIndi, grid, fonts);
         val famis = buildFamis(tree, Collections.unmodifiableMap(mapIdToIndi));
 
+        new Layout(indis, famis).clean();
+
         return new ChartModel(indis, famis);
     }
 
@@ -91,6 +93,7 @@ public final class IoGedcom {
         val birth = GedcomDateUtil.calcBirthForSort(getEventDate(node, "BIRT"));
 
         val plaque = buildPlaque(node, fonts);
+        // TODO verify if we handle correctly: a missing _XY vs. an _XY with empty value vs. invalid _XY value
         val pt = new MovablePoint(grid, XyValue.create(getValue(node, "_XY")).get());
 
         return new Indi(id, sex, birth, plaque, pt);

@@ -69,6 +69,10 @@ public class Indi {
         return this.plaque;
     }
 
+    @NonNull MovablePoint getMovablePoint() {
+        return this.pt;
+    }
+
     public @NonNull Point point() {
         return this.pt.get();
     }
@@ -87,6 +91,10 @@ public class Indi {
         return i * PARENT_OFFSET;
     }
 
+
+    public void layOut(final @NonNull Point at) {
+        this.pt.layoutMoveTo(at);
+    }
 
     public void move(final @NonNull Point2D.Double d) {
         this.pt.move(new Xlation(new MoveTerm(d.getX()), new MoveTerm(d.getY())));
@@ -120,5 +128,13 @@ public class Indi {
 
     public boolean intersects(final Rectangle2D.Double r) {
         return Rect.intersect(bounds(), Awts.rect(r));
+    }
+
+    public String simpleName() {
+        return this.plaque.simpleName();
+    }
+
+    public boolean hadOriginalXY() {
+        return this.pt.hasOriginal();
     }
 }

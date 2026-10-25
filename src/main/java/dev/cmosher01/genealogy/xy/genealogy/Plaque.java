@@ -82,13 +82,9 @@ public class Plaque {
         return this.text.dim();
     }
 
-
-
-
-
-
-
-
+    public String simpleName() {
+        return this.name.simple();
+    }
 
 
     private record Range(int begin, int end) {

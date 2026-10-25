@@ -211,4 +211,8 @@ public class MovablePoint {
             () -> this.layout).or(
             () -> this.original);
     }
+
+    public boolean hasOriginal() {
+        return this.original.isPresent();
+    }
 }
