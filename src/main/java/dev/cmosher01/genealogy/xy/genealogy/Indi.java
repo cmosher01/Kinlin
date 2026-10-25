@@ -31,8 +31,8 @@ public class Indi {
     @Getter private final int sex;
     @Getter private final long birth;
 
-    private final @NonNull ArrayList<@NonNull Fami> rFamiChildTo = new ArrayList<>(1);
-    private final @NonNull ArrayList<@NonNull Fami> rFamiSpouseTo = new ArrayList<>(1);
+    private final @NonNull ArrayList<@NonNull Fami> rFamiChildIn = new ArrayList<>(1);
+    private final @NonNull ArrayList<@NonNull Fami> rFamiParentIn = new ArrayList<>(1);
 
     private final @NonNull Plaque plaque;
 
@@ -43,12 +43,12 @@ public class Indi {
 
 
 
-    public void addAsChildTo(final @NonNull Fami fami) {
-        this.rFamiChildTo.add(fami);
+    public void addAsChildIn(final @NonNull Fami fami) {
+        this.rFamiChildIn.add(fami);
     }
 
-    public void addAsSpouseTo(final @NonNull Fami fami) {
-        this.rFamiSpouseTo.add(fami);
+    public void addAsParentIn(final @NonNull Fami fami) {
+        this.rFamiParentIn.add(fami);
     }
 
 
@@ -78,11 +78,12 @@ public class Indi {
     }
 
     public double xOffsetForParent(final @NonNull Fami parent) {
-        return this.pt.get().x().u()+offset(this.rFamiChildTo.indexOf(parent));
+        return this.pt.get().x().u()+offset(this.rFamiChildIn.indexOf(parent));
     }
 
     public double yOffsetForParent(final @NonNull Fami parent) {
-        return this.pt.get().y().u()-offset(this.rFamiChildTo.indexOf(parent));
+        val h = new MoveTerm(this.plaque().dim().h().half().n());
+        return (this.pt.get().y()-h).u()-offset(this.rFamiChildIn.indexOf(parent));
     }
 
     private static final double PARENT_OFFSET = 3D;
@@ -102,8 +103,8 @@ public class Indi {
     }
 
     private void refreshFamis() {
-        this.rFamiSpouseTo.forEach(Fami::refresh);
-        this.rFamiChildTo.forEach(Fami::refresh);
+        this.rFamiParentIn.forEach(Fami::refresh);
+        this.rFamiChildIn.forEach(Fami::refresh);
     }
 
     public boolean isModified() {
@@ -122,8 +123,8 @@ public class Indi {
     public void select(final boolean selected) {
         this.selected = selected;
 
-        this.rFamiChildTo.forEach(f -> f.select(selected));
-        this.rFamiSpouseTo.forEach(f -> f.select(selected));
+        this.rFamiChildIn.forEach(f -> f.select(selected));
+        this.rFamiParentIn.forEach(f -> f.select(selected));
     }
 
     public boolean intersects(final Rectangle2D.Double r) {

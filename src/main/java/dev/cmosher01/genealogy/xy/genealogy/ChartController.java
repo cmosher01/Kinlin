@@ -64,7 +64,6 @@ public class ChartController {
         if (has()) {
             val chart = this.model.getModel().get();
             val d = Swings.delta(this.optptDragPivot.get(), at);
-//            System.out.printf("drag by (%.1f,%.1f)\n", d.getX(), d.getY());
             if (d.x != 0 || d.y != 0) {
                 chart.getSelection().move(d);
                 if (chart.getSelection().isModified()) {

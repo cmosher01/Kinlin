@@ -206,7 +206,7 @@ public final class IoGedcom {
             if (oindi.isPresent()) {
                 val indi = oindi.get();
                 switch (child.getTag()) {
-                    case HUSB, WIFE -> fami.addSpouse(indi);
+                    case HUSB, WIFE -> fami.addParent(indi);
                     case CHIL -> fami.addChild(indi);
                 }
             }

@@ -18,7 +18,8 @@
 package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.*;
-import dev.cmosher01.geom.Awts;
+import dev.cmosher01.geom.*;
+import lombok.val;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
@@ -48,16 +49,19 @@ public class ChartView {
 
 
 
-    public void paintBackground(final Graphics2D g) {
+    public void paintBackground(final Graphics2D g, final Rectangle2D clip) {
         if (this.doc.isEmpty()) {
             return;
         }
 
         if (BOUNDS_FILL) {
             g.setColor(BOUNDS_FILL_COLOR);
-            g.fill(Awts.rect(this.doc.model().boundsOutset()));
+            val canvClip = Awts.rect(this.modelZoomPan.viewportToCanvas(clip));
+            val intersection = Rect.intersection(canvClip, this.doc.model().boundsOutset());
+            if (intersection.isPresent()) {
+                g.fill(Awts.rect(intersection.get()));
+            }
         }
-
         if (BOUNDS_DRAW) {
             g.setStroke(BOUNDS_DRAW_STROKE);
             g.setColor(BOUNDS_DRAW_COLOR);
@@ -69,10 +73,9 @@ public class ChartView {
         g.setStroke(Swings.simpleStroke());
         g.setColor(Solarized.BASE_02_BLACK_BRT);
         this.viewFamis.forEach(i -> {
-            // TODO
-//            if (Awts.rect(i.model().getBounds()).intersects(clip)) {
+            if (Awts.rect(i.model().getBounds()).intersects(clip)) {
                 i.paint(g);
-//            }
+            }
         });
         this.viewIndis.forEach(i -> {
             if (Awts.rect(i.model().bounds()).intersects(clip)) {

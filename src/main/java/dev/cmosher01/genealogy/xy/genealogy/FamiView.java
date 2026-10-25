@@ -38,10 +38,10 @@ public class FamiView {
             g.setColor(Solarized.BASE_02_BLACK_BRT);
         }
 
-        val barSpouses = this.model.getBarSpouses();
-        if (barSpouses.isPresent()) {
-            g.draw(Awts.line(barSpouses.get().one(true)));
-            g.draw(Awts.line(barSpouses.get().one(false)));
+        val bar = this.model.getBarParents();
+        if (bar.isPresent()) {
+            g.draw(Awts.line(bar.get().one(true)));
+            g.draw(Awts.line(bar.get().one(false)));
         }
 
         draw(g, this.model.getDescentBarParent());

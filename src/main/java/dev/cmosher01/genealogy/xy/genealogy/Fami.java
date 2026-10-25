@@ -24,17 +24,17 @@ import java.util.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Fami {
-    private double duDistanceForDescentOnParentBars = 40D; // TODO 80%? of plaque max width?
+    private double duDistanceForDescentOnParentBars = 70D; // TODO 80%? of plaque max width?
     private double dyDescentMiddleAboveChild = 8D; // TODO this.metricsFont.getChildBarHeight() / 2.0D;
     private double dxChildrenBarEndZone = 50D; // TODO this.metricsChart.medianMinimumDistanceToNeighborScaled() / 4.0D;
-    private double dyBarChild = 25D; // TODO
+    private double dyBarChild = 5D; // TODO
 
 
 
-    private final @NonNull ArrayList<@NonNull Indi> rIndiSpouses = new ArrayList<>(2);
+    private final @NonNull ArrayList<@NonNull Indi> rIndiParents = new ArrayList<>(2);
     private final @NonNull ArrayList<@NonNull Indi> rIndiChildren = new ArrayList<>(2);
 
-    /*  ==+==              */ @Getter private @NonNull Optional<Bars> barSpouses = Optional.empty();
+    /*  ==+==              */ @Getter private @NonNull Optional<Bars> barParents = Optional.empty();
     /*    |                */ @Getter private @NonNull Optional<OrthogonalLine> descentBarParent = Optional.empty();
     /*    +-----+          */ @Getter private @NonNull Optional<OrthogonalLine> descentBarMiddle = Optional.empty();
     /*          |          */ @Getter private @NonNull Optional<OrthogonalLine> descentBarChilds = Optional.empty();
@@ -47,33 +47,33 @@ public class Fami {
 
 
 
-    public void addSpouse(final @NonNull Indi indi) {
-        this.rIndiSpouses.add(indi);
-        indi.addAsSpouseTo(this);
+    public void addParent(final @NonNull Indi indi) {
+        this.rIndiParents.add(indi);
+        indi.addAsParentIn(this);
     }
 
     public void addChild(final @NonNull Indi indi) {
         this.rIndiChildren.add(indi);
-        indi.addAsChildTo(this);
+        indi.addAsChildIn(this);
     }
 
 
 
 
     public boolean isEmpty() {
-        return this.rIndiSpouses.isEmpty() && this.rIndiChildren.isEmpty();
+        return this.rIndiParents.isEmpty() && this.rIndiChildren.isEmpty();
     }
 
     public void refresh() {
-        this.barSpouses = barsFromParents(this.rIndiSpouses);
+        this.barParents = buildParentsBar(this.rIndiParents);
 
         if (!this.rIndiChildren.isEmpty()) {
             this.barChildren = Optional.of(buildChildsBar(this.rIndiChildren));
             this.rBarChild = buildChildBars(this.rIndiChildren, this.barChildren.get());
         }
 
-        if (this.barSpouses.isPresent() && this.barChildren.isPresent()) {
-            final Point descentBarParentStart = calcDescentBarParentStart(this.barSpouses.get(), this.barChildren.get().midpoint());
+        if (this.barParents.isPresent() && this.barChildren.isPresent()) {
+            final Point descentBarParentStart = calcDescentBarParentStart(this.barParents.get(), this.barChildren.get().midpoint());
             final Point descentBarChildsStart = calcDescentBarChildsStart(descentBarParentStart.x(), this.barChildren.get());
             final Coord descentBarMiddleY = calcDescentBarMiddleY(descentBarChildsStart.y(), this.rIndiChildren.size());
 
@@ -95,7 +95,7 @@ public class Fami {
 
 
 
-    private static @NonNull Optional<Bars> barsFromParents(final @NonNull List<Indi> parents) {
+    private static @NonNull Optional<Bars> buildParentsBar(final @NonNull List<Indi> parents) {
         final Optional<Bars> ret;
         if (parents.isEmpty()) {
             // no parents, no bar
@@ -103,17 +103,17 @@ public class Fami {
         } else if (parents.size() == 1) {
             // only one parent, degenerate case zero-length bar
             val pt = parents.getFirst().point(); // TODO TwoUnknownSpouses.ged (can we move point for subsequent spouses?)
-            ret = Optional.of(buildSpousesBar(pt, pt));
+            ret = Optional.of(buildParentsBar(pt, pt));
         } else {
             // two parents, nominal case
             val pt0 = parents.get(0).point();
             val pt1 = parents.get(1).point();
-            ret = Optional.of(buildSpousesBar(pt0, pt1));
+            ret = Optional.of(buildParentsBar(pt0, pt1));
         }
         return ret;
     }
 
-    private static @NonNull Bars buildSpousesBar(final @NonNull Point pt0, final @NonNull Point pt1) {
+    private static @NonNull Bars buildParentsBar(final @NonNull Point pt0, final @NonNull Point pt1) {
         val center = new Line(pt0, pt1);
         return new Bars(center, new Dim(4D));
     }
@@ -147,7 +147,7 @@ public class Fami {
                 yTop = y;
             }
         }
-        yTop -= dyBarChild;
+        yTop -= this.dyBarChild;
 
         return new OrthogonalLine(OrthogonalLine.Orient.H, new Coord(xLft), new Coord(xRgt), new Coord(yTop));
     }
@@ -260,7 +260,7 @@ public class Fami {
             // corner case: the bar is too short to avoid the case of "too close to the end"
             x = childsBar.midpoint().x();
         } else {
-            val xe = new MoveTerm(dxChildrenBarEndZone);
+            val xe = new MoveTerm(this.dxChildrenBarEndZone);
             x = new Coord(Math.clamp(descentBarParentX.u(), (childsBar.a() + xe).u(), (childsBar.b() - xe).u()));
         }
         return new Point(x, childsBar.pos());
@@ -299,7 +299,7 @@ public class Fami {
          */
         Coord descentBarMiddleY = descentBarChildsY;
         if (1 < nChild) {
-            descentBarMiddleY -= new MoveTerm(dyDescentMiddleAboveChild);
+            descentBarMiddleY -= new MoveTerm(this.dyDescentMiddleAboveChild);
         }
         return descentBarMiddleY;
     }
@@ -332,7 +332,7 @@ public class Fami {
         return new ArrayList<>(this.rIndiChildren);
     }
     Optional<Indi> getHusb() {
-        for (val parent : this.rIndiSpouses) {
+        for (val parent : this.rIndiParents) {
             if (parent.getSex() == 1) {
                 return Optional.of(parent);
             }
@@ -340,7 +340,7 @@ public class Fami {
         return Optional.empty();
     }
     Optional<Indi> getWife() {
-        for (val parent : this.rIndiSpouses) {
+        for (val parent : this.rIndiParents) {
             if (parent.getSex() == 2) {
                 return Optional.of(parent);
             }
@@ -369,8 +369,8 @@ public class Fami {
 
         val rects = new ArrayList<Rect>(2);
         rects.add(bndOrtho);
-        if (this.barSpouses.isPresent()) {
-            rects.add(bnd(this.barSpouses.get().center()));
+        if (this.barParents.isPresent()) {
+            rects.add(bnd(this.barParents.get().center()));
         }
 
         this.bounds = Rect.bounds(rects);

@@ -87,6 +87,41 @@ public record Rect(@NonNull RectDim dim, @NonNull Point center) implements Compa
         return dif.dx.d < dim.w.n && dif.dy.d < dim.h.n;
     }
 
+    public static Optional<Rect> intersection(final @NonNull Rect a, final @NonNull Rect b) {
+        final double minXa = a.center().x().u() - a.dim().w().half().n();
+        final double maxXa = a.center().x().u() + a.dim().w().half().n();
+        final double minYa = a.center().y().u() - a.dim().h().half().n();
+        final double maxYa = a.center().y().u() + a.dim().h().half().n();
+
+        final double minXb = b.center().x().u() - b.dim().w().half().n();
+        final double maxXb = b.center().x().u() + b.dim().w().half().n();
+        final double minYb = b.center().y().u() - b.dim().h().half().n();
+        final double maxYb = b.center().y().u() + b.dim().h().half().n();
+
+        final double isctMinX = Math.max(minXa, minXb);
+        final double isctMaxX = Math.min(maxXa, maxXb);
+        final double isctMinY = Math.max(minYa, minYb);
+        final double isctMaxY = Math.min(maxYa, maxYb);
+
+        final Optional<Rect> ret;
+        if (isctMinX < isctMaxX && isctMinY < isctMaxY) {
+            final double isctWidth = isctMaxX - isctMinX;
+            final double isctHeight = isctMaxY - isctMinY;
+            final RectDim dim = new RectDim(new Dim(isctWidth), new Dim(isctHeight));
+
+            final Coord isctCenterX = new Coord(isctMinX + isctWidth/2D);
+            final Coord isctCenterY = new Coord(isctMinY + isctHeight/2D);
+            final Point center = new Point(isctCenterX, isctCenterY);
+
+            ret = Optional.of(new Rect(dim, center));
+        } else {
+            ret = Optional.empty();
+        }
+        return ret;
+    }
+
+
+
     public static @NonNull Rect bounds(final @NonNull Collection<Rect> rs) {
         if (rs.isEmpty) {
             return new Rect(new RectDim(), Point.ORIGIN);

@@ -53,7 +53,7 @@ public final class MainView extends Canvas {
     public void paint(final Graphics2D g) {
         if (this.modelDocument.isPresent()) {
             this.viewZoomPan.paint(g);
-            this.viewChart.paintBackground(g);
+            this.viewChart.paintBackground(g, viewportClip());
 //            this.viewAxes.paint(g, super.getWidth(), super.getHeight());
             this.viewChart.paint(g, clip());
             this.viewDragSelection.paint(g, this.modelZoomPan);
