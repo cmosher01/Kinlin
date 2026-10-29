@@ -27,22 +27,22 @@ import java.util.*;
 public class FamiView {
     private final @NonNull Fami model;
 
-    public FamiView(final @NonNull Fami model, final @NonNull ZoomPanModel modelZoomPan) {
+    public FamiView(final @NonNull Fami model) {
         this.model = model;
+    }
+
+    @NonNull Fami model() {
+        return this.model;
     }
 
     public void paint(final @NonNull Graphics2D g) {
         if (this.model.selected()) {
             g.setColor(Solarized.MAGENTA);
         } else {
-            g.setColor(Solarized.BASE_02_BLACK_BRT);
+            g.setColor(Solarized.BASE_00_GRAY__DIM);
         }
 
-        val bar = this.model.getBarParents();
-        if (bar.isPresent()) {
-            g.draw(Awts.line(bar.get().one(true)));
-            g.draw(Awts.line(bar.get().one(false)));
-        }
+        drawBars(g, this.model.getBarParents());
 
         draw(g, this.model.getDescentBarParent());
         draw(g, this.model.getDescentBarChilds());
@@ -52,8 +52,11 @@ public class FamiView {
         this.model.getRBarChild().forEach(olin -> draw(g, olin));
     }
 
-    @NonNull Fami model() {
-        return this.model;
+    private static void drawBars(final @NonNull Graphics2D g, final @NonNull Optional<Bars> bar) {
+        if (bar.isPresent()) {
+            g.draw(Awts.line(bar.get().one(true)));
+            g.draw(Awts.line(bar.get().one(false)));
+        }
     }
 
     private static void draw(final @NonNull Graphics2D g, final @NonNull Optional<OrthogonalLine> olin) {

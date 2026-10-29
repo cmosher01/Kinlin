@@ -72,8 +72,11 @@ public class DocumentModel {
         this.filename = FileName.of(file.getFileName().toString());
 
         // TODO choose FTM or Gedcom
-        this.model = Optional.of(IoGedcom.read(file, this.grid, this.modelFont));
-        // TODO update grid based on heuristic detection from tree
+        this.model = Optional.of(IoGedcom.read(file, this.grid));
+        if (this.model.isPresent()) {
+            // TODO update grid based on heuristic detection from tree
+            this.model.get().refresh(this.modelFont);
+        }
     }
 
     public @NonNull String getTitle() {

@@ -38,12 +38,12 @@ public final class IoGedcom {
 
 
 
-    public static ChartModel read(final @NonNull Path path, final @NonNull Grid grid, final @NonNull FontModel fonts) throws IOException, InvalidLevel {
+    public static ChartModel read(final @NonNull Path path, final @NonNull Grid grid) throws IOException, InvalidLevel {
         val tree = readTree(path);
 
         val mapIdToIndi = new HashMap<String, Indi>();
 
-        val indis = buildIndis(tree, mapIdToIndi, grid, fonts);
+        val indis = buildIndis(tree, mapIdToIndi, grid);
         val famis = buildFamis(tree, Collections.unmodifiableMap(mapIdToIndi));
 
         new Layout(indis, famis).clean();
@@ -73,11 +73,11 @@ public final class IoGedcom {
 
 
 
-    private static @NonNull ArrayList<Indi> buildIndis(final @NonNull GedcomTree tree, final @NonNull Map<String, Indi> mapIdToIndi, final @NonNull Grid grid, final @NonNull FontModel fonts) {
+    private static @NonNull ArrayList<Indi> buildIndis(final @NonNull GedcomTree tree, final @NonNull Map<String, Indi> mapIdToIndi, final @NonNull Grid grid) {
         val indis = new ArrayList<Indi>();
         tree.getRoot().forEach(nodeIndi -> {
             if (nodeIndi.getObject().getTag().equals(GedcomTag.INDI)) {
-                val indi = buildIndi(nodeIndi, grid, fonts);
+                val indi = buildIndi(nodeIndi, grid);
                 mapIdToIndi.put(indi.key(), indi);
                 indis.add(indi);
             }
@@ -85,26 +85,26 @@ public final class IoGedcom {
         return indis;
     }
 
-    private static @NonNull Indi buildIndi(final @NonNull TreeNode<GedcomLine> node, final @NonNull Grid grid, final @NonNull FontModel fonts) {
+    private static @NonNull Indi buildIndi(final @NonNull TreeNode<GedcomLine> node, final @NonNull Grid grid) {
         val id = new IndividualId(node);
 
         // sex and birthdate are only used as hints by the automatic layout algorithms
         val sex = toSex(getValue(node, "SEX"));
         val birth = GedcomDateUtil.calcBirthForSort(getEventDate(node, "BIRT"));
 
-        val plaque = buildPlaque(node, fonts);
+        val plaque = buildPlaque(node);
         // TODO verify if we handle correctly: a missing _XY vs. an _XY with empty value vs. invalid _XY value
         val pt = new MovablePoint(grid, XyValue.create(getValue(node, "_XY")).get());
 
         return new Indi(id, sex, birth, plaque, pt);
     }
 
-    private static Plaque buildPlaque(TreeNode<GedcomLine> node, FontModel fonts) {
+    private static Plaque buildPlaque(TreeNode<GedcomLine> node) {
         final Plaque plaque;
         val name = GedcomIndiName.create(getValue(node, "NAME"));
         val lifespan = GedcomDateUtil.getLifespan(getEventDate(node, "BIRT"), getEventDate(node, "DEAT"));
         val place = getPlace(node);
-        plaque = Plaque.create(fonts, name, lifespan, place);
+        plaque = new Plaque(name, lifespan, place);
         return plaque;
     }
 

@@ -17,6 +17,7 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
+import dev.cmosher01.genealogy.xy.FontModel;
 import dev.cmosher01.geom.*;
 import lombok.*;
 
@@ -24,15 +25,10 @@ import java.util.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Fami {
-    private double duDistanceForDescentOnParentBars = 70D; // TODO 80%? of plaque max width?
-    private double dyDescentMiddleAboveChild = 8D; // TODO this.metricsFont.getChildBarHeight() / 2.0D;
-    private double dxChildrenBarEndZone = 50D; // TODO this.metricsChart.medianMinimumDistanceToNeighborScaled() / 4.0D;
-    private double dyBarChild = 5D; // TODO
-
-
-
     private final @NonNull ArrayList<@NonNull Indi> rIndiParents = new ArrayList<>(2);
     private final @NonNull ArrayList<@NonNull Indi> rIndiChildren = new ArrayList<>(2);
+
+
 
     /*  ==+==              */ @Getter private @NonNull Optional<Bars> barParents = Optional.empty();
     /*    |                */ @Getter private @NonNull Optional<OrthogonalLine> descentBarParent = Optional.empty();
@@ -40,6 +36,12 @@ public class Fami {
     /*          |          */ @Getter private @NonNull Optional<OrthogonalLine> descentBarChilds = Optional.empty();
     /*  +----+--+--+----+  */ @Getter private @NonNull Optional<OrthogonalLine> barChildren = Optional.empty();
     /*  |    |     |    |  */ @Getter private @NonNull ArrayList<OrthogonalLine> rBarChild = new ArrayList<>();
+
+    private double duDistanceForDescentOnParentBars;
+    private double dyDescentMiddleAboveChild;
+    private double dxChildrenBarEndZone;
+    private double dyBarChild;
+    private double parentBarHeight;
 
     @Getter private Rect bounds;
 
@@ -64,8 +66,15 @@ public class Fami {
         return this.rIndiParents.isEmpty() && this.rIndiChildren.isEmpty();
     }
 
-    public void refresh() {
-        this.barParents = buildParentsBar(this.rIndiParents);
+    public void refresh(final @NonNull FontModel fonts) {
+        this.duDistanceForDescentOnParentBars = fonts.palette().widthMax().n();
+        this.dyDescentMiddleAboveChild = 8D; // TODO this.metricsFont.getChildBarHeight() / 2.0D;
+        this.dxChildrenBarEndZone = 50D; // TODO this.metricsChart.medianMinimumDistanceToNeighborScaled() / 4.0D;
+        this.dyBarChild = 5D; // TODO
+        this.parentBarHeight = 4D; // TODO param?
+
+
+        this.barParents = buildParentsBar(this.rIndiParents, this.parentBarHeight);
 
         if (!this.rIndiChildren.isEmpty()) {
             this.barChildren = Optional.of(buildChildsBar(this.rIndiChildren));
@@ -75,7 +84,7 @@ public class Fami {
         if (this.barParents.isPresent() && this.barChildren.isPresent()) {
             final Point descentBarParentStart = calcDescentBarParentStart(this.barParents.get(), this.barChildren.get().midpoint());
             final Point descentBarChildsStart = calcDescentBarChildsStart(descentBarParentStart.x(), this.barChildren.get());
-            final Coord descentBarMiddleY = calcDescentBarMiddleY(descentBarChildsStart.y(), this.rIndiChildren.size());
+            final Coord descentBarMiddleY = calcDescentBarMiddleY(descentBarChildsStart.y(), this.rIndiChildren.size() <= 1);
 
             buildDescentBars(descentBarParentStart, descentBarMiddleY, descentBarChildsStart);
         }
@@ -90,12 +99,33 @@ public class Fami {
         return this.selected;
     }
     public void select(final boolean selected) {
-        this.selected = selected;
+        if (selected) {
+            this.selected = selected;
+        } else if (noRelativesSelected()) {
+            this.selected = selected;
+        }
+    }
+
+    private boolean noRelativesSelected() {
+        boolean ret = true;
+        for (final var c : this.rIndiParents) {
+            if (c.selected()) {
+                ret = false;
+                break;
+            }
+        }
+        for (final var c : this.rIndiChildren) {
+            if (c.selected()) {
+                ret = false;
+                break;
+            }
+        }
+        return ret;
     }
 
 
 
-    private static @NonNull Optional<Bars> buildParentsBar(final @NonNull List<Indi> parents) {
+    private static @NonNull Optional<Bars> buildParentsBar(final @NonNull List<Indi> parents, final double parentBarHeight) {
         final Optional<Bars> ret;
         if (parents.isEmpty()) {
             // no parents, no bar
@@ -103,19 +133,19 @@ public class Fami {
         } else if (parents.size() == 1) {
             // only one parent, degenerate case zero-length bar
             val pt = parents.getFirst().point(); // TODO TwoUnknownSpouses.ged (can we move point for subsequent spouses?)
-            ret = Optional.of(buildParentsBar(pt, pt));
+            ret = Optional.of(buildParentsBar(pt, pt, parentBarHeight));
         } else {
             // two parents, nominal case
             val pt0 = parents.get(0).point();
             val pt1 = parents.get(1).point();
-            ret = Optional.of(buildParentsBar(pt0, pt1));
+            ret = Optional.of(buildParentsBar(pt0, pt1, parentBarHeight));
         }
         return ret;
     }
 
-    private static @NonNull Bars buildParentsBar(final @NonNull Point pt0, final @NonNull Point pt1) {
+    private static @NonNull Bars buildParentsBar(final @NonNull Point pt0, final @NonNull Point pt1, final double parentBarHeight) {
         val center = new Line(pt0, pt1);
-        return new Bars(center, new Dim(4D));
+        return new Bars(center, new Dim(parentBarHeight));
     }
 
 
@@ -188,9 +218,9 @@ public class Fami {
         // (and calculate the parent bar start point, near that parent)
         final Line bar;
         if (midpointChild.distance(barParents.center().a()) < midpointChild.distance(barParents.center().b())) {
-            bar = new Line(barParents.center().a(), barParents.center().b());
+            bar = new Line(barParents.one(false).a(), barParents.one(false).b());
         } else {
-            bar = new Line(barParents.center().b(), barParents.center().a());
+            bar = new Line(barParents.one(false).b(), barParents.one(false).a());
         }
 
         // Calculate ratio r of distance d along the length D of the marriage bar,
@@ -199,7 +229,7 @@ public class Fami {
         // The ratio should never be more than halfway from near to far.
 
         // total distance (use min to prevent division by zero later)
-        final double D = Math.max(0.1, bar.length().n());
+        final double D = Math.max(0.1D, bar.length().n());
 
         // absolute distance along line from starting point
         final double d = this.duDistanceForDescentOnParentBars;
@@ -266,7 +296,7 @@ public class Fami {
         return new Point(x, childsBar.pos());
     }
 
-    private Coord calcDescentBarMiddleY(final Coord descentBarChildsY, final int nChild) {
+    private Coord calcDescentBarMiddleY(final Coord descentBarChildsY, final boolean singletonChild) {
         // calculate height of middle descent bar (which is hidden if there's only one child)
         /*
 
@@ -298,7 +328,7 @@ public class Fami {
                     +---+                   +---+           +---+
          */
         Coord descentBarMiddleY = descentBarChildsY;
-        if (1 < nChild) {
+        if (!singletonChild) {
             descentBarMiddleY -= new MoveTerm(this.dyDescentMiddleAboveChild);
         }
         return descentBarMiddleY;
@@ -367,16 +397,17 @@ public class Fami {
         this.descentBarParent.ifPresent(orthos::add);
         val bndOrtho = OrthogonalLine.bounds(orthos);
 
-        val rects = new ArrayList<Rect>(2);
+        val rects = new ArrayList<Rect>(3);
         rects.add(bndOrtho);
         if (this.barParents.isPresent()) {
-            rects.add(bnd(this.barParents.get().center()));
+            rects.add(boundsOfLine(this.barParents.get().one(true)));
+            rects.add(boundsOfLine(this.barParents.get().one(false)));
         }
 
         this.bounds = Rect.bounds(rects);
     }
 
-    private static Rect bnd(final @NonNull Line line) {
+    private static Rect boundsOfLine(final @NonNull Line line) {
         val ax = new Dim(line.a().x().u());
         val bx = new Dim(line.b().x().u());
         val x = (ax + bx).half();
@@ -385,6 +416,7 @@ public class Fami {
         val by = new Dim(line.b().y().u());
         val y = (ay + by).half();
 
+        // TODO min 1 ?
         val w = ax - bx;
         val h = ay - by;
 

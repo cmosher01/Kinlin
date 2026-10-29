@@ -22,6 +22,9 @@ import lombok.*;
 
 import java.nio.file.Path;
 
+// TODO let user choose font
+// TODO with huge charts zoomed way in, text display gets distorted
+
 public class FontModel {
     private static final @NonNull Path FILENAME_PLAIN = Path.of("NotoSans-Regular.ttf");
     private static final @NonNull Path FILENAME_BOLD = Path.of("NotoSans-Bold.ttf");
@@ -30,14 +33,12 @@ public class FontModel {
 
     @SneakyThrows
     public FontModel() {
-        // TODO let user choose font
-
         val family = Fonts.registerOrFallback(FILENAME_PLAIN);
         if (!family.isBlank()) {
             Fonts.registerOrFallback(FILENAME_BOLD);
         }
 
-        this.palette = new FontPalette(10, family);
+        this.palette = new FontPalette(8.0D, family);
     }
 
     public @NonNull FontPalette palette() {

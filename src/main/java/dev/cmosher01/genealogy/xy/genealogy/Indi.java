@@ -17,7 +17,7 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
-import dev.cmosher01.genealogy.xy.MovablePoint;
+import dev.cmosher01.genealogy.xy.*;
 import dev.cmosher01.geom.*;
 import lombok.*;
 
@@ -38,9 +38,7 @@ public class Indi {
 
     private final @NonNull MovablePoint pt;
     private boolean selected;
-
-
-
+    private FontModel cachedFonts;
 
 
     public void addAsChildIn(final @NonNull Fami fami) {
@@ -59,6 +57,10 @@ public class Indi {
         return this.id.key();
     }
 
+    public void refresh(final @NonNull FontModel fonts) {
+        this.plaque.refresh(fonts);
+        this.cachedFonts = fonts;
+    }
 
 
     public @NonNull Rect bounds() {
@@ -99,12 +101,12 @@ public class Indi {
 
     public void move(final @NonNull Point2D.Double d) {
         this.pt.move(new Xlation(new MoveTerm(d.getX()), new MoveTerm(d.getY())));
-        refreshFamis();
+        refreshFamis(this.cachedFonts);
     }
 
-    private void refreshFamis() {
-        this.rFamiParentIn.forEach(Fami::refresh);
-        this.rFamiChildIn.forEach(Fami::refresh);
+    private void refreshFamis(final @NonNull FontModel fonts) {
+        this.rFamiParentIn.forEach(i -> i.refresh(fonts));
+        this.rFamiChildIn.forEach(i -> i.refresh(fonts));
     }
 
     public boolean isModified() {

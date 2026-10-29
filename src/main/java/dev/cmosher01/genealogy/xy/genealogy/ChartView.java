@@ -91,7 +91,7 @@ public class ChartView {
             this.doc.model().indis().forEach(i ->
                 this.viewIndis.add(new IndiView(i, this.modelZoomPan)));
             this.doc.model().famis().forEach(i ->
-                this.viewFamis.add(new FamiView(i, this.modelZoomPan)));
+                this.viewFamis.add(new FamiView(i)));
         }
     }
 }

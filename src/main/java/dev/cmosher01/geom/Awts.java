@@ -19,6 +19,7 @@ package dev.cmosher01.geom;
 
 import lombok.*;
 
+import java.awt.*;
 import java.awt.geom.*;
 
 public class Awts {
@@ -54,7 +55,26 @@ public class Awts {
         return new Line(point(line.p1), point(line.p2));
     }
 
-
+//    public static @NonNull Rectangle2D.Double horizLine(final @NonNull Line line) {
+//        final Rectangle2D.Double ret;
+//        if (line.a().x().u() < line.b().x().u()) {
+//            val w = line.b().x().u() - line.a().x().u();
+//            ret = new Rectangle2D.Double(line.a().x().u(), line.a().y().u, w, 2D);
+//        } else {
+//            val w = line.a().x().u() - line.b().x().u();
+//            ret = new Rectangle2D.Double(line.b().x().u(), line.b().y().u, w, 2D);
+//        }
+//        return ret;
+//    }
+//
+//    public static void lineOrHoriz(final @NonNull Graphics2D g, final @NonNull Line line) {
+//        if (Math.abs(line.a().y().u() - line.b().y().u()) < 1D) {
+//            val hl = horizLine(line);
+//            g.fill(hl);
+//        } else {
+//            g.draw(line(line));
+//        }
+//    }
 
     public static @NonNull Line2D.Double line(final @NonNull OrthogonalLine line) {
         final Line2D.Double ret;

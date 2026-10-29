@@ -17,6 +17,7 @@
 
 package dev.cmosher01.font;
 
+import dev.cmosher01.genealogy.xy.Swings;
 import dev.cmosher01.geom.*;
 import dev.cmosher01.geom.Point;
 import lombok.*;
@@ -26,6 +27,8 @@ import java.awt.font.*;
 import java.text.AttributedString;
 import java.util.*;
 import java.util.List;
+
+import static dev.cmosher01.geom.Awts.rect;
 
 public class TextBlock {
     private record Line(@NonNull TextLayout layout, @NonNull Xlation d) {
@@ -38,10 +41,13 @@ public class TextBlock {
     }
 
     private final @NonNull RectDim dim;
+    private static final @NonNull Outset MARGIN = new Outset(new GrowTerm(5D), new GrowTerm(5D));
+    private final @NonNull RectDim dimMargin;
     private final @NonNull List<Line> lines;
 
     private TextBlock(final @NonNull RectDim dim, final @NonNull List<Line> lines) {
         this.dim = dim;
+        this.dimMargin = dim + MARGIN;
         this.lines = lines;
     }
 
@@ -59,6 +65,10 @@ public class TextBlock {
 
     public @NonNull RectDim dim() {
         return this.dim;
+    }
+
+    public @NonNull RectDim dimMargin() {
+        return this.dimMargin;
     }
 
     public void paint(final @NonNull Graphics2D g, final @NonNull Point c) {

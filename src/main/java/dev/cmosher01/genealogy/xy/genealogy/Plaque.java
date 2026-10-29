@@ -37,18 +37,10 @@ public class Plaque {
 
 
 
-    private Plaque(final @NonNull GedcomIndiName name, final @NonNull String lifespan, final @NonNull String place) {
+    public Plaque(final @NonNull GedcomIndiName name, final @NonNull String lifespan, final @NonNull String place) {
         this.name = name;
         this.lifespan = lifespan;
         this.place = place;
-    }
-
-
-
-    public static Plaque create(final @NonNull FontModel fonts, final @NonNull GedcomIndiName name, final @NonNull String lifespan, final @NonNull String place) {
-        val o =  new Plaque(name, lifespan, place);
-        o.refresh(fonts);
-        return o;
     }
 
 
@@ -79,7 +71,7 @@ public class Plaque {
     }
 
     public RectDim dim() {
-        return this.text.dim();
+        return this.text.dimMargin();
     }
 
     public String simpleName() {

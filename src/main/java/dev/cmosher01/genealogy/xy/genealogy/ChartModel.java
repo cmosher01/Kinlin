@@ -41,14 +41,26 @@ public class ChartModel {
     public ChartModel(final @NonNull List<Indi> indis, final @NonNull List<Fami> famis) {
         this.indis = indis;
         this.famis = famis;
-        refreshFamis(famis);
         this.selection = new IndiSelectionModel(indis);
+    }
+
+
+
+    public void refresh(final @NonNull FontModel fonts) {
+        refreshIndis(fonts);
+        refreshFamis(fonts);
         this.bounds = bounds(indis);
     }
 
-    private static void refreshFamis(@NonNull List<Fami> famis) {
-        famis.forEach(Fami::refresh);
+    private void refreshIndis(final @NonNull FontModel fonts) {
+        this.indis.forEach(i -> i.refresh(fonts));
     }
+
+    private void refreshFamis(final @NonNull FontModel fonts) {
+        this.famis.forEach(i -> i.refresh(fonts));
+    }
+
+
 
     public void updateBounds() {
         this.bounds = bounds(this.indis);

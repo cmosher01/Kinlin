@@ -18,16 +18,17 @@
 package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.*;
-import dev.cmosher01.geom.Awts;
+import dev.cmosher01.geom.*;
 import lombok.NonNull;
 
 import java.awt.*;
 
-import static dev.cmosher01.genealogy.xy.Solarized.BASE__1_GRAY__BRT;
+import static dev.cmosher01.geom.Awts.rect;
 
 public class IndiView {
-    private static final double MIN_ZOOM_DETAIL = 0.1D;
+    private static final double MIN_ZOOM_DETAIL = 0.08D;
     private static final Color SELECTED_FILL_COLOR = Swings.mix(Solarized.MAGENTA, Solarized.BASE__2_BEIGE_DRK, .2);
+    private static final Color NONSELECTED_FILL_COLOR = Swings.mix(Solarized.BASE__3_BEIGE_BRT, Solarized.BASE__1_GRAY__BRT, .6);
 
     private final @NonNull Indi model;
     private final @NonNull ZoomPanModel modelZoomPan;
@@ -41,33 +42,44 @@ public class IndiView {
         return this.model;
     }
 
+    private static final boolean SHOW_PLAQUE_BG = false;
+
     public void paint(final Graphics2D g) {
         if (this.model.selected()) {
             g.setColor(SELECTED_FILL_COLOR);
         } else {
             if (showDetails()) {
-//                g.setColor(Solarized.BASE__3_BEIGE_BRT);
-                g.setColor(Solarized.BASE__2_BEIGE_DRK); // TODO visible background for indis, or not?
+                if (SHOW_PLAQUE_BG) {
+                    g.setColor(Solarized.BASE__3_BEIGE_BRT);
+                } else {
+                    g.setColor(Solarized.BASE__2_BEIGE_DRK);
+                }
             } else {
-                g.setColor(Solarized.BASE__1_GRAY__BRT);
+                g.setColor(NONSELECTED_FILL_COLOR);
             }
         }
 
-        g.fill(Awts.rect(this.model.bounds()));
+        g.fill(rect(this.model.bounds()));
 
         if (showDetails()) {
-//            g.setStroke(Swings.simpleStroke());
-//            g.setColor(Solarized.BASE__0_GRAY__LGT);
-//            g.draw(this.model.rect());
+            if (SHOW_PLAQUE_BG) {
+                if (this.model.selected()) {
+                    g.setColor(Solarized.MAGENTA);
+                } else {
+                    g.setColor(Solarized.BASE_00_GRAY__DIM);
+                }
 
-//            g.setFont(FONT);
+                g.setStroke(Swings.simpleStroke());
+                g.draw(rect(new Rect(this.model().plaque().dim(), this.model().point())));
+            }
+
             if (this.model.selected()) {
                 g.setColor(Solarized.MAGENTA);
             } else {
                 g.setColor(Solarized.BASE_02_BLACK_BRT);
             }
+
             this.model().plaque().paint(g, this.model().point());
-//            g.drawString(this.model.tag(), (float)this.model.rect().x+2F, (float)this.model.rect().y+18F);
         }
     }
 
