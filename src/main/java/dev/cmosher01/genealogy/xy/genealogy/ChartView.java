@@ -23,18 +23,19 @@ import lombok.val;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
+import java.util.*;
 
 import static dev.cmosher01.genealogy.xy.Solarized.*;
 
 public class ChartView {
+    private static final boolean ALWAYS_SHOW_ALL_FAMILY_LINES = false;
+
     private static final boolean BOUNDS_FILL = true;
     private static final Color BOUNDS_FILL_COLOR = BASE__2_BEIGE_DRK;
 
     private static final boolean BOUNDS_DRAW = true;
     private static final Color BOUNDS_DRAW_COLOR = BASE_01_GRAY__DRK;
     private static final Stroke BOUNDS_DRAW_STROKE = new BasicStroke(5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
-
 
 
     private final DocumentModel doc;
@@ -72,11 +73,23 @@ public class ChartView {
     public void paint(final Graphics2D g, final Rectangle2D clip) {
         g.setStroke(Swings.simpleStroke());
         g.setColor(Solarized.BASE_02_BLACK_BRT);
-        this.viewFamis.forEach(i -> {
-            if (Awts.rect(i.model().getBounds()).intersects(clip)) {
-                i.paint(g);
-            }
-        });
+
+        if (ALWAYS_SHOW_ALL_FAMILY_LINES) {
+            this.viewFamis.forEach(i -> {
+                if (Awts.rect(i.model().getBounds()).intersects(clip)) {
+                    i.paint(g, clip);
+                }
+            });
+        } else {
+            final Set<FamiView> setFami = Collections.newSetFromMap(new IdentityHashMap<>());
+            this.viewIndis.forEach(i -> {
+                if (Awts.rect(i.model().bounds()).intersects(clip)) {
+                    setFami.addAll(i.getFamis());
+                }
+            });
+            setFami.forEach(fv -> fv.paint(g, clip));
+        }
+
         this.viewIndis.forEach(i -> {
             if (Awts.rect(i.model().bounds()).intersects(clip)) {
                 i.paint(g);
@@ -87,11 +100,21 @@ public class ChartView {
     public void refresh() {
         this.viewIndis.clear();
         this.viewFamis.clear();
+
+        val mapFamiToView = new IdentityHashMap<Fami, FamiView>();
+
         if (this.doc.isPresent()) {
-            this.doc.model().indis().forEach(i ->
-                this.viewIndis.add(new IndiView(i, this.modelZoomPan)));
-            this.doc.model().famis().forEach(i ->
-                this.viewFamis.add(new FamiView(i)));
+            this.doc.model().famis().forEach(f -> {
+                val fv = new FamiView(f);
+                this.viewFamis.add(fv);
+                mapFamiToView.put(f, fv);
+            });
+
+            this.doc.model().indis().forEach(i -> {
+                val iv = new IndiView(i, this.modelZoomPan);
+                this.viewIndis.add(iv);
+                iv.addFamiViewsFrom(mapFamiToView);
+            });
         }
     }
 }

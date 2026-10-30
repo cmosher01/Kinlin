@@ -19,10 +19,13 @@ package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.*;
 import dev.cmosher01.geom.*;
+import dev.cmosher01.geom.Point;
 import lombok.*;
 
+import java.awt.*;
 import java.awt.geom.*;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class Indi {
@@ -139,5 +142,12 @@ public class Indi {
 
     public boolean hadOriginalXY() {
         return this.pt.hasOriginal();
+    }
+
+    public List<Fami> famis() {
+        val ret = new ArrayList<Fami>();
+        ret.addAll(this.rFamiChildIn);
+        ret.addAll(this.rFamiParentIn);
+        return ret;
     }
 }

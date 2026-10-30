@@ -19,9 +19,10 @@ package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.*;
 import dev.cmosher01.geom.*;
-import lombok.NonNull;
+import lombok.*;
 
 import java.awt.*;
+import java.util.*;
 
 import static dev.cmosher01.geom.Awts.rect;
 
@@ -32,6 +33,7 @@ public class IndiView {
 
     private final @NonNull Indi model;
     private final @NonNull ZoomPanModel modelZoomPan;
+    private final @NonNull Set<FamiView> rFami = Collections.newSetFromMap(new IdentityHashMap<>());
 
     public IndiView(final @NonNull Indi indi, final @NonNull ZoomPanModel modelZoomPan) {
         this.model = indi;
@@ -85,5 +87,15 @@ public class IndiView {
 
     private boolean showDetails() {
         return MIN_ZOOM_DETAIL <= this.modelZoomPan.zoomFactor();
+    }
+
+    void addFamiViewsFrom(final @NonNull Map<Fami, FamiView> mapFamiToView) {
+        for (val f : this.model().famis()) {
+            this.rFami.add(mapFamiToView.get(f));
+        }
+    }
+
+    Set<FamiView> getFamis() {
+        return this.rFami;
     }
 }
