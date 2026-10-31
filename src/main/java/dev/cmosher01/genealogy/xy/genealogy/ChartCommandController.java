@@ -18,16 +18,22 @@
 package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.*;
+import dev.cmosher01.geom.*;
 import lombok.*;
 
 import javax.swing.*;
 import java.awt.geom.*;
+import java.util.Optional;
 
+@SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalIsPresent"})
 public class ChartCommandController {
     private final @NonNull DocumentModel model;
     private final @NonNull ZoomPanModel zp;
     private final @NonNull MainView viewMain;
     private final @NonNull StatusBarView viewStatusBar;
+
+    private @NonNull String lastFind = "";
+    private @NonNull Optional<Finder> finder = Optional.empty();
 
     public ChartCommandController(final @NonNull ZoomPanModel zp, final @NonNull DocumentModel model, final @NonNull MainView viewMain, final @NonNull StatusBarView viewStatusBar) {
         this.zp = zp;
@@ -35,6 +41,8 @@ public class ChartCommandController {
         this.viewMain = viewMain;
         this.viewStatusBar = viewStatusBar;
     }
+
+
 
     public void reset() {
         val c_clip = this.viewMain.clip();
@@ -45,17 +53,7 @@ public class ChartCommandController {
     }
 
     public void center() {
-        val c_bounds = this.model.bounds();
-        final var c_p  = new Point2D.Double(c_bounds.getCenterX(), c_bounds.getCenterY());
-        val c_clip = this.viewMain.clip();
-        final var c_c  = new Point2D.Double(c_clip.getCenterX(), c_clip.getCenterY());
-        final var v_l  = new Point2D.Double(this.zp.panX(), this.zp.panY());
-        final var c_l  = this.zp.viewportToCanvas(v_l);
-        final var c_d  = new Point2D.Double(c_c.getX()-c_p.getX(), c_c.getY()-c_p.getY());
-        final var c_lp = new Point2D.Double(c_l.getX()+c_d.getX(), c_l.getY()+c_d.getY());
-        final var v_lp = this.zp.canvasToViewport(c_lp);
-        this.zp.panTo(v_lp.getX(), v_lp.getY());
-        this.viewMain.repaint();
+        panTo(Awts.rect(this.model.bounds()).center());
     }
 
     public void fit() {
@@ -68,5 +66,56 @@ public class ChartCommandController {
         this.zp.setZoom(f);
 
         center();
+    }
+
+
+
+    public void find() {
+        final var result = Optional.ofNullable(JOptionPane.showInputDialog(this.viewMain,
+            "Enter name to search for:", "Find", JOptionPane.QUESTION_MESSAGE, null, null,
+            this.lastFind));
+        if (result.isPresent()) {
+            final var s = result.get().toString().strip();
+            if (!s.isBlank()) {
+                this.lastFind = s;
+                if (this.finder.isEmpty()) {
+                    this.finder = Optional.of(new Finder(this.model.model().indis()));
+                }
+                val optFoundAt = this.finder.get().find(s);
+                if (optFoundAt.isPresent()) {
+                    panTo(optFoundAt.get());
+                }
+            }
+        }
+    }
+
+    public void findNext() {
+        if (this.finder.isPresent()) {
+            val optFoundAt = this.finder.get().next();
+            if (optFoundAt.isPresent()) {
+                panTo(optFoundAt.get());
+            }
+        }
+    }
+
+    public void findPrevious() {
+        if (this.finder.isPresent()) {
+            val optFoundAt = this.finder.get().prev();
+            if (optFoundAt.isPresent()) {
+                panTo(optFoundAt.get());
+            }
+        }
+    }
+
+
+
+
+
+    private void panTo(final @NonNull Point at) {
+        val d = Awts.rect(this.viewMain.clip()).center() - at;
+        val p  = this.zp.viewportToCanvas(this.zp.getPan());
+        this.zp.panTo(this.zp.canvasToViewport(p + d));
+        this.viewMain.repaint();
+        this.viewStatusBar.refresh();
     }
 }

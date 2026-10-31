@@ -42,9 +42,9 @@ public class MenuController {
 //        view.setPaste(controllerCommand::paste);
 //        view.setDelete(controllerCommand::delete);
         view.setSelectAll(controllerCommand::selectAll);
-        view.setFind(controllerCommand::find);
-        view.setFindNext(controllerCommand::findNext);
-        view.setFindPrevious(controllerCommand::findPrevious);
+        view.setFind(controllerChart::find);
+        view.setFindNext(controllerChart::findNext);
+        view.setFindPrevious(controllerChart::findPrevious);
 //        view.setNudge(); TODO
         view.setPreferences(controllerCommand::preferences);
 

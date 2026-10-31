@@ -68,14 +68,6 @@ public class CommandController {
     public void selectAll() {
     }
 
-    public void find() {
-    }
-
-    public void findNext() {
-    }
-
-    public void findPrevious() {
-    }
 
 
 

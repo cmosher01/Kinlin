@@ -18,7 +18,7 @@
 package dev.cmosher01.genealogy.xy;
 
 import dev.cmosher01.geom.*;
-import lombok.val;
+import lombok.*;
 
 import java.awt.geom.*;
 
@@ -29,6 +29,8 @@ public class ZoomPanModel {
     // minimum visible dimension size in pixels
     private static final double DIMENSION_MIN = 10;
 
+    private static final double IDENTITY = 1.0D;
+
     private double zoomOutMin = 1.0e-1D;
     private double zoomInMax  = 1.0e+2D;
     // may want to add this as a user preference setting later; but hardcode for now:
@@ -36,7 +38,7 @@ public class ZoomPanModel {
 
 
 
-    private double zoomFactor = 1.0D;
+    private double zoomFactor = IDENTITY;
 
     private double panX;
     private double panY;
@@ -76,7 +78,7 @@ public class ZoomPanModel {
     }
 
     public void resetZoom(final double x, final double y, final double w, final double h) {
-        this.zoomFactor = 1.0D;
+        this.zoomFactor = IDENTITY;
         panTo(w/2-x, h/2-y);
     }
 
@@ -104,8 +106,20 @@ public class ZoomPanModel {
         return new Point2D.Double(zoomFactor*p.getX()+panX, zoomFactor*p.getY()+panY);
     }
 
+    public Point canvasToViewport(final Point p) {
+        val x = p.x().u()*this.zoomFactor + this.panX;
+        val y = p.y().u()*this.zoomFactor + this.panY;
+        return new Point(new Coord(x), new Coord(y));
+    }
+
     public Point2D.Double viewportToCanvas(final Point2D p) {
         return new Point2D.Double((p.getX()-panX)/zoomFactor, (p.getY()-panY)/zoomFactor);
+    }
+
+    public Point viewportToCanvas(final Point p) {
+        val x = (p.x().u()-this.panX) / this.zoomFactor;
+        val y = (p.y().u()-this.panY) / this.zoomFactor;
+        return new Point(new Coord(x), new Coord(y));
     }
 
     public Rectangle2D.Double viewportToCanvas(final Rectangle2D v) {
@@ -137,5 +151,14 @@ public class ZoomPanModel {
 
     public double zoomFactor() {
         return this.zoomFactor;
+    }
+
+    public Point getPan() {
+        return new Point(new Coord(this.panX), new Coord(this.panY));
+    }
+
+    public void panTo(final @NonNull Point pt) {
+        this.panX = pt.x().u();
+        this.panY = pt.y().u();
     }
 }
