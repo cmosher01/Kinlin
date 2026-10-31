@@ -152,7 +152,7 @@ and write to that file (or do nothing on Cancel)
 
 */
 
-import dev.cmosher01.genealogy.xy.genealogy.ChartView;
+import dev.cmosher01.genealogy.xy.genealogy.*;
 import lombok.*;
 
 import java.nio.file.Path;
@@ -169,6 +169,7 @@ public class DocumentController {
     private final MenuView viewMenu;
     private final MainView viewMain;
     private final ChartView viewChart; // TODO can this refer to a DocumentView instead?
+    private final ChartCommandController controllerChartCommand;
 
 
 
@@ -193,6 +194,8 @@ public class DocumentController {
             throw new IllegalStateException(e);
         }
         this.zp.setZoomOutMinFromBounds(this.document.bounds());
+
+        this.controllerChartCommand.fit();
 
         this.viewChart.refresh();
         this.viewMain.repaint();

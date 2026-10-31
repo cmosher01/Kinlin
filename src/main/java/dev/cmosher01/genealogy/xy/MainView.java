@@ -18,9 +18,10 @@
 package dev.cmosher01.genealogy.xy;
 
 import dev.cmosher01.genealogy.xy.genealogy.ChartView;
+import lombok.val;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 
 import static dev.cmosher01.genealogy.xy.Solarized.*;
 

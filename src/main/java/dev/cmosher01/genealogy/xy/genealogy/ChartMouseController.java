@@ -25,7 +25,7 @@ import java.awt.geom.Point2D;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class ChartController {
+public class ChartMouseController {
     private final ZoomPanModel zp;
     private final DocumentModel model;
 

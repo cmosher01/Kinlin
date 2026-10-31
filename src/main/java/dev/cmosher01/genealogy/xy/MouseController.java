@@ -122,7 +122,7 @@ public class MouseController {
         final ZoomPanModel modelZoomPan,
         final ZoomPanMouseController controllerZoomPan,
         final StatusBarModel modelStatus,
-        final ChartController controllerChart,
+        final ChartMouseController controllerChart,
         final DragSelectionController<?> controllerDragSelection) {
         val mouse = new MouseAdapter() {
             private boolean dragged;

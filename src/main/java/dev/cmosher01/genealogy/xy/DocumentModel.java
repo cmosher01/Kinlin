@@ -152,6 +152,9 @@ public class DocumentModel {
         return Awts.rect(this.model.get().bounds());
     }
 
+    public Rectangle2D boundsOutset() {
+        return Awts.rect(this.model.get().boundsOutset());
+    }
 
 
 

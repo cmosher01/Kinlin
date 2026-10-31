@@ -17,20 +17,24 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import dev.cmosher01.genealogy.xy.genealogy.ChartCommandController;
+
 /**
  * Sets itself as a listener of actions on the menu view,
  * in order to forward them to the command controller
  */
 public class MenuController {
-    public MenuController(final MenuView view, final DocumentController controllerDocument, final CommandController controllerCommand, final QuitController controllerQuit) {
+    public MenuController(final MenuView view, final DocumentController controllerDocument, final CommandController controllerCommand, final QuitController controllerQuit, final ChartCommandController controllerChart) {
 //        view.setNew(controllerCommand::newFile);
         view.setOpen(controllerDocument::open);
         view.setClose(controllerDocument::close);
+//        view.setExport(); TODO
         view.setSave(controllerDocument::save);
         view.setSaveAs(controllerDocument::saveAs);
 //        view.setPageSetup(controllerCommand::pageSetup);
 //        view.setPrint(controllerCommand::print);
         view.setQuit(controllerQuit::quit);
+
         view.setUndo(controllerCommand::undo);
         view.setRedo(controllerCommand::redo);
 //        view.setCut(controllerCommand::cut);
@@ -41,7 +45,14 @@ public class MenuController {
         view.setFind(controllerCommand::find);
         view.setFindNext(controllerCommand::findNext);
         view.setFindPrevious(controllerCommand::findPrevious);
+//        view.setNudge(); TODO
         view.setPreferences(controllerCommand::preferences);
+
+        view.setFit(controllerChart::fit);
+        view.setCenter(controllerChart::center);
+//        view.setJump(); TODO
+        view.setReset(controllerChart::reset);
+
         view.setHelp(controllerCommand::help);
         view.setAbout(controllerCommand::about);
     }

@@ -25,7 +25,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.util.*;
 
-@SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalIsPresent"})
+@SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalIsPresent", "ClassCanBeRecord"})
 public class FamiView {
     private final @NonNull Fami model;
 
@@ -53,6 +53,8 @@ public class FamiView {
         draw(g, this.model.getBarChildren(), clip);
         this.model.getRBarChild().forEach(olin -> draw(g, olin, clip));
     }
+
+
 
     private static void drawBars(final @NonNull Graphics2D g, final @NonNull Optional<Bars> bar, @NonNull Rectangle2D clip) {
         if (bar.isPresent()) {

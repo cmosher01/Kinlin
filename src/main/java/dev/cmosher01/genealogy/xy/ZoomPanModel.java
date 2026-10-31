@@ -71,6 +71,20 @@ public class ZoomPanModel {
         pan(z * (x-this.panX), z * (y-this.panY));
     }
 
+    public void setZoom(final double factor) {
+        this.zoomFactor = factor;
+    }
+
+    public void resetZoom(final double x, final double y, final double w, final double h) {
+        this.zoomFactor = 1.0D;
+        panTo(w/2-x, h/2-y);
+    }
+
+    public void panTo(final double x, final double y) {
+        this.panX = x;
+        this.panY = y;
+    }
+
     private void clampZoom() {
         this.zoomFactor = Math.clamp(this.zoomFactor, zoomOutMin, zoomInMax);
     }

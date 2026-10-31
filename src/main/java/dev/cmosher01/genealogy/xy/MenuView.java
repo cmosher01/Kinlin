@@ -41,6 +41,7 @@ public class MenuView extends JMenuBar {
     private static final String CMD_CLOSE = "Close";
     private static final String CMD_SAVE = "Save";
     private static final String CMD_SAVE_AS = "Save As"+DDD;
+    private static final String CMD_EXPORT = "Export PDF"+DDD; // domain-specific
     private static final String CMD_PAGE_SETUP = "Page Setup";
     private static final String CMD_PRINT = "Print"+DDD;
     private static final String CMD_QUIT = "Quit "+APP_NAME;
@@ -56,7 +57,14 @@ public class MenuView extends JMenuBar {
     private static final String CMD_FIND = "Find"+DDD;
     private static final String CMD_FIND_NEXT = "Find Next";
     private static final String CMD_FIND_PREVIOUS = "Find Previous";
+    private static final String CMD_NUDGE = "Nudge"; // domain-specific
     private static final String CMD_PREFERENCES = "Preferences";
+
+    private static final String MENU_VIEW = "View";
+    private static final String CMD_FIT = "Fit"; // domain-specific
+    private static final String CMD_CENTER = "Center"; // domain-specific
+    private static final String CMD_JUMP = "Jump"; // domain-specific
+    private static final String CMD_RESET = "Reset"; // domain-specific
 
     private static final String MENU_HELP = "Help";
     private static final String CMD_HELP = "Help";
@@ -69,9 +77,11 @@ public class MenuView extends JMenuBar {
     private final ActiveMenu actClose = ActiveMenu.create(CMD_CLOSE, ACCEL_CLOSE);
     private final ActiveMenu actSave = ActiveMenu.create(CMD_SAVE, ACCEL_SAVE);
     private final ActiveMenu actSaveAs = ActiveMenu.create(CMD_SAVE_AS, ACCEL_SAVE_AS);
+    private final ActiveMenu actExport = ActiveMenu.create(CMD_EXPORT, ACCEL_EXPORT);
     private final ActiveMenu actPageSetup = ActiveMenu.create(CMD_PAGE_SETUP, ACCEL_PAGE_SETUP);
     private final ActiveMenu actPrint = ActiveMenu.create(CMD_PRINT, ACCEL_PRINT);
     private final ActiveMenu actQuit = ActiveMenu.create(CMD_QUIT, ACCEL_QUIT);
+
     private final ActiveMenu actUndo = ActiveMenu.create(CMD_UNDO, ACCEL_UNDO);
     private final ActiveMenu actRedo = ActiveMenu.create(CMD_REDO, ACCEL_REDO);
     private final ActiveMenu actCut = ActiveMenu.create(CMD_CUT, ACCEL_CUT);
@@ -82,7 +92,14 @@ public class MenuView extends JMenuBar {
     private final ActiveMenu actFind = ActiveMenu.create(CMD_FIND, ACCEL_FIND);
     private final ActiveMenu actFindNext = ActiveMenu.create(CMD_FIND_NEXT, ACCEL_FIND_NEXT);
     private final ActiveMenu actFindPrevious = ActiveMenu.create(CMD_FIND_PREVIOUS, ACCEL_FIND_PREVIOUS);
+    private final ActiveMenu actNudge = ActiveMenu.create(CMD_NUDGE, ACCEL_NUDGE);
     private final ActiveMenu actPreferences = ActiveMenu.create(CMD_PREFERENCES, ACCEL_PREFERENCES);
+
+    private final ActiveMenu actFit = ActiveMenu.create(CMD_FIT, ACCEL_FIT);
+    private final ActiveMenu actCenter = ActiveMenu.create(CMD_CENTER, ACCEL_CENTER);
+    private final ActiveMenu actJump = ActiveMenu.create(CMD_JUMP, ACCEL_JUMP);
+    private final ActiveMenu actReset = ActiveMenu.create(CMD_RESET, ACCEL_RESET);
+
     private final ActiveMenu actHelp = ActiveMenu.create(CMD_HELP, ACCEL_HELP);
     private final ActiveMenu actAbout = ActiveMenu.create(CMD_ABOUT, ACCEL_ABOUT);
 
@@ -103,6 +120,8 @@ public class MenuView extends JMenuBar {
         menuFile.addSeparator();
         menuFile.add(this.actSave.menu());
         menuFile.add(this.actSaveAs.menu());
+        menuFile.addSeparator();
+        menuFile.add(this.actExport.menu());
 //        menuFile.addSeparator();
 //        menuFile.add(this.actPageSetup.menu());
 //        menuFile.add(this.actPrint.menu());
@@ -124,8 +143,17 @@ public class MenuView extends JMenuBar {
         menuEdit.add(this.actFindNext.menu());
         menuEdit.add(this.actFindPrevious.menu());
         menuEdit.addSeparator();
+        menuEdit.add(this.actNudge.menu());
+        menuEdit.addSeparator();
         menuEdit.add(this.actPreferences.menu());
         add(menuEdit);
+
+        val menuView = new JMenu(MENU_VIEW);
+        menuView.add(this.actFit.menu());
+        menuView.add(this.actCenter.menu());
+        menuView.add(this.actJump.menu());
+        menuView.add(this.actReset.menu());
+        add(menuView);
 
         val menuHelp = new JMenu(MENU_HELP);
         menuHelp.add(this.actHelp.menu());
@@ -141,6 +169,14 @@ public class MenuView extends JMenuBar {
         this.actClose.setEnabled(this.modelDocument.isOpen());
         this.actSave.setEnabled(this.modelDocument.isOpen());
         this.actSaveAs.setEnabled(this.modelDocument.isOpen());
+        this.actExport.setEnabled(this.modelDocument.isOpen());
+
+        this.actFit.setEnabled(this.modelDocument.isOpen());
+        this.actCenter.setEnabled(this.modelDocument.isOpen());
+        this.actJump.setEnabled(this.modelDocument.isOpen());
+        this.actReset.setEnabled(this.modelDocument.isOpen());
+
+        // TODO enable/disable nudge
     }
 
 
@@ -160,6 +196,9 @@ public class MenuView extends JMenuBar {
     public void setSaveAs(final Runnable lambda) {
         this.actSaveAs.setAction(lambda);
     }
+    public void setExport(final Runnable lambda) {
+        this.actExport.setAction(lambda);
+    }
 //    public void setPageSetup(final Runnable lambda) {
 //        this.actPageSetup.setAction(lambda);
 //    }
@@ -169,6 +208,7 @@ public class MenuView extends JMenuBar {
     public void setQuit(final Runnable lambda) {
         this.actQuit.setAction(lambda);
     }
+
     public void setUndo(final Runnable lambda) {
         this.actUndo.setAction(lambda);
     }
@@ -199,9 +239,26 @@ public class MenuView extends JMenuBar {
     public void setFindPrevious(final Runnable lambda) {
         this.actFindPrevious.setAction(lambda);
     }
+    public void setNudge(final Runnable lambda) {
+        this.actNudge.setAction(lambda);
+    }
     public void setPreferences(final Runnable lambda) {
         this.actPreferences.setAction(lambda);
     }
+
+    public void setFit(final Runnable lambda) {
+        this.actFit.setAction(lambda);
+    }
+    public void setCenter(final Runnable lambda) {
+        this.actCenter.setAction(lambda);
+    }
+    public void setJump(final Runnable lambda) {
+        this.actJump.setAction(lambda);
+    }
+    public void setReset(final Runnable lambda) {
+        this.actReset.setAction(lambda);
+    }
+
     public void setHelp(final Runnable lambda) {
         this.actHelp.setAction(lambda);
     }

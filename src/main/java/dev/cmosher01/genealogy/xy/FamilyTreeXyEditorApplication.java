@@ -55,17 +55,18 @@ public class FamilyTreeXyEditorApplication {
         val viewFrame = new FrameView(modelDocument, viewMenu, viewMouse, viewMain, viewStatusBar);
 
         // CONTROLLER
-        val controllerZoomPan = new ZoomPanMouseController(modelZoomPan);
-        val controllerChart = new ChartController(modelZoomPan, modelDocument);
+        val controllerZoomPanMouse = new ZoomPanMouseController(modelZoomPan);
+        val controllerChartMouse = new ChartMouseController(modelZoomPan, modelDocument);
+        val controllerChartCommand = new ChartCommandController(modelZoomPan, modelDocument, viewMain, viewStatusBar);
         val controllerDragSelection = new DragSelectionController<>(modelDragSelection, modelDocument, modelZoomPan);
         val controllerStatusBar = new StatusBarController(modelStatusBar, viewStatusBar, viewMain);
         val controllerCommands = new CommandController(viewFrame, viewMenu);
-        val controllerDocument = new DocumentController(modelDocument, modelZoomPan, viewFrame, viewMenu, viewMain, viewChart);
+        val controllerDocument = new DocumentController(modelDocument, modelZoomPan, viewFrame, viewMenu, viewMain, viewChart, controllerChartCommand);
         val controllerQuit = new QuitController(controllerDocument, viewFrame, modelDocument, controllerStatusBar);
         val controllerKill = new KillController(controllerDocument, controllerQuit);
         val controllerDesktop = new DesktopController(controllerCommands, controllerDocument, controllerQuit);
-        val controllerMenu = new MenuController(viewMenu, controllerDocument, controllerCommands, controllerQuit);
-        val controllerMouse = new MouseController(viewMouse, viewMain, viewFrame, viewStatusBar, modelZoomPan, controllerZoomPan, modelStatusBar, controllerChart, controllerDragSelection);
+        val controllerMenu = new MenuController(viewMenu, controllerDocument, controllerCommands, controllerQuit, controllerChartCommand);
+        val controllerMouse = new MouseController(viewMouse, viewMain, viewFrame, viewStatusBar, modelZoomPan, controllerZoomPanMouse, modelStatusBar, controllerChartMouse, controllerDragSelection);
 
         viewFrame.display();
     }
