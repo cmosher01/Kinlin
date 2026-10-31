@@ -17,7 +17,10 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import dev.cmosher01.geom.Point;
+
 import java.awt.geom.*;
+import java.util.Optional;
 
 public interface Selectable<T> {
     void select(T item, boolean select);
@@ -26,4 +29,5 @@ public interface Selectable<T> {
     void anchor();
     void clear();
     boolean isModified();
+    Optional<Point> center();
 }

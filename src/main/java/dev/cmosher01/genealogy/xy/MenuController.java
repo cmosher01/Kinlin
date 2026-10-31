@@ -50,7 +50,7 @@ public class MenuController {
 
         view.setFit(controllerChart::fit);
         view.setCenter(controllerChart::center);
-//        view.setJump(); TODO
+        view.setJump(controllerChart::jump);
         view.setReset(controllerChart::reset);
 
         view.setHelp(controllerCommand::help);

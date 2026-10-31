@@ -18,6 +18,7 @@
 package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.*;
+import dev.cmosher01.geom.*;
 import lombok.*;
 
 import java.awt.geom.*;
@@ -75,5 +76,13 @@ public class IndiSelectionModel implements Selectable<Indi> {
             }
         }
         return false;
+    }
+
+    @Override
+    public Optional<Point> center() {
+        if (this.selection.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(Rect.bounds(this.selection.stream().map(Indi::bounds).toList()).center());
     }
 }

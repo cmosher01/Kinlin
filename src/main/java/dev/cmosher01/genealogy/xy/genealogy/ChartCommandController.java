@@ -22,7 +22,6 @@ import dev.cmosher01.geom.*;
 import lombok.*;
 
 import javax.swing.*;
-import java.awt.geom.*;
 import java.util.Optional;
 
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalIsPresent"})
@@ -34,6 +33,8 @@ public class ChartCommandController {
 
     private @NonNull String lastFind = "";
     private @NonNull Optional<Finder> finder = Optional.empty();
+    private @NonNull final Jumper jumper = new Jumper();
+
 
     public ChartCommandController(final @NonNull ZoomPanModel zp, final @NonNull DocumentModel model, final @NonNull MainView viewMain, final @NonNull StatusBarView viewStatusBar) {
         this.zp = zp;
@@ -60,7 +61,7 @@ public class ChartCommandController {
         val v = this.viewMain.viewportClip();
         val c = this.model.boundsOutset();
 
-        final var w = v.getWidth ()/c.getWidth();
+        final var w = v.getWidth()/c.getWidth();
         final var h = v.getHeight()/c.getHeight();
         final var f = Math.min(w,h);
         this.zp.setZoom(f);
@@ -104,6 +105,18 @@ public class ChartCommandController {
             if (optFoundAt.isPresent()) {
                 panTo(optFoundAt.get());
             }
+        }
+    }
+
+
+
+    public void jump() {
+        // checks if user changed the selection since last time
+        this.jumper.selectionDelta(this.model.model().getSelection().center());
+
+        val jumpTo = this.jumper.jump(Awts.rect(this.viewMain.clip()).center());
+        if (jumpTo.isPresent()) {
+            panTo(jumpTo.get());
         }
     }
 
