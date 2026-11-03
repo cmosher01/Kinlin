@@ -155,6 +155,7 @@ and write to that file (or do nothing on Cancel)
 import dev.cmosher01.genealogy.xy.genealogy.*;
 import lombok.*;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -224,7 +225,11 @@ public class DocumentController {
                     ok = optPath.isPresent();
                     if (ok) {
                         this.document.setPath(optPath.get());
-                        ok = this.document.save();
+                        try {
+                            ok = this.document.save();
+                        } catch (IOException e) {
+                            ok = false; // TODO
+                        }
                         if (ok) {
                             this.document.setUnmodified();
                             this.document.close();
@@ -277,7 +282,11 @@ public class DocumentController {
             ok = saveAs(attended);
         } else {
             // NOTE: this would need to be modified in apps that allow "untitled" new docs
-            ok = this.document.save();
+            try {
+                ok = this.document.save();
+            } catch (IOException e) {
+                ok = false; // TODO
+            }
             if (ok) {
                 this.document.onSaved();
                 // ok = true;
@@ -314,7 +323,11 @@ public class DocumentController {
         boolean ok = optPath.isPresent();
         if (ok) {
             this.document.setPath(optPath.get());
-            ok = this.document.save();
+            try {
+                ok = this.document.save();
+            } catch (IOException e) {
+                ok = false; // TODO
+            }
             if (ok) {
                 this.document.onSaved();
                 // ok = true;

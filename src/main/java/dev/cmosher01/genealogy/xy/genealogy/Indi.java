@@ -21,6 +21,8 @@ import dev.cmosher01.genealogy.xy.*;
 import dev.cmosher01.geom.*;
 import dev.cmosher01.geom.Point;
 import lombok.*;
+import nu.mine.mosher.collection.TreeNode;
+import nu.mine.mosher.gedcom.GedcomLine;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -149,5 +151,40 @@ public class Indi {
         ret.addAll(this.rFamiChildIn);
         ret.addAll(this.rFamiParentIn);
         return ret;
+    }
+
+    public void saveXyToTree() {
+        if (!isModified) {
+            return;
+        }
+
+        final String xy = XyValue.convertToXY(this.pt.get());
+        final Optional<TreeNode<GedcomLine>> existingXyNode = findChild(this.id.node(), XyValue.GED_TAG);
+        final TreeNode<GedcomLine> newNode = new TreeNode<>(this.id.node().getObject().createChild(XyValue.GED_TAG, xy));
+        if (existingXyNode.isPresent()) {
+            final TreeNode<GedcomLine> oldNode = existingXyNode.get();
+            if (this.pt.hasOriginal()) {
+                oldNode.setObject(oldNode.getObject().replaceValue(xy));
+            } else {
+                // This is the case where there was an original _XY record in the GEDCOM
+                // file, but it had an invalid format.
+                // Leave the existing _XY intact, and add a new _XY record before it
+                // (in order to mask the old one without destroying it).
+                this.id.node().addChildBefore(newNode, oldNode);
+            }
+        } else {
+            this.id.node().addChild(newNode);
+        }
+    }
+
+
+
+    private static Optional<TreeNode<GedcomLine>> findChild(final TreeNode<GedcomLine> parent, final String tag) {
+        for (final TreeNode<GedcomLine> child : parent) {
+            if (child.getObject().getTagString().equals(tag)) {
+                return Optional.of(child);
+            }
+        }
+        return Optional.empty();
     }
 }

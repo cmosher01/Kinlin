@@ -26,6 +26,8 @@ import java.util.*;
 
 @RequiredArgsConstructor
 public class XyValue {
+    public static final String GED_TAG = "_XY";
+
     private final boolean exists;
     private final Coord x;
     private final Coord y;
@@ -41,6 +43,7 @@ public class XyValue {
         boolean exists;
         String error;
         try (val in = new Scanner(new StringReader(s.strip()))) {
+            in.useLocale(Locale.US);
             if (in.hasNextDouble()) {
                 x = in.nextDouble();
                 if (in.hasNextDouble()) {
@@ -65,6 +68,7 @@ public class XyValue {
             exists = false;
             error = e.toString();
         }
+        // TODO check for invalid values, NaN, Inf, too large absolute value, etc.
         return new XyValue(new Coord(x), new Coord(y), exists, error);
     }
 
@@ -102,5 +106,11 @@ public class XyValue {
             ret = Optional.empty();
         }
         return ret;
+    }
+
+
+
+    public static String convertToXY(final @NonNull Point pt) {
+        return String.format("%.2f %.2f", pt.x().u(), pt.y().u());
     }
 }

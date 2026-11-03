@@ -41,7 +41,9 @@ public class MenuView extends JMenuBar {
     private static final String CMD_CLOSE = "Close";
     private static final String CMD_SAVE = "Save";
     private static final String CMD_SAVE_AS = "Save As"+DDD;
-    private static final String CMD_EXPORT = "Export PDF"+DDD; // domain-specific
+    private static final String CMD_EXPORT_PDF = "Export PDF"+DDD; // domain-specific
+    private static final String CMD_EXPORT_MOD = "Export Modified As Skeleton"+DDD; // domain-specific
+    private static final String CMD_EXPORT_ALL = "Export All As Skeleton"+DDD; // domain-specific
     private static final String CMD_PAGE_SETUP = "Page Setup";
     private static final String CMD_PRINT = "Print"+DDD;
     private static final String CMD_QUIT = "Quit "+APP_NAME;
@@ -77,7 +79,9 @@ public class MenuView extends JMenuBar {
     private final ActiveMenu actClose = ActiveMenu.create(CMD_CLOSE, ACCEL_CLOSE);
     private final ActiveMenu actSave = ActiveMenu.create(CMD_SAVE, ACCEL_SAVE);
     private final ActiveMenu actSaveAs = ActiveMenu.create(CMD_SAVE_AS, ACCEL_SAVE_AS);
-    private final ActiveMenu actExport = ActiveMenu.create(CMD_EXPORT, ACCEL_EXPORT);
+    private final ActiveMenu actExportPdf = ActiveMenu.create(CMD_EXPORT_PDF, ACCEL_EXPORT_PDF);
+    private final ActiveMenu actExportMod = ActiveMenu.create(CMD_EXPORT_MOD, ACCEL_EXPORT_MOD);
+    private final ActiveMenu actExportAll = ActiveMenu.create(CMD_EXPORT_ALL, ACCEL_EXPORT_ALL);
     private final ActiveMenu actPageSetup = ActiveMenu.create(CMD_PAGE_SETUP, ACCEL_PAGE_SETUP);
     private final ActiveMenu actPrint = ActiveMenu.create(CMD_PRINT, ACCEL_PRINT);
     private final ActiveMenu actQuit = ActiveMenu.create(CMD_QUIT, ACCEL_QUIT);
@@ -121,7 +125,9 @@ public class MenuView extends JMenuBar {
         menuFile.add(this.actSave.menu());
         menuFile.add(this.actSaveAs.menu());
         menuFile.addSeparator();
-        menuFile.add(this.actExport.menu());
+        menuFile.add(this.actExportPdf.menu());
+        menuFile.add(this.actExportMod.menu());
+        menuFile.add(this.actExportAll.menu());
 //        menuFile.addSeparator();
 //        menuFile.add(this.actPageSetup.menu());
 //        menuFile.add(this.actPrint.menu());
@@ -169,7 +175,9 @@ public class MenuView extends JMenuBar {
         this.actClose.setEnabled(this.modelDocument.isOpen());
         this.actSave.setEnabled(this.modelDocument.isOpen());
         this.actSaveAs.setEnabled(this.modelDocument.isOpen());
-        this.actExport.setEnabled(this.modelDocument.isOpen());
+        this.actExportPdf.setEnabled(this.modelDocument.isOpen());
+        this.actExportMod.setEnabled(this.modelDocument.isOpen());
+        this.actExportAll.setEnabled(this.modelDocument.isOpen());
 
         this.actFit.setEnabled(this.modelDocument.isOpen());
         this.actCenter.setEnabled(this.modelDocument.isOpen());
@@ -196,8 +204,14 @@ public class MenuView extends JMenuBar {
     public void setSaveAs(final Runnable lambda) {
         this.actSaveAs.setAction(lambda);
     }
-    public void setExport(final Runnable lambda) {
-        this.actExport.setAction(lambda);
+    public void setExportPdf(final Runnable lambda) {
+        this.actExportPdf.setAction(lambda);
+    }
+    public void setExportMod(final Runnable lambda) {
+        this.actExportMod.setAction(lambda);
+    }
+    public void setExportAll(final Runnable lambda) {
+        this.actExportAll.setAction(lambda);
     }
 //    public void setPageSetup(final Runnable lambda) {
 //        this.actPageSetup.setAction(lambda);

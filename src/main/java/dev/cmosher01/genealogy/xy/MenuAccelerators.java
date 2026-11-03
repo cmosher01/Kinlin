@@ -54,7 +54,9 @@ public final class MenuAccelerators {
     public static final KeyStroke ACCEL_CLOSE = getKeyStroke(VK_W, CMD);
     public static final KeyStroke ACCEL_SAVE = getKeyStroke(VK_S, CMD);
     public static final KeyStroke ACCEL_SAVE_AS = getKeyStroke(VK_S, SHIFT_CMD);
-    public static final KeyStroke ACCEL_EXPORT = getKeyStroke(VK_P, CMD); // use standard Print shortcut
+    public static final KeyStroke ACCEL_EXPORT_PDF = getKeyStroke(VK_P, CMD); // use standard Print shortcut
+    public static final KeyStroke ACCEL_EXPORT_MOD = getKeyStroke(VK_K, CMD);
+    public static final KeyStroke ACCEL_EXPORT_ALL = NO_ACCEL;
     public static final KeyStroke ACCEL_PAGE_SETUP = getKeyStroke(VK_P, SHIFT_CMD);
     public static final KeyStroke ACCEL_PRINT = getKeyStroke(VK_P, CMD);
 

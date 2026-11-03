@@ -21,10 +21,11 @@ import dev.cmosher01.genealogy.xy.genealogy.*;
 import dev.cmosher01.geom.*;
 import dev.cmosher01.io.FileName;
 import lombok.*;
+import nu.mine.mosher.gedcom.*;
 import nu.mine.mosher.gedcom.exception.InvalidLevel;
 
 import java.awt.geom.Rectangle2D;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -108,9 +109,19 @@ public class DocumentModel {
         return Path.of(name+"-"+timestamp()+this.filename.extensionWithDotOrEmpty());
     }
 
-    public boolean save() {
+    public boolean save() throws IOException {
+        boolean ok = false;
+        if (isFileReadOnly()) {
+            this.model().saveXyToTree();
+            val tree = this.model().getTree().get();
+            tree.timestamp();
+            Gedcom.writeFile(tree, new BufferedOutputStream(new FileOutputStream(this.file.get().toFile())));
+            ok = true;
+        } else {
+            // TODO FTM save
+        }
         // TODO on error, save exception as "last error", with getter
-        return true; // true = no error; false = error (assume not saved)
+        return ok; // true = no error; false = error (assume not saved)
     }
 
     public void onSaved() {

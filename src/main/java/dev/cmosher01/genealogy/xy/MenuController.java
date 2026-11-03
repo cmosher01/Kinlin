@@ -28,7 +28,9 @@ public class MenuController {
 //        view.setNew(controllerCommand::newFile);
         view.setOpen(controllerDocument::open);
         view.setClose(controllerDocument::close);
-//        view.setExport(); TODO
+        view.setExportPdf(controllerChart::exportPdf);
+        view.setExportMod(controllerChart::exportMod);
+        view.setExportAll(controllerChart::exportAll);
         view.setSave(controllerDocument::save);
         view.setSaveAs(controllerDocument::saveAs);
 //        view.setPageSetup(controllerCommand::pageSetup);

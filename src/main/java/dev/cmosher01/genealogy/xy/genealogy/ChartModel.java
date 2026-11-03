@@ -20,6 +20,7 @@ package dev.cmosher01.genealogy.xy.genealogy;
 import dev.cmosher01.genealogy.xy.*;
 import dev.cmosher01.geom.*;
 import lombok.*;
+import nu.mine.mosher.gedcom.GedcomTree;
 
 import java.util.*;
 
@@ -31,16 +32,18 @@ public class ChartModel {
     private final @NonNull List<Indi> indis;
     private final @NonNull List<Fami> famis;
 
+    @Getter private final @NonNull Optional<GedcomTree> tree;
+
     private Rect bounds;
 
-    @Getter
-    private final Selectable<Indi> selection;
+    @Getter private final Selectable<Indi> selection;
 
 
 
-    public ChartModel(final @NonNull List<Indi> indis, final @NonNull List<Fami> famis) {
+    public ChartModel(final @NonNull List<Indi> indis, final @NonNull List<Fami> famis, final @NonNull Optional<GedcomTree> tree) {
         this.indis = indis;
         this.famis = famis;
+        this.tree = tree;
         this.selection = new IndiSelectionModel(indis);
     }
 
@@ -116,5 +119,9 @@ public class ChartModel {
 
     public void flip() {
         this.indis.forEach(Indi::flip);
+    }
+
+    public void saveXyToTree() {
+        this.indis.forEach(Indi::saveXyToTree);
     }
 }
