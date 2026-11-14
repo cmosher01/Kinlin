@@ -46,9 +46,10 @@ public class ChartCommandController {
 
 
     public void reset() {
-        val c_clip = this.viewMain.clip();
-        val v_clip = this.viewMain.viewportClip();
-        this.zp.resetZoom(c_clip.getCenterX(), c_clip.getCenterY(), v_clip.getWidth(), v_clip.getHeight());
+        val c = Awts.rect(this.viewMain.clip()).center();
+        this.zp.resetZoom();
+        panTo(c);
+
         this.viewMain.repaint();
         this.viewStatusBar.refresh();
     }

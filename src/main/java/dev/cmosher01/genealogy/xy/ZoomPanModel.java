@@ -77,9 +77,8 @@ public class ZoomPanModel {
         this.zoomFactor = factor;
     }
 
-    public void resetZoom(final double x, final double y, final double w, final double h) {
+    public void resetZoom() {
         this.zoomFactor = IDENTITY;
-        panTo(w/2-x, h/2-y);
     }
 
     public void panTo(final double x, final double y) {
