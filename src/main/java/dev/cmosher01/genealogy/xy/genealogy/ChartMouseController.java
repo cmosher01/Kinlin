@@ -24,6 +24,7 @@ import lombok.*;
 import java.awt.geom.Point2D;
 import java.util.Optional;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @RequiredArgsConstructor
 public class ChartMouseController {
     private final ZoomPanModel zp;
@@ -32,7 +33,7 @@ public class ChartMouseController {
     private Optional<Indi> optItem = Optional.empty();
     private Optional<Point2D.Double> optptDragPivot = Optional.empty();
     private boolean wasSelected;
-
+    // TODO can/should we add Grid here, and pass down to the move methods?
 
 
     public boolean want(final Point2D.Double at) {

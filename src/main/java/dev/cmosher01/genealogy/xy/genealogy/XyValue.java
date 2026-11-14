@@ -24,6 +24,8 @@ import java.awt.geom.Point2D;
 import java.io.StringReader;
 import java.util.*;
 
+// TODO verify if we handle correctly: a missing _XY vs. an _XY with empty value vs. invalid _XY value
+
 @RequiredArgsConstructor
 public class XyValue {
     public static final String GED_TAG = "_XY";

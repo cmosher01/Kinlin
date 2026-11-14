@@ -52,6 +52,10 @@ dependencies {
     implementation 'nu.mine.mosher.gedcom:gedcom-lib:latest.release', {
         exclude group: 'nu.mine.mosher.mopper', module: 'mopper'
     }
+    implementation 'org.xerial:sqlite-jdbc:latest.release'
+    implementation 'com.itextpdf:itext7-core:latest.release'
+
+
 
     implementation 'systems.manifold:manifold-ext-rt:latest.release'
     annotationProcessor 'systems.manifold:manifold-ext:latest.release'

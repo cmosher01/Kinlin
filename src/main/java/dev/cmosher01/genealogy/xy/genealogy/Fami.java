@@ -19,6 +19,7 @@ package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.FontModel;
 import dev.cmosher01.geom.*;
+import dev.cmosher01.math.doubles.DoubleUtil;
 import lombok.*;
 
 import java.util.*;
@@ -243,11 +244,22 @@ public class Fami {
         bar starting point, but don't get too close to the ends of the childsBar.
      */
     private Point calcDescentBarChildsStart(final Coord descentBarParentX, final OrthogonalLine childsBar) {
-        // Minimum horiz distance of descentBarChildsStart from ends of childsBar allowed.
-        // A visual nicety, it looks bad if the descent line is really close to an end of the childs bar.
         /*
-            Not this:
+            Not this (center of bar)
               ===
+               |
+               |
+               +------+
+                      |
+              +-------*-------+
+              |               |
+            +-|-+           +-|-+
+            | * |           | * |
+            +---+           +---+
+
+            nor this (too close to the end of the bar)
+              ===
+               |
                |
                |
                |
@@ -291,7 +303,7 @@ public class Fami {
             x = childsBar.midpoint().x();
         } else {
             val xe = new MoveTerm(this.dxChildrenBarEndZone);
-            x = new Coord(Math.clamp(descentBarParentX.u(), (childsBar.a() + xe).u(), (childsBar.b() - xe).u()));
+            x = new Coord(DoubleUtil.clamp(descentBarParentX.u(), (childsBar.a() + xe).u(), (childsBar.b() - xe).u()));
         }
         return new Point(x, childsBar.pos());
     }

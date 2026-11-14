@@ -38,7 +38,7 @@ public final class IoGedcom {
 
 
 
-    public static ChartModel read(final @NonNull Path path, final @NonNull Grid grid) throws IOException, InvalidLevel {
+    public static @NonNull ChartModel read(final @NonNull Path path, final @NonNull Grid grid) throws IOException, InvalidLevel {
         val tree = readTree(path);
 
         val mapIdToIndi = new HashMap<String, Indi>();
@@ -55,7 +55,7 @@ public final class IoGedcom {
 
 
 
-    private static GedcomTree readTree(final @NonNull Path path) throws IOException, InvalidLevel {
+    private static @NonNull GedcomTree readTree(final @NonNull Path path) throws IOException, InvalidLevel {
         try (val input = new BufferedInputStream(Files.newInputStream(path))) {
             val tree = Gedcom.readFile(input);
             new GedcomConcatenator(tree).concatenate();
@@ -93,19 +93,17 @@ public final class IoGedcom {
         val birth = GedcomDateUtil.calcBirthForSort(getEventDate(node, GedcomTag.BIRT.toString()));
 
         val plaque = buildPlaque(node);
-        // TODO verify if we handle correctly: a missing _XY vs. an _XY with empty value vs. invalid _XY value
+
         val pt = new MovablePoint(grid, XyValue.create(getValue(node, XyValue.GED_TAG)).get());
 
         return new Indi(id, sex, birth, plaque, pt);
     }
 
-    private static Plaque buildPlaque(TreeNode<GedcomLine> node) {
-        final Plaque plaque;
+    private static @NonNull Plaque buildPlaque(TreeNode<GedcomLine> node) {
         val name = GedcomIndiName.create(getValue(node, GedcomTag.NAME.toString()));
         val lifespan = GedcomDateUtil.getLifespan(getEventDate(node, GedcomTag.BIRT.toString()), getEventDate(node, GedcomTag.DEAT.toString()));
         val place = getPlace(node);
-        plaque = new Plaque(name, lifespan, place);
-        return plaque;
+        return new Plaque(name, lifespan, place);
     }
 
 

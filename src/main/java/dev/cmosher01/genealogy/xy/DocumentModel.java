@@ -27,6 +27,7 @@ import nu.mine.mosher.gedcom.exception.InvalidLevel;
 import java.awt.geom.Rectangle2D;
 import java.io.*;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -68,12 +69,16 @@ public class DocumentModel {
     }
 
 
-    public void open(final @NonNull Path file) throws IOException, InvalidLevel {
+    public void open(final @NonNull Path file) throws IOException, InvalidLevel, SQLException {
         this.file = Optional.of(file);
         this.filename = FileName.of(file.getFileName().toString());
 
-        // TODO choose FTM or Gedcom
-        this.model = Optional.of(IoGedcom.read(file, this.grid));
+        // TODO can/should we not pass grid here?
+        if (isFtm()) {
+            this.model = Optional.of(IoFtm.read(file, this.grid));
+        } else {
+            this.model = Optional.of(IoGedcom.read(file, this.grid));
+        }
         if (this.model.isPresent()) {
             // TODO update grid based on heuristic detection from tree
             this.model.get().refresh(this.modelFont);
@@ -118,7 +123,7 @@ public class DocumentModel {
             Gedcom.writeFile(tree, new BufferedOutputStream(new FileOutputStream(this.file.get().toFile())));
             ok = true;
         } else {
-            // TODO FTM save
+            IoFtm.save(this.file.get());
         }
         // TODO on error, save exception as "last error", with getter
         return ok; // true = no error; false = error (assume not saved)
@@ -130,7 +135,15 @@ public class DocumentModel {
     }
 
     public boolean isFileReadOnly() {
-        return !this.filename.extensionOrEmpty().equalsIgnoreCase("ftm");
+        return isGedcom();
+    }
+
+    public boolean isGedcom() {
+        return !isFtm();
+    }
+
+    public boolean isFtm() {
+        return this.filename.extensionOrEmpty().equalsIgnoreCase("ftm");
     }
 
     public void refreshModified() {

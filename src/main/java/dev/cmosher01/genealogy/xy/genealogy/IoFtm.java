@@ -1,0 +1,189 @@
+/*
+ *     Copyright 2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.cmosher01.genealogy.xy.genealogy;
+
+import dev.cmosher01.genealogy.xy.MovablePoint;
+import dev.cmosher01.geom.Grid;
+import lombok.*;
+import org.sqlite.SQLiteConfig;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.sql.*;
+import java.util.*;
+
+
+
+public final class IoFtm {
+    @Deprecated
+    private IoFtm() {
+        throw new UnsupportedOperationException();
+    }
+
+
+
+    public static @NonNull ChartModel read(final @NonNull Path path, final @NonNull Grid grid) throws SQLException, IOException {
+        final List<Indi> indis;
+        final List<Fami> famis;
+        final SQLiteConfig config = new SQLiteConfig();
+        config.setReadOnly(true);
+        try (final Connection conn = config.createConnection("jdbc:sqlite:"+path.toString())) {
+            final Map<String, Indi> mapIdToIndi = new HashMap<>();
+            indis = buildIndis(conn, mapIdToIndi, grid);
+            famis = buildFamis(conn, Collections.unmodifiableMap(mapIdToIndi));
+        }
+
+        new Layout(indis, famis).clean();
+
+        return new ChartModel(indis, famis, Optional.empty());
+    }
+
+    private static @NonNull List<Indi> buildIndis(final @NonNull Connection conn, final @NonNull Map<String, Indi> mapIdToIndi, final @NonNull Grid grid) throws SQLException, IOException {
+        final List<Indi> indis = new ArrayList<>();
+        try (final PreparedStatement select = conn.prepareStatement(getRes("Indi.sql"))) {
+            try (final ResultSet rs = select.executeQuery()) {
+                while (rs.next()) {
+                    final Indi indi = buildIndi(rs, grid);
+                    mapIdToIndi.put(indi.key(), indi);
+                    indis.add(indi);
+                }
+            }
+        }
+        return indis;
+    }
+
+    private static @NonNull Indi buildIndi(final @NonNull ResultSet rs, final @NonNull Grid grid) throws SQLException {
+        // TODO do we need to save this somewhere?
+//        final String pkidFact = rs.getString("pkidFact");
+
+        val id = new IndividualId(rs.getString("pkidPerson"));
+
+        // sex and birthdate are only used as hints by the automatic layout algorithms
+        val sex = rs.getInt("sex");
+        val birth = calcBirthForSort(rs.getString("birth"));
+
+        val plaque = buildPlaque(rs);
+
+        val pt = new MovablePoint(grid, XyValue.create(rs.getString("xy")).get());
+
+        return new Indi(id, sex, birth, plaque, pt);
+    }
+
+    private static @NonNull Plaque buildPlaque(final @NonNull ResultSet rs) throws SQLException {
+        val name = GedcomIndiName.create(rs.getString("name"));
+        final String lifespan = getLifespan(rs.getString("birth"), rs.getString("death"));
+        val birthplace = Place.fromFtmPlace(rs.getString("birthplace"));
+        val anyplace = Place.fromFtmPlace(rs.getString("anyplace"));
+        val place = birthplace.toString().isBlank() ? anyplace : birthplace;
+        return new Plaque(name, lifespan, place.toString());
+    }
+
+    private static long calcBirthForSort(final /*TODO NULLABLE*/ String sDateBirth) {
+        return FtmDate.fromFtmFactDate(sDateBirth).ym();
+    }
+
+    private static @NonNull String getLifespan(final /*TODO NULLABLE*/ String sDateBirth, final /*TODO NULLABLE*/ String sDateDeath) {
+        final FtmDate db = FtmDate.fromFtmFactDate(sDateBirth);
+        final FtmDate dd = FtmDate.fromFtmFactDate(sDateDeath);
+        if (db.unknown() && dd.unknown()) {
+            return "";
+        }
+        return "("+db+"\u2013"+dd+")";
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private static @NonNull List<Fami> buildFamis(final @NonNull Connection conn, final @NonNull Map<String, Indi> mapIdToIndi) throws IOException, SQLException {
+        final List<Fami> famis = new ArrayList<>();
+        try (final PreparedStatement select = conn.prepareStatement(getRes("Fami.sql"))) {
+            try (final ResultSet rs = select.executeQuery()) {
+                int prev = -1;
+                Fami fami = null;
+                while (rs.next()) {
+                    final int curr = rs.getInt("ID");
+                    Optional<Indi> indi;
+                    if (curr != prev) {
+                        if (Objects.nonNull(fami)) {
+                            famis.add(fami);
+                        }
+                        fami = new Fami();
+                        indi = Optional.ofNullable(mapIdToIndi.get(rs.getString("Person1ID")));
+                        if (indi.isPresent()) {
+                            fami.addParent(indi.get());
+                            indi.get().addAsParentIn(fami);
+                        }
+                        indi = Optional.ofNullable(mapIdToIndi.get(rs.getString("Person2ID")));
+                        if (indi.isPresent()) {
+                            fami.addParent(indi.get());
+                            indi.get().addAsParentIn(fami);
+                        }
+                        prev = curr;
+                    }
+                    indi = Optional.ofNullable(mapIdToIndi.get(rs.getString("PersonID")));
+                    if (indi.isPresent()) {
+                        fami.addChild(indi.get());
+                        indi.get().addAsChildIn(fami);
+                    }
+                }
+                if (Objects.nonNull(fami)) {
+                    famis.add(fami);
+                }
+            }
+        }
+        return famis;
+    }
+
+
+
+
+
+
+
+
+    public static void save(final @NonNull Path path) {
+        // TODO
+    }
+
+
+
+
+
+
+
+
+
+    private static @NonNull String getRes(final @NonNull String fileName) throws IOException {
+        try (final InputStream is = IoFtm.class.getResourceAsStream(fileName)) {
+            if (Objects.isNull(is)) {
+                throw new IOException("Cannot open resource "+fileName);
+            }
+            return new String(is.readAllBytes(), StandardCharsets.US_ASCII);
+        }
+    }
+}

@@ -174,4 +174,13 @@ public final class DoubleUtil {
     public static int compareTo(final @NonNull Double a, final @NonNull Double b) {
         return DoubleExtUtil.compareTo(a, b);
     }
+
+    public static Double clamp(final @NonNull Double val, final @NonNull Double a, final @NonNull Double b) {
+        if (a == b) {
+            return a;
+        }
+        double mn = StrictMath.min(a, b);
+        double mx = StrictMath.max(a, b);
+        return StrictMath.clamp(val, mn, mx);
+    }
 }
