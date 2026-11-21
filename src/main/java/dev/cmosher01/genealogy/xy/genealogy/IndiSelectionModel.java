@@ -26,22 +26,24 @@ import java.util.*;
 
 @RequiredArgsConstructor
 public class IndiSelectionModel implements Selectable<Indi> {
-    private final List<Indi> universe;
+    private final @NonNull List<@NonNull Indi> universe;
 
     /**
      * Set of currently selected items. Redundant with Indi::selected property.
      */
-    private final Set<Indi> selection = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final @NonNull Set<@NonNull Indi> selection = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final @NonNull Map<@NonNull Indi, @NonNull IndiMovement> selForUndo = new IdentityHashMap<>();
 
 
     @Override
     public void clear() {
         this.selection.forEach(indi -> indi.select(false));
         this.selection.clear();
+        this.selForUndo.clear();
     }
 
     @Override
-    public void select(final Indi indi, final boolean select) {
+    public void select(final @NonNull Indi indi, final boolean select) {
         indi.select(select);
         if (select) {
             this.selection.add(indi);
@@ -60,12 +62,21 @@ public class IndiSelectionModel implements Selectable<Indi> {
 
     @Override
     public void move(final Point2D.Double delta) {
+        if (this.selForUndo.isEmpty()) {
+            this.selection.forEach(indi -> this.selForUndo.put(indi, new IndiMovement(indi)));
+        }
         this.selection.forEach(indi -> indi.move(delta));
     }
 
     @Override
     public void anchor() {
         this.selection.forEach(Indi::anchor);
+    }
+
+    public @NonNull MoveIndis takeModifications() {
+        val mods = new MoveIndis(this.selForUndo.values());
+        this.selForUndo.clear();
+        return mods;
     }
 
     @Override

@@ -41,10 +41,10 @@ public final class IoFtm {
     public static @NonNull ChartModel read(final @NonNull Path path, final @NonNull Grid grid) throws SQLException, IOException {
         final List<Indi> indis;
         final List<Fami> famis;
-        final SQLiteConfig config = new SQLiteConfig();
+        val config = new SQLiteConfig();
         config.setReadOnly(true);
         try (final Connection conn = config.createConnection("jdbc:sqlite:"+path.toString())) {
-            final Map<String, Indi> mapIdToIndi = new HashMap<>();
+            val mapIdToIndi = new HashMap<String, Indi>();
             indis = buildIndis(conn, mapIdToIndi, grid);
             famis = buildFamis(conn, Collections.unmodifiableMap(mapIdToIndi));
         }
@@ -55,11 +55,11 @@ public final class IoFtm {
     }
 
     private static @NonNull List<Indi> buildIndis(final @NonNull Connection conn, final @NonNull Map<String, Indi> mapIdToIndi, final @NonNull Grid grid) throws SQLException, IOException {
-        final List<Indi> indis = new ArrayList<>();
+        val indis = new ArrayList<Indi>();
         try (final PreparedStatement select = conn.prepareStatement(getRes("Indi.sql"))) {
             try (final ResultSet rs = select.executeQuery()) {
                 while (rs.next()) {
-                    final Indi indi = buildIndi(rs, grid);
+                    val indi = buildIndi(rs, grid);
                     mapIdToIndi.put(indi.key(), indi);
                     indis.add(indi);
                 }
@@ -87,18 +87,22 @@ public final class IoFtm {
 
     private static @NonNull Plaque buildPlaque(final @NonNull ResultSet rs) throws SQLException {
         val name = GedcomIndiName.create(rs.getString("name"));
-        final String lifespan = getLifespan(rs.getString("birth"), rs.getString("death"));
-        val birthplace = Place.fromFtmPlace(rs.getString("birthplace"));
-        val anyplace = Place.fromFtmPlace(rs.getString("anyplace"));
-        val place = birthplace.toString().isBlank() ? anyplace : birthplace;
-        return new Plaque(name, lifespan, place.toString());
+        val lifespan = getLifespan(rs.getString("birth"), rs.getString("death"));
+        val place = getPlace(rs);
+        return new Plaque(name, lifespan, place);
     }
 
-    private static long calcBirthForSort(final /*TODO NULLABLE*/ String sDateBirth) {
+    private static long calcBirthForSort(final String sDateBirth) {
         return FtmDate.fromFtmFactDate(sDateBirth).ym();
     }
 
-    private static @NonNull String getLifespan(final /*TODO NULLABLE*/ String sDateBirth, final /*TODO NULLABLE*/ String sDateDeath) {
+    private static @NonNull String getPlace(final @NonNull ResultSet rs) throws SQLException {
+        val birthplace = Place.fromFtmPlace(rs.getString("birthplace"));
+        val anyplace = Place.fromFtmPlace(rs.getString("anyplace"));
+        return (birthplace.toString().isBlank() ? anyplace : birthplace).toString();
+    }
+
+    private static @NonNull String getLifespan(final String sDateBirth, final String sDateDeath) {
         final FtmDate db = FtmDate.fromFtmFactDate(sDateBirth);
         final FtmDate dd = FtmDate.fromFtmFactDate(sDateDeath);
         if (db.unknown() && dd.unknown()) {
@@ -120,9 +124,9 @@ public final class IoFtm {
 
 
     private static @NonNull List<Fami> buildFamis(final @NonNull Connection conn, final @NonNull Map<String, Indi> mapIdToIndi) throws IOException, SQLException {
-        final List<Fami> famis = new ArrayList<>();
-        try (final PreparedStatement select = conn.prepareStatement(getRes("Fami.sql"))) {
-            try (final ResultSet rs = select.executeQuery()) {
+        val famis = new ArrayList<Fami>();
+        try (val select = conn.prepareStatement(getRes("Fami.sql"))) {
+            try (val rs = select.executeQuery()) {
                 int prev = -1;
                 Fami fami = null;
                 while (rs.next()) {
@@ -179,7 +183,7 @@ public final class IoFtm {
 
 
     private static @NonNull String getRes(final @NonNull String fileName) throws IOException {
-        try (final InputStream is = IoFtm.class.getResourceAsStream(fileName)) {
+        try (val is = IoFtm.class.getResourceAsStream(fileName)) {
             if (Objects.isNull(is)) {
                 throw new IOException("Cannot open resource "+fileName);
             }

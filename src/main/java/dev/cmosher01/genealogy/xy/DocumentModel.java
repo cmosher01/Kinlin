@@ -172,6 +172,24 @@ public class DocumentModel {
         this.model = Optional.empty();
     }
 
+    public void undo() {
+        this.model.ifPresent(ChartModel::undo);
+    }
+
+    public void redo() {
+        this.model.ifPresent(ChartModel::redo);
+    }
+
+    public boolean canUndo() {
+        return this.model.isPresent() && this.model.get().canUndo();
+    }
+
+    public boolean canRedo() {
+        return this.model.isPresent() && this.model.get().canRedo();
+    }
+
+
+
     public Rectangle2D bounds() {
         return Awts.rect(this.model.get().bounds());
     }
@@ -194,7 +212,4 @@ public class DocumentModel {
     private static String removeTimestamp(final String name) {
         return name.replaceAll(REGEX_TS, "");
     }
-
-
-
 }

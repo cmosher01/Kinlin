@@ -29,6 +29,7 @@ import java.util.Optional;
 public class ChartMouseController {
     private final ZoomPanModel zp;
     private final DocumentModel model;
+    private final MenuView viewMenu;
 
     private Optional<Indi> optItem = Optional.empty();
     private Optional<Point2D.Double> optptDragPivot = Optional.empty();
@@ -56,7 +57,7 @@ public class ChartMouseController {
             this.wasSelected = item.selected();
             if (!this.wasSelected) {
                 val chart = this.model.getModel().get();
-                chart.getSelection().select(item, true);
+                chart.selectIndi(item, true);
             }
         }
     }
@@ -85,12 +86,13 @@ public class ChartMouseController {
             val chart = optModel.get();
             if (has()) {
                 if (dragged) {
-                    chart.getSelection().anchor();
+                    chart.anchorMovedIndis();
+                    this.viewMenu.refresh(); // update undo/redo
                     chart.updateBounds();
                     this.zp.setZoomOutMinFromBounds(this.model.bounds());
                 } else if (this.wasSelected) {
                     val item = this.optItem.get();
-                    chart.getSelection().select(item, false);
+                    chart.selectIndi(item, false);
                 }
                 this.optItem = Optional.empty();
                 this.optptDragPivot = Optional.empty();

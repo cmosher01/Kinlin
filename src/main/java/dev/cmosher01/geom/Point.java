@@ -47,8 +47,7 @@ public record Point(@NonNull Coord x = Coord.ORIGIN, @NonNull Coord y = Coord.OR
     }
 
     public @NonNull Dim distance(final @NonNull Point that) {
-        val d = that - this;
-        return new Dim(Math.hypot(d.dx.d, d.dy.d));
+        return distance(this, that);
     }
 
     // Point <- Point + Xlation
@@ -70,5 +69,12 @@ public record Point(@NonNull Coord x = Coord.ORIGIN, @NonNull Coord y = Coord.OR
     // Point <- Point / ScaleFactor
     public @NonNull Point div(final @NonNull ScaleFactor k) {
         return new Point(~k * x, ~k * y);
+    }
+
+
+
+    public static @NonNull Dim distance(final @NonNull Point a, final @NonNull Point b) {
+        val d = b - a;
+        return new Dim(Math.hypot(d.dx.d, d.dy.d));
     }
 }

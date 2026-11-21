@@ -43,16 +43,6 @@ public class CommandController {
 
 
 
-    public void undo() {
-        this.viewFrame.refresh();
-        this.viewMenu.refresh();
-    }
-
-    public void redo() {
-        this.viewFrame.refresh();
-        this.viewMenu.refresh();
-    }
-
     public void cut() {
     }
 

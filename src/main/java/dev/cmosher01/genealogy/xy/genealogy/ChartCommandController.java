@@ -29,6 +29,8 @@ public class ChartCommandController {
     private final @NonNull DocumentModel model;
     private final @NonNull ZoomPanModel zp;
     private final @NonNull MainView viewMain;
+    private final @NonNull MenuView viewMenu;
+    private final @NonNull FrameView viewFrame;
     private final @NonNull StatusBarView viewStatusBar;
 
     private @NonNull String lastFind = "";
@@ -36,10 +38,12 @@ public class ChartCommandController {
     private @NonNull final Jumper jumper = new Jumper();
 
 
-    public ChartCommandController(final @NonNull ZoomPanModel zp, final @NonNull DocumentModel model, final @NonNull MainView viewMain, final @NonNull StatusBarView viewStatusBar) {
+    public ChartCommandController(final @NonNull ZoomPanModel zp, final @NonNull DocumentModel model, final @NonNull MainView viewMain, final @NonNull MenuView viewMenu, final @NonNull FrameView viewFrame, final @NonNull StatusBarView viewStatusBar) {
         this.zp = zp;
         this.model = model;
         this.viewMain = viewMain;
+        this.viewMenu = viewMenu;
+        this.viewFrame = viewFrame;
         this.viewStatusBar = viewStatusBar;
     }
 
@@ -123,14 +127,22 @@ public class ChartCommandController {
 
 
 
-
-
-    private void panTo(final @NonNull Point at) {
-        val d = Awts.rect(this.viewMain.clip()).center() - at;
-        val p  = this.zp.viewportToCanvas(this.zp.getPan());
-        this.zp.panTo(this.zp.canvasToViewport(p + d));
+    public void undo() {
+        this.model.undo();
+        this.viewFrame.refresh();
         this.viewMain.repaint();
-        this.viewStatusBar.refresh();
+        this.viewMenu.refresh();
+    }
+
+    public void redo() {
+        this.model.redo();
+        this.viewFrame.refresh();
+        this.viewMain.repaint();
+        this.viewMenu.refresh();
+    }
+
+    public void nudge() {
+        // TODO implement nudge
     }
 
 
@@ -142,5 +154,19 @@ public class ChartCommandController {
     }
 
     public void exportAll() {
+    }
+
+
+
+
+
+
+
+    private void panTo(final @NonNull Point at) {
+        val d = Awts.rect(this.viewMain.clip()).center() - at;
+        val p  = this.zp.viewportToCanvas(this.zp.getPan());
+        this.zp.panTo(this.zp.canvasToViewport(p + d));
+        this.viewMain.repaint();
+        this.viewStatusBar.refresh();
     }
 }

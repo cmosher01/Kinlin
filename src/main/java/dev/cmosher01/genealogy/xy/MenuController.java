@@ -37,8 +37,8 @@ public class MenuController {
 //        view.setPrint(controllerCommand::print);
         view.setQuit(controllerQuit::quit);
 
-        view.setUndo(controllerCommand::undo);
-        view.setRedo(controllerCommand::redo);
+        view.setUndo(controllerChart::undo);
+        view.setRedo(controllerChart::redo);
 //        view.setCut(controllerCommand::cut);
 //        view.setCopy(controllerCommand::copy);
 //        view.setPaste(controllerCommand::paste);
@@ -47,7 +47,7 @@ public class MenuController {
         view.setFind(controllerChart::find);
         view.setFindNext(controllerChart::findNext);
         view.setFindPrevious(controllerChart::findPrevious);
-//        view.setNudge(); TODO
+        view.setNudge(controllerChart::nudge);
         view.setPreferences(controllerCommand::preferences);
 
         view.setFit(controllerChart::fit);

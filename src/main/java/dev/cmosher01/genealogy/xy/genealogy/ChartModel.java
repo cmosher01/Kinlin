@@ -19,11 +19,13 @@ package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.*;
 import dev.cmosher01.geom.*;
+import dev.cmosher01.util.ModificationTracker;
 import lombok.*;
 import nu.mine.mosher.gedcom.GedcomTree;
 
 import java.util.*;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ChartModel {
     private static final Outset BOUNDS_OUTSET = new Outset(new GrowTerm(100D)); // TODO
 
@@ -36,7 +38,9 @@ public class ChartModel {
 
     private Rect bounds;
 
-    @Getter private final Selectable<Indi> selection;
+    @Getter private final IndiSelectionModel selection;
+
+    private final ModificationTracker modtrack = new ModificationTracker();
 
 
 
@@ -123,5 +127,34 @@ public class ChartModel {
 
     public void saveXyToTree() {
         this.indis.forEach(Indi::saveXyToTree);
+    }
+
+
+
+
+
+    public void selectIndi(final @NonNull Indi indi, final boolean select) {
+        this.selection.select(indi, select);
+    }
+
+    public void anchorMovedIndis() {
+        this.selection.anchor();
+        this.modtrack.make(this.selection.takeModifications());
+    }
+
+    public void undo() {
+        this.modtrack.undo();
+    }
+
+    public void redo() {
+        this.modtrack.redo();
+    }
+
+    public boolean canUndo() {
+        return this.modtrack.canUndo();
+    }
+
+    public boolean canRedo() {
+        return this.modtrack.canRedo();
     }
 }

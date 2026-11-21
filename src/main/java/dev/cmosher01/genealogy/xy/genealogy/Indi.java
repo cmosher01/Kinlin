@@ -55,8 +55,10 @@ public class Indi {
     }
 
 
-
-
+    @Override
+    public String toString() {
+        return this.simpleName();
+    }
 
     public @NonNull String key() {
         return this.id.key();
@@ -107,6 +109,11 @@ public class Indi {
     public void move(final @NonNull Point2D.Double d) {
         this.pt.move(new Xlation(new MoveTerm(d.getX()), new MoveTerm(d.getY())));
         refreshFamis(this.cachedFonts);
+    }
+
+    public void moveTo(final @NonNull Point pt) {
+        this.pt.userMoveTo(pt);
+        this.pt.anchor(); // TODO is this necessary?
     }
 
     private void refreshFamis(final @NonNull FontModel fonts) {

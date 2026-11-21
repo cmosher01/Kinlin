@@ -179,12 +179,14 @@ public class MenuView extends JMenuBar {
         this.actExportMod.setEnabled(this.modelDocument.isOpen());
         this.actExportAll.setEnabled(this.modelDocument.isOpen());
 
+        this.actUndo.setEnabled(this.modelDocument.canUndo());
+        this.actRedo.setEnabled(this.modelDocument.canRedo());
+        // TODO enable/disable nudge
+
         this.actFit.setEnabled(this.modelDocument.isOpen());
         this.actCenter.setEnabled(this.modelDocument.isOpen());
         this.actJump.setEnabled(this.modelDocument.isOpen());
         this.actReset.setEnabled(this.modelDocument.isOpen());
-
-        // TODO enable/disable nudge
     }
 
 
