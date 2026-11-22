@@ -114,6 +114,7 @@ public class Indi {
     public void moveTo(final @NonNull Point pt) {
         this.pt.userMoveTo(pt);
         this.pt.anchor();
+        refreshFamis(this.cachedFonts);
     }
 
     private void refreshFamis(final @NonNull FontModel fonts) {

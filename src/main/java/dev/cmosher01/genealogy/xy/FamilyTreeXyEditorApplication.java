@@ -57,7 +57,7 @@ public class FamilyTreeXyEditorApplication {
         val controllerZoomPanMouse = new ZoomPanMouseController(modelZoomPan);
         val controllerChartMouse = new ChartMouseController(modelZoomPan, modelDocument, viewMenu);
         val controllerChartCommand = new ChartCommandController(modelZoomPan, modelDocument, viewMain, viewMenu, viewFrame, viewStatusBar);
-        val controllerDragSelection = new DragSelectionController<>(modelDragSelection, modelDocument, modelZoomPan);
+        val controllerDragSelection = new DragSelectionController<>(modelDragSelection, modelDocument, modelZoomPan, viewMenu);
         val controllerStatusBar = new StatusBarController(modelStatusBar, viewStatusBar, viewMain);
         val controllerCommands = new CommandController(viewFrame, viewMenu);
         val controllerDocument = new DocumentController(modelDocument, modelZoomPan, viewFrame, viewMenu, viewMain, viewChart, controllerChartCommand);
@@ -68,6 +68,7 @@ public class FamilyTreeXyEditorApplication {
         val controllerMouse = new MouseController(viewMouse, viewMain, viewFrame, viewStatusBar, modelZoomPan, controllerZoomPanMouse, modelStatusBar, controllerChartMouse, controllerDragSelection);
 
         viewFrame.display();
+        viewMenu.refresh();
     }
 
 

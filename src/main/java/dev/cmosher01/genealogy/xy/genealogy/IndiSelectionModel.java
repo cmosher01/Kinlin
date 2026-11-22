@@ -96,4 +96,8 @@ public class IndiSelectionModel implements Selectable<Indi> {
         }
         return Optional.of(Rect.bounds(this.selection.stream().map(Indi::bounds).toList()).center());
     }
+
+    public boolean hasSelected() {
+        return !this.selection.isEmpty();
+    }
 }

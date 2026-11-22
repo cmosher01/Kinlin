@@ -58,6 +58,7 @@ public class ChartMouseController {
             if (!this.wasSelected) {
                 val chart = this.model.getModel().get();
                 chart.selectIndi(item, true);
+                viewMenu.refresh(); // update nudge
             }
         }
     }
@@ -93,6 +94,7 @@ public class ChartMouseController {
                 } else if (this.wasSelected) {
                     val item = this.optItem.get();
                     chart.selectIndi(item, false);
+                    viewMenu.refresh(); // update nudge
                 }
                 this.optItem = Optional.empty();
                 this.optptDragPivot = Optional.empty();

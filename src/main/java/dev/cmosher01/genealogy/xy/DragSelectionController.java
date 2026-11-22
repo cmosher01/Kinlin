@@ -27,6 +27,7 @@ public class DragSelectionController<T> {
     private final DragSelectionModel model;
     private final DocumentModel modelDocument;
     private final ZoomPanModel zp;
+    private final MenuView viewMenu;
 
     private Selectable<?> getSelectable() {
         if (this.modelDocument.getModel().isEmpty()) {
@@ -47,6 +48,7 @@ public class DragSelectionController<T> {
 
         this.model.set(this.ptOrig, this.ptCurr);
         getSelectable().setFromRectangle(this.zp.viewportToCanvas(this.model.bounds()));
+        this.viewMenu.refresh();
     }
 
     public void drag(final Point2D.Double at) {
@@ -55,6 +57,7 @@ public class DragSelectionController<T> {
 
             this.model.set(this.ptOrig, this.ptCurr);
             getSelectable().setFromRectangle(this.zp.viewportToCanvas(this.model.bounds()));
+            this.viewMenu.refresh();
         }
     }
 

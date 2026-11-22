@@ -144,10 +144,12 @@ public class ChartModel {
 
     public void undo() {
         this.modtrack.undo();
+        updateBounds();
     }
 
     public void redo() {
         this.modtrack.redo();
+        updateBounds();
     }
 
     public boolean canUndo() {
@@ -164,5 +166,9 @@ public class ChartModel {
 
     @NonNull Grid getGrid() {
         return this.grid;
+    }
+
+    public boolean hasSelected() {
+        return this.selection.hasSelected();
     }
 }

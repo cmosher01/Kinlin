@@ -210,4 +210,8 @@ public class DocumentModel {
     private static String removeTimestamp(final String name) {
         return name.replaceAll(REGEX_TS, "");
     }
+
+    public boolean hasSelected() {
+        return this.model.isPresent() && this.model.get().hasSelected();
+    }
 }

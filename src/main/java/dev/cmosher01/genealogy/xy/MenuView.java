@@ -181,7 +181,11 @@ public class MenuView extends JMenuBar {
 
         this.actUndo.setEnabled(this.modelDocument.canUndo());
         this.actRedo.setEnabled(this.modelDocument.canRedo());
-        // TODO enable/disable nudge
+        this.actSelectAll.setEnabled(this.modelDocument.isOpen());
+        this.actFind.setEnabled(this.modelDocument.isOpen());
+        this.actFindNext.setEnabled(this.modelDocument.isOpen());
+        this.actFindPrevious.setEnabled(this.modelDocument.isOpen());
+        this.actNudge.setEnabled(this.modelDocument.hasSelected());
 
         this.actFit.setEnabled(this.modelDocument.isOpen());
         this.actCenter.setEnabled(this.modelDocument.isOpen());
@@ -191,9 +195,9 @@ public class MenuView extends JMenuBar {
 
 
 
-//    public void setNew(final Runnable lambda) {
-//        this.actNew.setAction(lambda);
-//    }
+    public void setNew(final Runnable lambda) {
+        this.actNew.setAction(lambda);
+    }
     public void setOpen(final Runnable lambda) {
         this.actOpen.setAction(lambda);
     }
@@ -215,12 +219,12 @@ public class MenuView extends JMenuBar {
     public void setExportAll(final Runnable lambda) {
         this.actExportAll.setAction(lambda);
     }
-//    public void setPageSetup(final Runnable lambda) {
-//        this.actPageSetup.setAction(lambda);
-//    }
-//    public void setPrint(final Runnable lambda) {
-//        this.actPrint.setAction(lambda);
-//    }
+    public void setPageSetup(final Runnable lambda) {
+        this.actPageSetup.setAction(lambda);
+    }
+    public void setPrint(final Runnable lambda) {
+        this.actPrint.setAction(lambda);
+    }
     public void setQuit(final Runnable lambda) {
         this.actQuit.setAction(lambda);
     }
@@ -231,18 +235,18 @@ public class MenuView extends JMenuBar {
     public void setRedo(final Runnable lambda) {
         this.actRedo.setAction(lambda);
     }
-//    public void setCut(final Runnable lambda) {
-//        this.actCut.setAction(lambda);
-//    }
-//    public void setCopy(final Runnable lambda) {
-//        this.actCopy.setAction(lambda);
-//    }
-//    public void setPaste(final Runnable lambda) {
-//        this.actPaste.setAction(lambda);
-//    }
-//    public void setDelete(final Runnable lambda) {
-//        this.actDelete.setAction(lambda);
-//    }
+    public void setCut(final Runnable lambda) {
+        this.actCut.setAction(lambda);
+    }
+    public void setCopy(final Runnable lambda) {
+        this.actCopy.setAction(lambda);
+    }
+    public void setPaste(final Runnable lambda) {
+        this.actPaste.setAction(lambda);
+    }
+    public void setDelete(final Runnable lambda) {
+        this.actDelete.setAction(lambda);
+    }
     public void setSelectAll(final Runnable lambda) {
         this.actSelectAll.setAction(lambda);
     }
