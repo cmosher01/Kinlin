@@ -70,7 +70,12 @@ public class XyValue {
             exists = false;
             error = e.toString();
         }
-        // TODO check for invalid values, NaN, Inf, too large absolute value, etc.
+        if (!validCoord(x) || !validCoord(y)) {
+            x = 0;
+            y = 0;
+            exists = false;
+            error = "Invalid _XY coordinates: "+x+" "+y;
+        }
         return new XyValue(new Coord(x), new Coord(y), exists, error);
     }
 
@@ -114,5 +119,18 @@ public class XyValue {
 
     public static String convertToXY(final @NonNull Point pt) {
         return String.format("%.2f %.2f", pt.x().u(), pt.y().u());
+    }
+
+    private static boolean validCoord(final @NonNull Double u) {
+        if (Double.isNaN(u)) {
+            return false;
+        }
+        if (Double.isInfinite(u)) {
+            return false;
+        }
+        if (u < -1e8D || 1e8D < u) {
+            return false;
+        }
+        return true;
     }
 }

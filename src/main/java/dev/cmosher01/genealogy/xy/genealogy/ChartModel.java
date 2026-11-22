@@ -40,8 +40,8 @@ public class ChartModel {
 
     @Getter private final IndiSelectionModel selection;
 
-    private final ModificationTracker modtrack = new ModificationTracker();
-
+    private final @NonNull ModificationTracker modtrack = new ModificationTracker();
+    private @NonNull Grid grid = new Grid();
 
 
     public ChartModel(final @NonNull List<Indi> indis, final @NonNull List<Fami> famis, final @NonNull Optional<GedcomTree> tree) {
@@ -156,5 +156,13 @@ public class ChartModel {
 
     public boolean canRedo() {
         return this.modtrack.canRedo();
+    }
+
+    public void calcGrid() {
+        this.grid = Grids.createFromIndis(this.indis);
+    }
+
+    @NonNull Grid getGrid() {
+        return this.grid;
     }
 }

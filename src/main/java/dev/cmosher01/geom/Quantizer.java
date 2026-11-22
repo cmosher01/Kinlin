@@ -20,6 +20,12 @@ package dev.cmosher01.geom;
 import lombok.NonNull;
 
 public record Quantizer(@NonNull ScaleFactor k = ScaleFactor.IDENTITY, @NonNull MoveTerm d = MoveTerm.IDENTITY) {
+    public static final @NonNull Quantizer IDENTITY = new Quantizer();
+
+    public boolean isQuantizing() {
+        return ScaleFactor.IDENTITY.k() < this.k.k();
+    }
+
     public @NonNull Coord snap(final @NonNull Coord u) {
         return ((u - d) / k).rint() * k + d;
     }

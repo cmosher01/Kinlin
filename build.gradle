@@ -72,6 +72,7 @@ dependencies {
     annotationProcessor 'systems.manifold:manifold-props:latest.release'
 
     implementation 'org.slf4j:slf4j-api:latest.release'
+    implementation 'org.slf4j:slf4j-simple:latest.release'
 
 
 

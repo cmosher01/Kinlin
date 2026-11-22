@@ -18,7 +18,7 @@
 package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.*;
-import dev.cmosher01.geom.Awts;
+import dev.cmosher01.geom.*;
 import lombok.*;
 
 import java.awt.geom.Point2D;
@@ -34,7 +34,7 @@ public class ChartMouseController {
     private Optional<Indi> optItem = Optional.empty();
     private Optional<Point2D.Double> optptDragPivot = Optional.empty();
     private boolean wasSelected;
-    // TODO can/should we add Grid here, and pass down to the move methods?
+
 
 
     public boolean want(final Point2D.Double at) {
@@ -67,7 +67,7 @@ public class ChartMouseController {
             val chart = this.model.getModel().get();
             val d = Swings.delta(this.optptDragPivot.get(), at);
             if (d.x != 0 || d.y != 0) {
-                chart.getSelection().move(d);
+                chart.getSelection().move(d, chart.getGrid());
                 if (chart.getSelection().isModified()) {
                     this.model.setModified();
                 } else {

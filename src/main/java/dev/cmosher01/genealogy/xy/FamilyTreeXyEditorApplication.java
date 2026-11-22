@@ -39,9 +39,8 @@ public class FamilyTreeXyEditorApplication {
         val modelZoomPan = new ZoomPanModel();
         val modelStatusBar = new StatusBarModel(modelZoomPan);
         val modelDragSelection = new DragSelectionModel();
-        val modelGrid = new Grid();
         val modelFont = new FontModel();
-        val modelDocument = new DocumentModel(modelFont, modelGrid);
+        val modelDocument = new DocumentModel(modelFont);
 
         // VIEW
         val viewMouse = new MouseView();

@@ -106,14 +106,14 @@ public class Indi {
         this.pt.layoutMoveTo(at);
     }
 
-    public void move(final @NonNull Point2D.Double d) {
-        this.pt.move(new Xlation(new MoveTerm(d.getX()), new MoveTerm(d.getY())));
+    public void move(final @NonNull Point2D.Double d, final @NonNull Grid grid) {
+        this.pt.move(new Xlation(new MoveTerm(d.getX()), new MoveTerm(d.getY())), grid);
         refreshFamis(this.cachedFonts);
     }
 
     public void moveTo(final @NonNull Point pt) {
         this.pt.userMoveTo(pt);
-        this.pt.anchor(); // TODO is this necessary?
+        this.pt.anchor();
     }
 
     private void refreshFamis(final @NonNull FontModel fonts) {

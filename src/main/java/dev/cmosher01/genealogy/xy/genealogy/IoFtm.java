@@ -18,7 +18,6 @@
 package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.MovablePoint;
-import dev.cmosher01.geom.Grid;
 import lombok.*;
 import org.sqlite.SQLiteConfig;
 
@@ -38,14 +37,14 @@ public final class IoFtm {
 
 
 
-    public static @NonNull ChartModel read(final @NonNull Path path, final @NonNull Grid grid) throws SQLException, IOException {
+    public static @NonNull ChartModel read(final @NonNull Path path) throws SQLException, IOException {
         final List<Indi> indis;
         final List<Fami> famis;
         val config = new SQLiteConfig();
         config.setReadOnly(true);
         try (final Connection conn = config.createConnection("jdbc:sqlite:"+path.toString())) {
             val mapIdToIndi = new HashMap<String, Indi>();
-            indis = buildIndis(conn, mapIdToIndi, grid);
+            indis = buildIndis(conn, mapIdToIndi);
             famis = buildFamis(conn, Collections.unmodifiableMap(mapIdToIndi));
         }
 
@@ -54,12 +53,12 @@ public final class IoFtm {
         return new ChartModel(indis, famis, Optional.empty());
     }
 
-    private static @NonNull List<Indi> buildIndis(final @NonNull Connection conn, final @NonNull Map<String, Indi> mapIdToIndi, final @NonNull Grid grid) throws SQLException, IOException {
+    private static @NonNull List<Indi> buildIndis(final @NonNull Connection conn, final @NonNull Map<String, Indi> mapIdToIndi) throws SQLException, IOException {
         val indis = new ArrayList<Indi>();
         try (final PreparedStatement select = conn.prepareStatement(getRes("Indi.sql"))) {
             try (final ResultSet rs = select.executeQuery()) {
                 while (rs.next()) {
-                    val indi = buildIndi(rs, grid);
+                    val indi = buildIndi(rs);
                     mapIdToIndi.put(indi.key(), indi);
                     indis.add(indi);
                 }
@@ -68,7 +67,7 @@ public final class IoFtm {
         return indis;
     }
 
-    private static @NonNull Indi buildIndi(final @NonNull ResultSet rs, final @NonNull Grid grid) throws SQLException {
+    private static @NonNull Indi buildIndi(final @NonNull ResultSet rs) throws SQLException {
         // TODO do we need to save this somewhere?
 //        final String pkidFact = rs.getString("pkidFact");
 
@@ -80,7 +79,7 @@ public final class IoFtm {
 
         val plaque = buildPlaque(rs);
 
-        val pt = new MovablePoint(grid, XyValue.create(rs.getString("xy")).get());
+        val pt = new MovablePoint(XyValue.create(rs.getString("xy")).get());
 
         return new Indi(id, sex, birth, plaque, pt);
     }

@@ -38,12 +38,12 @@ public final class IoGedcom {
 
 
 
-    public static @NonNull ChartModel read(final @NonNull Path path, final @NonNull Grid grid) throws IOException, InvalidLevel {
+    public static @NonNull ChartModel read(final @NonNull Path path) throws IOException, InvalidLevel {
         val tree = readTree(path);
 
         val mapIdToIndi = new HashMap<String, Indi>();
 
-        val indis = buildIndis(tree, mapIdToIndi, grid);
+        val indis = buildIndis(tree, mapIdToIndi);
         val famis = buildFamis(tree, Collections.unmodifiableMap(mapIdToIndi));
 
         new Layout(indis, famis).clean();
@@ -73,11 +73,11 @@ public final class IoGedcom {
 
 
 
-    private static @NonNull List<Indi> buildIndis(final @NonNull GedcomTree tree, final @NonNull Map<String, Indi> mapIdToIndi, final @NonNull Grid grid) {
+    private static @NonNull List<Indi> buildIndis(final @NonNull GedcomTree tree, final @NonNull Map<String, Indi> mapIdToIndi) {
         val indis = new ArrayList<Indi>();
         tree.getRoot().forEach(nodeIndi -> {
             if (nodeIndi.getObject().getTag().equals(GedcomTag.INDI)) {
-                val indi = buildIndi(nodeIndi, grid);
+                val indi = buildIndi(nodeIndi);
                 mapIdToIndi.put(indi.key(), indi);
                 indis.add(indi);
             }
@@ -85,7 +85,7 @@ public final class IoGedcom {
         return indis;
     }
 
-    private static @NonNull Indi buildIndi(final @NonNull TreeNode<GedcomLine> node, final @NonNull Grid grid) {
+    private static @NonNull Indi buildIndi(final @NonNull TreeNode<GedcomLine> node) {
         val id = new IndividualId(node);
 
         // sex and birthdate are only used as hints by the automatic layout algorithms
@@ -94,7 +94,7 @@ public final class IoGedcom {
 
         val plaque = buildPlaque(node);
 
-        val pt = new MovablePoint(grid, XyValue.create(getValue(node, XyValue.GED_TAG)).get());
+        val pt = new MovablePoint(XyValue.create(getValue(node, XyValue.GED_TAG)).get());
 
         return new Indi(id, sex, birth, plaque, pt);
     }

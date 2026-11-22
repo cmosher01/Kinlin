@@ -17,7 +17,7 @@
 
 package dev.cmosher01.genealogy.xy;
 
-import dev.cmosher01.geom.Point;
+import dev.cmosher01.geom.*;
 
 import java.awt.geom.*;
 import java.util.Optional;
@@ -25,7 +25,7 @@ import java.util.Optional;
 public interface Selectable<T> {
     void select(T item, boolean select);
     void setFromRectangle(Rectangle2D.Double r);
-    void move(Point2D.Double delta);
+    void move(Point2D.Double delta, Grid grid);
     void anchor();
     void clear();
     boolean isModified();

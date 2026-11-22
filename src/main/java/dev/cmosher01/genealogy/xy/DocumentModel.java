@@ -40,12 +40,10 @@ public class DocumentModel {
     private @NonNull Optional<Path> file = Optional.empty();
     private FileName filename;
     private final @NonNull FontModel modelFont;
-    private final @NonNull Grid grid;
     private boolean dirty ;
 
-    public DocumentModel(final @NonNull FontModel modelFont, final @NonNull Grid grid) {
+    public DocumentModel(final @NonNull FontModel modelFont) {
         this.modelFont = modelFont;
-        this.grid = grid;
     }
 
 
@@ -73,14 +71,14 @@ public class DocumentModel {
         this.file = Optional.of(file);
         this.filename = FileName.of(file.getFileName().toString());
 
-        // TODO can/should we not pass grid here?
         if (isFtm()) {
-            this.model = Optional.of(IoFtm.read(file, this.grid));
+            this.model = Optional.of(IoFtm.read(file));
         } else {
-            this.model = Optional.of(IoGedcom.read(file, this.grid));
+            this.model = Optional.of(IoGedcom.read(file));
         }
         if (this.model.isPresent()) {
             // TODO update grid based on heuristic detection from tree
+            this.model.get().calcGrid();
             this.model.get().refresh(this.modelFont);
         }
     }

@@ -61,11 +61,11 @@ public class IndiSelectionModel implements Selectable<Indi> {
     }
 
     @Override
-    public void move(final Point2D.Double delta) {
+    public void move(final Point2D.Double delta, final @NonNull Grid grid) {
         if (this.selForUndo.isEmpty()) {
             this.selection.forEach(indi -> this.selForUndo.put(indi, new IndiMovement(indi)));
         }
-        this.selection.forEach(indi -> indi.move(delta));
+        this.selection.forEach(indi -> indi.move(delta, grid));
     }
 
     @Override

@@ -17,14 +17,14 @@
 
 package dev.cmosher01.geom;
 
-import lombok.Setter;
+import lombok.*;
 
 public class Grid {
-    @Setter private boolean active;
-    @Setter private Quantizer x;
-    @Setter private Quantizer y;
+    @Getter @Setter private boolean active = false;
+    @Getter @Setter private @NonNull Quantizer x = new Quantizer();
+    @Getter @Setter private @NonNull Quantizer y = new Quantizer();
 
-    public Point snap(final Point p) {
+    public @NonNull Point snap(final @NonNull Point p) {
         return active ? new Point(x.snap(p.x), y.snap(p.y)) : p;
     }
 }

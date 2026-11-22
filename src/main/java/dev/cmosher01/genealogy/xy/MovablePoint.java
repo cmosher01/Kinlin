@@ -54,34 +54,24 @@ public class MovablePoint {
 
     private @NonNull Optional<Point> cache = Optional.empty();
 
-    private final @NonNull Grid g;
     private @NonNull Point raw = Point.NULL;
 
 
 
-    public MovablePoint(final @NonNull Grid g) {
-        this(g, Optional.empty());
+    public MovablePoint() {
+        this(Optional.empty());
     }
 
-    public MovablePoint(final @NonNull Grid g, final @NonNull Point original) {
-        this(g, Optional.of(original));
+    public MovablePoint(final @NonNull Point original) {
+        this(Optional.of(original));
     }
 
-    public MovablePoint(final @NonNull Grid g, final @NonNull Optional<Point> original) {
-        this.g = g;
+    public MovablePoint(final @NonNull Optional<Point> original) {
         this.original = original;
         update();
     }
 
 
-
-    /**
-     * Gets the original ("last saved") point, or empty.
-     * @return the original point or empty
-     */
-    public @NonNull Optional<Point> getOriginal() {
-        return this.original;
-    }
 
     private static final boolean FAIL_SAFE = true; // TODO
 //    private static final boolean FAIL_SAFE = false;
@@ -145,7 +135,7 @@ public class MovablePoint {
 
 
 
-    public void move(final @NonNull Xlation d) {
+    public void move(final @NonNull Xlation d, final @NonNull Grid grid) {
         if (this.raw.empty()) {
             anchor();
             if (FAIL_SAFE && this.raw.empty()) {
@@ -153,7 +143,7 @@ public class MovablePoint {
             }
         }
         (this.raw) += d;
-        userMoveTo(this.g.snap(this.raw));
+        userMoveTo(grid.snap(this.raw));
     }
 
     public void anchor() {
