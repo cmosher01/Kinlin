@@ -23,6 +23,7 @@ import dev.cmosher01.util.ModificationTracker;
 import lombok.*;
 import nu.mine.mosher.gedcom.GedcomTree;
 
+import java.awt.geom.Point2D;
 import java.util.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -38,10 +39,10 @@ public class ChartModel {
 
     private Rect bounds;
 
-    @Getter private final IndiSelectionModel selection;
+    @Getter private final @NonNull IndiSelectionModel selection;
 
     private final @NonNull ModificationTracker modtrack = new ModificationTracker();
-    private @NonNull Grid grid = new Grid();
+    private final @NonNull Grid grid = new Grid();
 
 
     public ChartModel(final @NonNull List<Indi> indis, final @NonNull List<Fami> famis, final @NonNull Optional<GedcomTree> tree) {
@@ -161,14 +162,22 @@ public class ChartModel {
     }
 
     public void calcGrid() {
-        this.grid = Grids.createFromIndis(this.indis);
-    }
-
-    @NonNull Grid getGrid() {
-        return this.grid;
+        Grids.createFromIndis(this.indis, this.grid);
     }
 
     public boolean hasSelected() {
         return this.selection.hasSelected();
+    }
+
+    public void selectAll() {
+        this.selection.selectAll();
+    }
+
+    public void moveSelection(Point2D.Double d) {
+        this.selection.move(d, this.grid);
+    }
+
+    public void gridSettings(final @NonNull FrameView viewFrame) {
+        new GridSettingsDialog(viewFrame, this.grid).dialog();
     }
 }

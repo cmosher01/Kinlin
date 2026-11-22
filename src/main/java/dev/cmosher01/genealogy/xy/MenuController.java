@@ -25,7 +25,7 @@ import dev.cmosher01.genealogy.xy.genealogy.ChartCommandController;
  */
 public class MenuController {
     public MenuController(final MenuView view, final DocumentController controllerDocument, final CommandController controllerCommand, final QuitController controllerQuit, final ChartCommandController controllerChart) {
-//        view.setNew(controllerCommand::newFile);
+        view.setNew(controllerCommand::newFile);
         view.setOpen(controllerDocument::open);
         view.setClose(controllerDocument::close);
         view.setExportPdf(controllerChart::exportPdf);
@@ -33,21 +33,22 @@ public class MenuController {
         view.setExportAll(controllerChart::exportAll);
         view.setSave(controllerDocument::save);
         view.setSaveAs(controllerDocument::saveAs);
-//        view.setPageSetup(controllerCommand::pageSetup);
-//        view.setPrint(controllerCommand::print);
+        view.setPageSetup(controllerCommand::pageSetup);
+        view.setPrint(controllerCommand::print);
         view.setQuit(controllerQuit::quit);
 
         view.setUndo(controllerChart::undo);
         view.setRedo(controllerChart::redo);
-//        view.setCut(controllerCommand::cut);
-//        view.setCopy(controllerCommand::copy);
-//        view.setPaste(controllerCommand::paste);
-//        view.setDelete(controllerCommand::delete);
-        view.setSelectAll(controllerCommand::selectAll);
+        view.setCut(controllerCommand::cut);
+        view.setCopy(controllerCommand::copy);
+        view.setPaste(controllerCommand::paste);
+        view.setDelete(controllerCommand::delete);
+        view.setSelectAll(controllerChart::selectAll);
         view.setFind(controllerChart::find);
         view.setFindNext(controllerChart::findNext);
         view.setFindPrevious(controllerChart::findPrevious);
         view.setNudge(controllerChart::nudge);
+        view.setGrid(controllerChart::gridSettings);
         view.setPreferences(controllerCommand::preferences);
 
         view.setFit(controllerChart::fit);

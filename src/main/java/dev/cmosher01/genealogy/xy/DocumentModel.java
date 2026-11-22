@@ -77,7 +77,6 @@ public class DocumentModel {
             this.model = Optional.of(IoGedcom.read(file));
         }
         if (this.model.isPresent()) {
-            // TODO update grid based on heuristic detection from tree
             this.model.get().calcGrid();
             this.model.get().refresh(this.modelFont);
         }
@@ -213,5 +212,11 @@ public class DocumentModel {
 
     public boolean hasSelected() {
         return this.model.isPresent() && this.model.get().hasSelected();
+    }
+
+    public void selectAll() {
+        if (this.model.isPresent) {
+            this.model.get().selectAll();
+        }
     }
 }

@@ -19,6 +19,7 @@ package dev.cmosher01.genealogy.xy;
 
 import lombok.*;
 
+import javax.swing.*;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -39,6 +40,7 @@ public class CommandController {
     }
 
     public void print(final List<Path> paths) {
+        // TODO ??? export PDFs ???
     }
 
 
@@ -55,18 +57,26 @@ public class CommandController {
     public void delete() {
     }
 
-    public void selectAll() {
-    }
-
 
 
 
     public void help() {
+        // TODO
     }
 
     public void about() {
+        SwingUtilities.invokeLater(() ->
+            JOptionPane.showMessageDialog(
+                this.viewFrame,
+                "KinLin (Kinship Lineage Chart Editor)\n\n" +
+                    "Version " + FamilyTreeXyEditor.VERSION + "\n" +
+// TODO                   "Log file: "+ LogbackConfigurator.getFilePath() + "\n\n" +
+                    "Copyright © 2000–2026, Christopher Alan Mosher, New York, New York, USA, <cmosher01@gmail.com>.",
+                "KinLin",
+                JOptionPane.INFORMATION_MESSAGE));
     }
 
     public void preferences() {
+        // TODO
     }
 }

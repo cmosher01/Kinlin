@@ -148,14 +148,20 @@ public class ChartCommandController {
 
 
     public void exportPdf() {
+        // TODO
     }
 
     public void exportMod() {
+        // TODO
     }
 
     public void exportAll() {
+        // TODO
     }
 
+    public void gridSettings() {
+        this.model.getModel().get().gridSettings(this.viewFrame);
+    }
 
 
 
@@ -168,5 +174,11 @@ public class ChartCommandController {
         this.zp.panTo(this.zp.canvasToViewport(p + d));
         this.viewMain.repaint();
         this.viewStatusBar.refresh();
+    }
+
+    public void selectAll() {
+        this.model.selectAll();
+        this.viewFrame.refresh();
+        this.viewMain.repaint();
     }
 }

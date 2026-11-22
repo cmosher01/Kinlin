@@ -100,4 +100,9 @@ public class IndiSelectionModel implements Selectable<Indi> {
     public boolean hasSelected() {
         return !this.selection.isEmpty();
     }
+
+    public void selectAll() {
+        this.universe.forEach(i -> i.select(true));
+        this.selection.addAll(this.universe);
+    }
 }

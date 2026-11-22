@@ -89,3 +89,9 @@ tasks.withType(JavaCompile).configureEach {
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
+
+jar {
+    manifest {
+        attributes('Implementation-Version': project.version)
+    }
+}

@@ -29,54 +29,48 @@ import java.util.stream.Stream;
 
 @Slf4j
 public final class Grids {
-    private static final ScaleFactor MIN_GRID_TO_DETECT = new ScaleFactor(10D);
-    private static final ScaleFactor MAX_GRID = new ScaleFactor(1000D);
-
     @Deprecated
     private Grids() {
         throw new UnsupportedOperationException();
     }
 
 
-    private static final @NonNull ScaleFactor NO_GRID = ScaleFactor.IDENTITY;
+
     private static final @NonNull MoveTerm NO_OFFSET = MoveTerm.IDENTITY;
+    private static final @NonNull ScaleFactor NO_GRID = ScaleFactor.IDENTITY;
+    private static final @NonNull ScaleFactor MIN_GRID = new ScaleFactor(1e1D);
+    private static final @NonNull ScaleFactor MAX_GRID = new ScaleFactor(1e3D);
 
 
-    public static Grid createFromIndis(final List<Indi> individuals) {
+
+    public static void createFromIndis(final @NonNull List<@NonNull Indi> individuals, final @NonNull Grid ret) {
         val indis = Collections.unmodifiableList(individuals);
 
         // TODO have separate X and Y grid values
         val coords = getAllCoordsFrom(indis);
 
-        var grid = calcGrid(coords);
-        var offset = MoveTerm.IDENTITY;
+        var k = calcGrid(coords);
+        var d = MoveTerm.IDENTITY;
 
-        val ret = new Grid();
         ret.setActive(true);
-        ret.setX(new Quantizer(grid, offset));
+        ret.setX(new Quantizer(k, d));
         ret.setY(ret.getX());
 
 
-        if (isGrid(ret)) {
-            offset = calcOffset(coords, grid);
+        if (ret.getX().isQuantizing()) {
+            d = calcOffset(coords, k);
         } else {
-            grid = MIN_GRID_TO_DETECT;
+            k = MIN_GRID;
         }
 
-        ret.setX(new Quantizer(grid, offset));
+        ret.setX(new Quantizer(k, d));
         ret.setY(ret.getX());
 
         reportGridAlignmentOf(indis, ret);
-
-        return ret;
     }
 
 
-    private static boolean isGrid(Grid ret) {
-        return ret.getX().isQuantizing() || ret.getY().isQuantizing();
-    }
-
-//    public void setFromUserEnteredString(final String usersEntry, final Preferences prefs) {
+    //    public void setFromUserEnteredString(final String usersEntry, final Preferences prefs) {
 //        if (Objects.isNull(usersEntry) || usersEntry.isBlank()) {
 //            return;
 //        }
@@ -175,7 +169,7 @@ public final class Grids {
         // count unique GCDs (>= MIN_GRID_TO_DETECT) between each pair of distances
         final var gcds = new HashMap<BigInteger, Integer>();
         {
-            final var gcdMinToDetect = BigInteger.valueOf(MIN_GRID_TO_DETECT.k().longValue());
+            final var gcdMinToDetect = BigInteger.valueOf(MIN_GRID.k().longValue());
             for (int i = 0; i < dxsSorted.size() - 1; ++i) {
                 for (int j = i + 1; j < dxsSorted.size(); ++j) {
                     final var gcd = dxsSorted.get(i).gcd(dxsSorted.get(j));
@@ -189,7 +183,7 @@ public final class Grids {
             if (dxsSorted.size() == 1) {
                 gcds.put(dxsSorted.getFirst(), 1);
             }
-            log.info("Total count of different GCDs >= {} between each pair of distances: {}", MIN_GRID_TO_DETECT, gcds.size());
+            log.info("Total count of different GCDs >= {} between each pair of distances: {}", MIN_GRID, gcds.size());
         }
         if (gcds.isEmpty()) {
             return NO_GRID;
@@ -201,7 +195,7 @@ public final class Grids {
         final var gcdsSorted = new ArrayList<Integer>(gcds.size());
         {
             final double COVERAGE_RATE = 0.6D;
-            log.info("Top GCDs (min: {}), by popularity (to {}% coverage rate)", MIN_GRID_TO_DETECT, Math.round(Math.rint(100D * COVERAGE_RATE)));
+            log.info("Top GCDs (min: {}), by popularity (to {}% coverage rate)", MIN_GRID, Math.round(Math.rint(100D * COVERAGE_RATE)));
             final var T = (double) (gcds.values().stream().reduce(0, Integer::sum));
             final var n = new AtomicInteger();
             final var cut = new AtomicBoolean();

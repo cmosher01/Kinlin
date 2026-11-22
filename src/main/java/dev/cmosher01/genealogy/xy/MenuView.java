@@ -60,7 +60,8 @@ public class MenuView extends JMenuBar {
     private static final String CMD_FIND_NEXT = "Find Next";
     private static final String CMD_FIND_PREVIOUS = "Find Previous";
     private static final String CMD_NUDGE = "Nudge"; // domain-specific
-    private static final String CMD_PREFERENCES = "Preferences";
+    private static final String CMD_GRID = "Grid"+DDD; // domain-specific
+    private static final String CMD_PREFERENCES = "Preferences"+DDD;
 
     private static final String MENU_VIEW = "View";
     private static final String CMD_FIT = "Fit"; // domain-specific
@@ -97,6 +98,7 @@ public class MenuView extends JMenuBar {
     private final ActiveMenu actFindNext = ActiveMenu.create(CMD_FIND_NEXT, ACCEL_FIND_NEXT);
     private final ActiveMenu actFindPrevious = ActiveMenu.create(CMD_FIND_PREVIOUS, ACCEL_FIND_PREVIOUS);
     private final ActiveMenu actNudge = ActiveMenu.create(CMD_NUDGE, ACCEL_NUDGE);
+    private final ActiveMenu actGrid = ActiveMenu.create(CMD_GRID, ACCEL_GRID);
     private final ActiveMenu actPreferences = ActiveMenu.create(CMD_PREFERENCES, ACCEL_PREFERENCES);
 
     private final ActiveMenu actFit = ActiveMenu.create(CMD_FIT, ACCEL_FIT);
@@ -151,6 +153,8 @@ public class MenuView extends JMenuBar {
         menuEdit.addSeparator();
         menuEdit.add(this.actNudge.menu());
         menuEdit.addSeparator();
+        menuEdit.add(this.actGrid.menu());
+        menuEdit.addSeparator();
         menuEdit.add(this.actPreferences.menu());
         add(menuEdit);
 
@@ -186,6 +190,7 @@ public class MenuView extends JMenuBar {
         this.actFindNext.setEnabled(this.modelDocument.isOpen());
         this.actFindPrevious.setEnabled(this.modelDocument.isOpen());
         this.actNudge.setEnabled(this.modelDocument.hasSelected());
+        this.actGrid.setEnabled(this.modelDocument.isOpen());
 
         this.actFit.setEnabled(this.modelDocument.isOpen());
         this.actCenter.setEnabled(this.modelDocument.isOpen());
@@ -261,6 +266,9 @@ public class MenuView extends JMenuBar {
     }
     public void setNudge(final Runnable lambda) {
         this.actNudge.setAction(lambda);
+    }
+    public void setGrid(final Runnable lambda) {
+        this.actGrid.setAction(lambda);
     }
     public void setPreferences(final Runnable lambda) {
         this.actPreferences.setAction(lambda);

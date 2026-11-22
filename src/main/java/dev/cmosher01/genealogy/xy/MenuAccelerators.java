@@ -71,6 +71,7 @@ public final class MenuAccelerators {
     public static final KeyStroke ACCEL_FIND_NEXT = getKeyStroke(VK_G, CMD);
     public static final KeyStroke ACCEL_FIND_PREVIOUS = getKeyStroke(VK_G, SHIFT_CMD);
     public static final KeyStroke ACCEL_NUDGE = getKeyStroke(VK_N, SHIFT_CMD);
+    public static final KeyStroke ACCEL_GRID = NO_ACCEL;
 
     public static final KeyStroke ACCEL_FIT = getKeyStroke(VK_T, CMD);
     public static final KeyStroke ACCEL_CENTER = getKeyStroke(VK_PERIOD, CMD);

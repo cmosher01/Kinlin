@@ -68,7 +68,7 @@ public class ChartMouseController {
             val chart = this.model.getModel().get();
             val d = Swings.delta(this.optptDragPivot.get(), at);
             if (d.x != 0 || d.y != 0) {
-                chart.getSelection().move(d, chart.getGrid());
+                chart.moveSelection(d);
                 if (chart.getSelection().isModified()) {
                     this.model.setModified();
                 } else {
