@@ -22,6 +22,7 @@ import dev.cmosher01.math.doubles.DoubleUtil;
 import lombok.*;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 
 import static javax.swing.JOptionPane.*;
 
@@ -64,11 +65,11 @@ public class GridSettingsDialog {
         }
     }
 
-    private static String s(final @NonNull Double d) {
+    private static String s(final double d) {
         return Integer.toString(DoubleUtil.asInt(d), 10);
     }
 
-    private void setGrid(JTextField txGrid, JTextField txOffset) throws NumberFormatException {
+    private void setGrid(final @NonNull JTextComponent txGrid, final @NonNull JTextComponent txOffset) throws NumberFormatException {
         val k = Integer.parseInt(txGrid.getText().strip());
         val d = Integer.parseInt(txOffset.getText().strip());
 

@@ -70,17 +70,17 @@ public class Plaque {
         this.text.paint(g, c);
     }
 
-    public RectDim dim() {
+    public @NonNull RectDim dim() {
         return this.text.dimMargin();
     }
 
-    public String simpleName() {
+    public @NonNull String simpleName() {
         return this.name.simple();
     }
 
 
     private record Range(int begin, int end) {
-        public Range(StringBuilder sb, String s) {
+        public Range(final @NonNull StringBuilder sb, final @NonNull String s) {
             this(sb.length(), sb.length()+s.length());
         }
     }

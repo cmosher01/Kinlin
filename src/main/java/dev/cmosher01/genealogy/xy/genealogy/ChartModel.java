@@ -180,4 +180,16 @@ public class ChartModel {
     public void gridSettings(final @NonNull FrameView viewFrame) {
         new GridSettingsDialog(viewFrame, this.grid).dialog();
     }
+
+    public Optional<Rect> selectionBounds() {
+        return this.selection.bounds();
+    }
+
+    public List<Indi> getSelectedIndis() {
+        return this.selection.getSelection();
+    }
+
+    public @NonNull Grid grid() {
+        return this.grid;
+    }
 }

@@ -146,7 +146,7 @@ public class Indi {
         return Rect.intersect(bounds(), Awts.rect(r));
     }
 
-    public String simpleName() {
+    public @NonNull String simpleName() {
         return this.plaque.simpleName();
     }
 
@@ -154,7 +154,7 @@ public class Indi {
         return this.pt.hasOriginal();
     }
 
-    public List<Fami> famis() {
+    public @NonNull List<@NonNull Fami> famis() {
         val ret = new ArrayList<Fami>();
         ret.addAll(this.rFamiChildIn);
         ret.addAll(this.rFamiParentIn);
@@ -184,6 +184,34 @@ public class Indi {
             this.id.node().addChild(newNode);
         }
     }
+
+
+
+
+    public @NonNull List<@NonNull Indi> getRelatives() {
+        final var rindi = new ArrayList<Indi>();
+
+        // parents and siblings
+        for (final var fami : this.rFamiChildIn) {
+            rindi.addAll(fami.getParents());
+            rindi.addAll(fami.getChildren());
+        }
+
+        // spouses and children
+        for (final var fami : this.rFamiParentIn) {
+            rindi.addAll(fami.getParents());
+            rindi.addAll(fami.getChildren());
+        }
+
+        return rindi.stream().filter(s -> s != this).toList();
+    }
+
+    public @NonNull Dim distanceFrom(final @NonNull Indi other) {
+        return this.point().distance(other.point());
+    }
+
+
+
 
 
 

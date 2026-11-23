@@ -35,6 +35,14 @@ public class IndiSelectionModel implements Selectable<Indi> {
     private final @NonNull Map<@NonNull Indi, @NonNull IndiMovement> selForUndo = new IdentityHashMap<>();
 
 
+
+    public Optional<Rect> bounds() {
+        if (selection.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(Rect.bounds(selection.stream().map(Indi::bounds).toList()));
+    }
+
     @Override
     public void clear() {
         this.selection.forEach(indi -> indi.select(false));
@@ -99,6 +107,10 @@ public class IndiSelectionModel implements Selectable<Indi> {
 
     public boolean hasSelected() {
         return !this.selection.isEmpty();
+    }
+
+    public List<Indi> getSelection() {
+        return new ArrayList<>(this.selection);
     }
 
     public void selectAll() {

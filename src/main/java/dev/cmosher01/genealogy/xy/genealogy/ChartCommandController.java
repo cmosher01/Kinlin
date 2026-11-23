@@ -22,7 +22,8 @@ import dev.cmosher01.geom.*;
 import lombok.*;
 
 import javax.swing.*;
-import java.util.Optional;
+import java.awt.geom.Point2D;
+import java.util.*;
 
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "OptionalIsPresent"})
 public class ChartCommandController {
@@ -66,9 +67,9 @@ public class ChartCommandController {
         val v = this.viewMain.viewportClip();
         val c = this.model.boundsOutset();
 
-        final var w = v.getWidth()/c.getWidth();
-        final var h = v.getHeight()/c.getHeight();
-        final var f = Math.min(w,h);
+        val w = v.getWidth()/c.getWidth();
+        val h = v.getHeight()/c.getHeight();
+        val f = Math.min(w,h);
         this.zp.setZoom(f);
 
         center();
@@ -77,11 +78,11 @@ public class ChartCommandController {
 
 
     public void find() {
-        final var result = Optional.ofNullable(JOptionPane.showInputDialog(this.viewMain,
+        val result = Optional.ofNullable(JOptionPane.showInputDialog(this.viewMain,
             "Enter name to search for:", "Find", JOptionPane.QUESTION_MESSAGE, null, null,
             this.lastFind));
         if (result.isPresent()) {
-            final var s = result.get().toString().strip();
+            val s = result.get().toString().strip();
             if (!s.isBlank()) {
                 this.lastFind = s;
                 if (this.finder.isEmpty()) {
@@ -142,7 +143,62 @@ public class ChartCommandController {
     }
 
     public void nudge() {
-        // TODO implement nudge
+        if (this.model.getModel().isEmpty()) {
+            return;
+        }
+
+        val chart = this.model.getModel().get();
+        val optSelectionBounds = chart.selectionBounds();
+        if (chart.hasSelected() && optSelectionBounds.isPresent()) {
+            val selectionBounds = optSelectionBounds.get();
+
+
+            //  Nudge:
+            //  Move selection near (graphically on the chart) to their
+            //  "closest" (relationship-wise) unselected relative.
+
+            //  maxR = empty
+            //  maxd = -INF
+            //  for each indi S in the selection
+            //      for each related indi (parent, sibling, spouse, child) R of S
+            //          if R is not in the selection
+            //              find distance d from S to R
+            //              if (maxd < d)
+            //                  maxR = R
+            //                  maxd = d
+            //  if maxR is present
+            //      move selection to below maxR
+            //      scroll display to center upon maxR
+
+            var maxR = Optional.<Indi>empty();
+            var maxd = Double.NEGATIVE_INFINITY;
+            val selectedIndis = chart.getSelectedIndis();
+            for (val S : selectedIndis) {
+                for (val R : S.getRelatives()) {
+                    if (!R.selected()) {
+                        val d = R.distanceFrom(S);
+                        if (maxd < d.n()) {
+                            maxR = Optional.of(R);
+                            maxd = d.n();
+                        }
+                    }
+                }
+            }
+            if (maxR.isPresent()) {
+                val R = maxR.get();
+                val S = selectionBounds.center();
+
+                val dx = R.point().x().u() - S.x().u();
+                val dy = (R.point().y().u() + /*TODO familyChart.metrics().getGenDistance()*/80D) - S.y().u();
+                val D = new Point2D.Double(dx, dy);
+
+                selectedIndis.forEach(i -> i.move(D, this.model.getModel().get().grid()));
+
+                // scroll display to relative we just moved to
+                // (not the group we just moved)
+                panTo(R.point());
+            }
+        }
     }
 
 

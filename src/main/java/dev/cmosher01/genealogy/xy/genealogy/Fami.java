@@ -373,6 +373,11 @@ public class Fami {
     List<@NonNull Indi> getChildren() {
         return new ArrayList<>(this.rIndiChildren);
     }
+
+    List<@NonNull Indi> getParents() {
+        return new ArrayList<>(this.rIndiParents);
+    }
+
     Optional<Indi> getHusb() {
         for (val parent : this.rIndiParents) {
             if (parent.getSex() == 1) {
@@ -381,6 +386,7 @@ public class Fami {
         }
         return Optional.empty();
     }
+
     Optional<Indi> getWife() {
         for (val parent : this.rIndiParents) {
             if (parent.getSex() == 2) {
@@ -389,7 +395,6 @@ public class Fami {
         }
         return Optional.empty();
     }
-
 
 
 
