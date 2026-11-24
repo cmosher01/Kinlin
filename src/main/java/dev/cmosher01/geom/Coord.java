@@ -23,7 +23,7 @@ import manifold.ext.rt.api.*;
 
 import java.util.Objects;
 
-public record Coord(@NonNull Double u = 0) implements ComparableUsing<Coord> {
+public record Coord(@NonNull Double u = 0) implements ComparableUsing<@NonNull Coord> {
     public static final @NonNull Coord NULL = new Coord(Double.NaN);
     public static final @NonNull Coord ORIGIN = new Coord();
 

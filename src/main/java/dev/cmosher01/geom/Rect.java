@@ -122,9 +122,9 @@ public record Rect(@NonNull RectDim dim, @NonNull Point center) implements Compa
 
 
 
-    public static @NonNull Rect bounds(final @NonNull Collection<Rect> rs) {
+    public static @NonNull Rect bounds(final @NonNull Collection<@NonNull Rect> rs) {
         if (rs.isEmpty) {
-            return new Rect(new RectDim(), Point.ORIGIN);
+            return new Rect(RectDim.ZERO, Point.ORIGIN);
         }
         double xMin = Double.MAX_VALUE;
         double xMax = -Double.MAX_VALUE;

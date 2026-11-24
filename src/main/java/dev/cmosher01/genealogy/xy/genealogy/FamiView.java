@@ -90,16 +90,16 @@ public class FamiView {
 
 
 
-    private static Optional<Line2D.Double> clipLine(final Line2D.Double ln, final Rectangle2D c) {
+    private static @NonNull Optional<Line2D.Double> clipLine(final @NonNull Line2D.Double ln, final @NonNull Rectangle2D c) {
         double x1 = ln.x1;
         double y1 = ln.y1;
         double x2 = ln.x2;
         double y2 = ln.y2;
 
-        final double xMin = c.getMinX();
-        final double xMax = c.getMaxX();
-        final double yMin = c.getMinY();
-        final double yMax = c.getMaxY();
+        val xMin = c.getMinX();
+        val xMax = c.getMaxX();
+        val yMin = c.getMinY();
+        val yMax = c.getMaxY();
 
         if (x1 < xMin && x2 < xMin) {
             return Optional.empty();

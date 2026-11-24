@@ -24,9 +24,9 @@ import java.util.Objects;
 
 // dimensions (size/measurement/distance) (width, height) of a rectangular area
 // this differs from a rectangle by not having a position (location)
-public record RectDim(@NonNull Dim w = Dim.ZERO, @NonNull Dim h = w) implements ComparableUsing<RectDim> {
-    public static RectDim ZERO = new RectDim();
-    public static RectDim UNIT = new RectDim(Dim.ONE);
+public record RectDim(@NonNull Dim w = Dim.ZERO, @NonNull Dim h = w) implements ComparableUsing<@NonNull RectDim> {
+    public static @NonNull RectDim ZERO = new RectDim();
+    public static @NonNull RectDim UNIT = new RectDim(Dim.ONE);
 
     @Override
     public boolean equals(final @Self Object o) {
@@ -41,7 +41,7 @@ public record RectDim(@NonNull Dim w = Dim.ZERO, @NonNull Dim h = w) implements 
         throw new UnsupportedOperationException();
     }
 
-    public Dim diag() {
+    public @NonNull Dim diag() {
         return new Dim(Math.hypot(w.n, h.n));
     }
 

@@ -18,6 +18,8 @@
 package dev.cmosher01.genealogy.xy;
 
 
+import lombok.NonNull;
+
 import java.awt.desktop.QuitResponse;
 import java.awt.event.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -27,15 +29,15 @@ import static dev.cmosher01.genealogy.xy.DialogViews.QuitOptions.*;
 
 
 public class QuitController {
-    private final DocumentController controllerDocument;
-    private final FrameView view;
-    private final DocumentModel model;
-    private final StatusBarController controllerStatusBar;
+    private final @NonNull DocumentController controllerDocument;
+    private final @NonNull FrameView view;
+    private final @NonNull DocumentModel model;
+    private final @NonNull StatusBarController controllerStatusBar;
 
-    private final AtomicBoolean approved = new AtomicBoolean();
+    private final @NonNull AtomicBoolean approved = new AtomicBoolean();
 
 
-    public QuitController(final DocumentController controllerDocument, final FrameView view, final DocumentModel model, StatusBarController controllerStatusBar) {
+    public QuitController(final @NonNull DocumentController controllerDocument, final @NonNull FrameView view, final @NonNull DocumentModel model, final @NonNull StatusBarController controllerStatusBar) {
         this.controllerDocument = controllerDocument;
         this.view = view;
         this.model = model;
@@ -83,7 +85,7 @@ public class QuitController {
                                in OS shutdown case: signal OS to abort
                exit app (and continue OS shutdown in that case)
      */
-    public void quit(final QuitResponse r) {
+    public void quit(final @NonNull QuitResponse r) {
         if (approved()) {
             this.controllerStatusBar.close();
             this.view.dispose(); // terminates EDT (and therefore the application)

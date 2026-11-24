@@ -47,18 +47,17 @@ public record OrthogonalLine(@NonNull Orient or, @NonNull Coord a, @NonNull Coor
         return ret;
     }
 
-    public Dim length() {
+    public @NonNull Dim length() {
         return new Dim((b-a).d());
     }
 
 
 
-    public static @NonNull Rect bounds(final @NonNull Collection<OrthogonalLine> lines) {
+    public static @NonNull Rect bounds(final @NonNull Collection<@NonNull OrthogonalLine> lines) {
         val sx = lines.stream()
             .flatMapToDouble(l -> l.or == Orient.H ? DoubleStream.of(l.a.u, l.b.u) : DoubleStream.of(l.pos.u))
             .summaryStatistics();
 
-        // Collect all Y coordinates
         val sy = lines.stream()
             .flatMapToDouble(l -> l.or == Orient.H ? DoubleStream.of(l.pos.u) : DoubleStream.of(l.a.u, l.b.u))
             .summaryStatistics();

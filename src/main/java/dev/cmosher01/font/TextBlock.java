@@ -17,7 +17,6 @@
 
 package dev.cmosher01.font;
 
-import dev.cmosher01.genealogy.xy.Swings;
 import dev.cmosher01.geom.*;
 import dev.cmosher01.geom.Point;
 import lombok.*;
@@ -28,9 +27,13 @@ import java.text.AttributedString;
 import java.util.*;
 import java.util.List;
 
-import static dev.cmosher01.geom.Awts.rect;
-
 public class TextBlock {
+    private static final @NonNull Outset MARGIN = new Outset(new GrowTerm(5D), new GrowTerm(5D));
+
+    public static final @NonNull TextBlock EMPTY = new TextBlock(RectDim.UNIT, Collections.emptyList());
+
+
+
     private record Line(@NonNull TextLayout layout, @NonNull Xlation d) {
         public void paint(final @NonNull Graphics2D g, final @NonNull Point c) {
             val p = c + this.d;
@@ -40,12 +43,15 @@ public class TextBlock {
         }
     }
 
-    private final @NonNull RectDim dim;
-    private static final @NonNull Outset MARGIN = new Outset(new GrowTerm(5D), new GrowTerm(5D));
-    private final @NonNull RectDim dimMargin;
-    private final @NonNull List<Line> lines;
 
-    private TextBlock(final @NonNull RectDim dim, final @NonNull List<Line> lines) {
+
+    private final @NonNull RectDim dim;
+    private final @NonNull RectDim dimMargin;
+    private final @NonNull List<@NonNull Line> lines;
+
+
+
+    private TextBlock(final @NonNull RectDim dim, final @NonNull List<@NonNull Line> lines) {
         this.dim = dim;
         this.dimMargin = dim + MARGIN;
         this.lines = lines;
@@ -53,11 +59,11 @@ public class TextBlock {
 
 
 
-    public static @NonNull TextBlock create(final @NonNull List<AttributedString> s) {
+    public static @NonNull TextBlock create(final @NonNull List<@NonNull AttributedString> s) {
         return create(s, Float.MAX_VALUE);
     }
 
-    public static @NonNull TextBlock create(final @NonNull List<AttributedString> s, final @NonNull Dim wMax) {
+    public static @NonNull TextBlock create(final @NonNull List<@NonNull AttributedString> s, final @NonNull Dim wMax) {
         return create(s, wMax.n().floatValue());
     }
 
@@ -78,7 +84,7 @@ public class TextBlock {
 
 
 
-    private static @NonNull TextBlock create(final @NonNull List<AttributedString> s, final float wMax) {
+    private static @NonNull TextBlock create(final @NonNull List<@NonNull AttributedString> s, final float wMax) {
         val layouts = layouts(s, wMax);
         val dims = dimensions(layouts);
         val lines = lines(layouts, dims);
@@ -86,7 +92,7 @@ public class TextBlock {
     }
 
 
-    private static @NonNull List<TextLayout> layouts(final @NonNull List<AttributedString> rs, final float wMax) {
+    private static @NonNull List<TextLayout> layouts(final @NonNull List<@NonNull AttributedString> rs, final float wMax) {
         val ret = new ArrayList<TextLayout>();
 
         for (val s : rs) {
@@ -99,7 +105,7 @@ public class TextBlock {
         return List.copyOf(ret);
     }
 
-    private static @NonNull RectDim dimensions(final @NonNull List<TextLayout> layouts) {
+    private static @NonNull RectDim dimensions(final @NonNull List<@NonNull TextLayout> layouts) {
         double w = 0;
         double h = 0;
         for (val layout : layouts) {
@@ -109,7 +115,7 @@ public class TextBlock {
         return new RectDim(new Dim(w), new Dim(h));
     }
 
-    private static @NonNull List<Line> lines(final @NonNull List<TextLayout> layouts, final @NonNull RectDim siz) {
+    private static @NonNull List<@NonNull Line> lines(final @NonNull List<@NonNull TextLayout> layouts, final @NonNull RectDim siz) {
         val ret = new ArrayList<Line>(1);
 
         final double w2 = siz.w().half().n();

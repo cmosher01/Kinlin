@@ -18,14 +18,16 @@
 package dev.cmosher01.genealogy.xy;
 
 
+import lombok.NonNull;
+
 import static dev.cmosher01.genealogy.xy.DocumentController.*;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class KillController {
-    private final QuitController controllerQuit;
-    private final DocumentController controllerDocument;
+    private final @NonNull QuitController controllerQuit;
+    private final @NonNull DocumentController controllerDocument;
 
-    public KillController(final DocumentController controllerDocument, final QuitController controllerQuit) {
+    public KillController(final @NonNull DocumentController controllerDocument, final @NonNull QuitController controllerQuit) {
         this.controllerQuit = controllerQuit;
         this.controllerDocument = controllerDocument;
         Runtime.getRuntime().addShutdownHook(new Thread(this::onShutdown));

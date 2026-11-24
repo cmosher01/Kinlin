@@ -38,8 +38,8 @@ public final class Grids {
 
     private static final @NonNull MoveTerm NO_OFFSET = MoveTerm.IDENTITY;
     private static final @NonNull ScaleFactor NO_GRID = ScaleFactor.IDENTITY;
-    private static final @NonNull ScaleFactor MIN_GRID = new ScaleFactor(1e1D);
-    private static final @NonNull ScaleFactor MAX_GRID = new ScaleFactor(1e3D);
+    public static final @NonNull ScaleFactor MIN_GRID = new ScaleFactor(1e1D);
+    public static final @NonNull ScaleFactor MAX_GRID = new ScaleFactor(1e3D);
 
 
 
@@ -70,7 +70,7 @@ public final class Grids {
     }
 
 
-    //    public void setFromUserEnteredString(final String usersEntry, final Preferences prefs) {
+//    public void setFromUserEnteredString(final @NonNull String usersEntry, final Preferences prefs) {
 //        if (Objects.isNull(usersEntry) || usersEntry.isBlank()) {
 //            return;
 //        }
@@ -83,7 +83,7 @@ public final class Grids {
 
 
 
-    private static List<Coord> getAllCoordsFrom(final List<Indi> indis) {
+    private static @NonNull List<@NonNull Coord> getAllCoordsFrom(final @NonNull List<@NonNull Indi> indis) {
         return indis
             .stream()
             .map(Indi::point)
@@ -92,7 +92,7 @@ public final class Grids {
             .toList();
     }
 
-    private static List<Coord> getAllXs(final List<Indi> indis) {
+    private static @NonNull List<@NonNull Coord> getAllXs(final @NonNull List<@NonNull Indi> indis) {
         return indis
             .stream()
             .map(Indi::point)
@@ -102,7 +102,7 @@ public final class Grids {
             .toList();
     }
 
-    private static List<Coord> getAllYs(final List<Indi> indis) {
+    private static @NonNull List<@NonNull Coord> getAllYs(final @NonNull List<@NonNull Indi> indis) {
         return indis
             .stream()
             .map(Indi::point)
@@ -117,7 +117,7 @@ public final class Grids {
     // "x" means any coordinate (regardless of whether it's x, y, or z, etc.)
     // "s" on end means plural, for example "xs" means plural of "x" (used for lists, arrays, etc.)
 
-    private static ScaleFactor calcGrid(final List<Coord> xs) {
+    private static @NonNull ScaleFactor calcGrid(final @NonNull List<@NonNull Coord> xs) {
         log.info("Total count of coordinates: {}", xs.size());
 
         // count unique differences between each pair of coordinates
@@ -136,25 +136,25 @@ public final class Grids {
 
         // sort dx values by popularity
         // use BigInteger just so we can use its "gcd()" method
-        final var dxsSorted = new ArrayList<BigInteger>(dxs.size());
+        val dxsSorted = new ArrayList<BigInteger>(dxs.size());
         {
-            final double COVERAGE_RATE = 0.6D;
+            val COVERAGE_RATE = 0.6D;
             log.info("Distances by popularity (to {}% coverage rate)", Math.round(Math.rint(100D * COVERAGE_RATE)));
             log.info("   # fraction   distance-->count coverage");
-            final var T = (double) (dxs.values().stream().reduce(0, Integer::sum));
-            final var Tnum = (double) dxs.size();
-            final var n = new AtomicInteger();
-            final var inum = new AtomicInteger();
-            final var cut = new AtomicBoolean();
+            val T = (double) (dxs.values().stream().reduce(0, Integer::sum));
+            val Tnum = (double) dxs.size();
+            val n = new AtomicInteger();
+            val inum = new AtomicInteger();
+            val cut = new AtomicBoolean();
             dxs
                 .entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())) // sort by count desc
                 .forEach(e -> {
-                    final var dx = e.getKey();
-                    final var c = e.getValue();
-                    final var p = n.addAndGet(c);
-                    final var num = inum.incrementAndGet();
+                    val dx = e.getKey();
+                    val c = e.getValue();
+                    val p = n.addAndGet(c);
+                    val num = inum.incrementAndGet();
                     if (!cut.get()) {
                         log.info(String.format("%4d (%3.5f): %8d-->%5d (%3.5f)", num, num / Tnum, dx, c, p / T));
                         dxsSorted.add(BigInteger.valueOf(dx));
@@ -167,12 +167,12 @@ public final class Grids {
 
 
         // count unique GCDs (>= MIN_GRID_TO_DETECT) between each pair of distances
-        final var gcds = new HashMap<BigInteger, Integer>();
+        val gcds = new HashMap<BigInteger, Integer>();
         {
-            final var gcdMinToDetect = BigInteger.valueOf(MIN_GRID.k().longValue());
+            val gcdMinToDetect = BigInteger.valueOf(MIN_GRID.k().longValue());
             for (int i = 0; i < dxsSorted.size() - 1; ++i) {
                 for (int j = i + 1; j < dxsSorted.size(); ++j) {
-                    final var gcd = dxsSorted.get(i).gcd(dxsSorted.get(j));
+                    val gcd = dxsSorted.get(i).gcd(dxsSorted.get(j));
                     if (1L < gcd.longValue()) {
                         if (gcdMinToDetect.compareTo(gcd) < 0) {
                             gcds.merge(gcd, 1, Integer::sum);
@@ -192,21 +192,21 @@ public final class Grids {
 
         // sort GCD values by popularity, and
         // convert from BigInteger to final result type for grid (Integer)
-        final var gcdsSorted = new ArrayList<Integer>(gcds.size());
+        val gcdsSorted = new ArrayList<Integer>(gcds.size());
         {
-            final double COVERAGE_RATE = 0.6D;
+            val COVERAGE_RATE = 0.6D;
             log.info("Top GCDs (min: {}), by popularity (to {}% coverage rate)", MIN_GRID, Math.round(Math.rint(100D * COVERAGE_RATE)));
-            final var T = (double) (gcds.values().stream().reduce(0, Integer::sum));
-            final var n = new AtomicInteger();
-            final var cut = new AtomicBoolean();
+            val T = (double) (gcds.values().stream().reduce(0, Integer::sum));
+            val n = new AtomicInteger();
+            val cut = new AtomicBoolean();
             gcds
                 .entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())) // sort by count desc
                 .forEach(e -> {
-                    final var gcd = e.getKey().intValue();
+                    val gcd = e.getKey().intValue();
                     final int c = e.getValue();
-                    final var p = n.addAndGet(c);
+                    val p = n.addAndGet(c);
                     if (!cut.get()) {
                         log.info(String.format("%8d-->%5d (%3.5f)", gcd, c, p / T));
                         gcdsSorted.add(gcd);
@@ -222,8 +222,8 @@ public final class Grids {
 
         // and take min GCD between each of those GCDs
         BigInteger bigGcdFinal = null;
-        for (final var i : gcdsSorted) {
-            final var gcd = BigInteger.valueOf(i);
+        for (val i : gcdsSorted) {
+            val gcd = BigInteger.valueOf(i);
             if (Objects.isNull(bigGcdFinal)) {
                 bigGcdFinal = gcd;
             } else {
@@ -240,7 +240,7 @@ public final class Grids {
             log.info("          M = is a multiple of final GCD");
             log.info("          XXXXX = is NOT a multiple of final GCD");
             for (int i = 0; i < Math.min(20, gcdsSorted.size()); ++i) {
-                final var gcd = gcdsSorted.get(i);
+                val gcd = gcdsSorted.get(i);
                 log.info(String.format("    %5d %s", gcd, (gcd % gcdRaw == 0) ? "M" : "XXXXX"));
             }
         } else {
@@ -258,10 +258,10 @@ public final class Grids {
         return gcd;
     }
 
-    private static MoveTerm calcOffset(final List<Coord> xs, final ScaleFactor scale) {
+    private static MoveTerm calcOffset(final @NonNull List<@NonNull Coord> xs, final @NonNull ScaleFactor scale) {
         val grid = scale.k().intValue();
-        final var offs = new HashMap<Integer, Integer>(grid);
-        for (final var x : xs) {
+        val offs = new HashMap<Integer, Integer>(grid);
+        for (val x : xs) {
             for (int off = 0; off < grid; ++off) {
                 if ((x.u() - off) % grid == 0) { // x-off, not x+off
                     offs.merge(off, 1, Integer::sum);
@@ -273,27 +273,27 @@ public final class Grids {
         }
 
 
-        final var offsSorted = new ArrayList<Integer>(offs.size());
-        final var offsSortedCounts = new ArrayList<Integer>(offs.size());
+        val offsSorted = new ArrayList<Integer>(offs.size());
+        val offsSortedCounts = new ArrayList<Integer>(offs.size());
         offs
             .entrySet()
             .stream()
             .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
             .forEach(e -> {
-                final var off = e.getKey();
+                val off = e.getKey();
                 offsSorted.add(off);
-                final var offCount = e.getValue();
+                val offCount = e.getValue();
                 offsSortedCounts.add(offCount);
             });
 
         log.info("Top offsets:");
         log.info("   offset  count");
         for (int i = 0; i < Math.min(100, offsSorted.size()); ++i) {
-            final var off = offsSorted.get(i);
-            final var offCount = offsSortedCounts.get(i);
+            val off = offsSorted.get(i);
+            val offCount = offsSortedCounts.get(i);
             log.info(String.format("    %5d   %5d", off, offCount));
         }
-        final var offFinal = offsSorted.getFirst();
+        val offFinal = offsSorted.getFirst();
         log.info("Chose top offset value: {} <-----------FINAL GRID OFFSET VALUE", offFinal);
 
         return new MoveTerm(DoubleUtil.fp(offFinal));
@@ -307,26 +307,26 @@ public final class Grids {
 
 
 
-    private static void reportGridAlignmentOf(final List<Indi> indis, final @NonNull Grid grid) {
+    private static void reportGridAlignmentOf(final @NonNull List<@NonNull Indi> indis, final @NonNull Grid grid) {
         reportPointGridAlignmentOf(indis, grid);
         reportCoordinateGridAlignmentOf(indis, grid);
     }
 
-    private static void reportCoordinateGridAlignmentOf(final List<Indi> indis, final @NonNull Grid grid) {
-        final var xs = getAllXs(indis);
-        final var ys = getAllYs(indis);
-        final var xys = Stream.concat(xs.stream(), ys.stream()).toList();
+    private static void reportCoordinateGridAlignmentOf(final @NonNull List<@NonNull Indi> indis, final @NonNull Grid grid) {
+        val xs = getAllXs(indis);
+        val ys = getAllYs(indis);
+        val xys = Stream.concat(xs.stream(), ys.stream()).toList();
 
-        final var N = xys.size();
+        val N = xys.size();
         int cAligned = 0;
-        for (final var xy : xys) {
-            final var xySnapped = grid.snap(new Point(xy));
-            final var eq = Point.distance(xySnapped, new Point(xy)).n() < 0.1D;
+        for (val xy : xys) {
+            val xySnapped = grid.snap(new Point(xy));
+            val eq = Point.distance(xySnapped, new Point(xy)).n() < 0.1D;
             if (eq) {
                 cAligned++;
             }
         }
-        final var percentAligned = Math.round(Math.rint(
+        val percentAligned = Math.round(Math.rint(
             (100D * cAligned) / N
         ));
 
@@ -334,28 +334,28 @@ public final class Grids {
         log.info("Count of those coordinates initially aligned to calculated grid/offset: {} ({}%)", cAligned, percentAligned);
     }
 
-    private static void reportPointGridAlignmentOf(final List<Indi> indis, final Grid grid) {
-        final var xys = indis
+    private static void reportPointGridAlignmentOf(final @NonNull List<@NonNull Indi> indis, final @NonNull Grid grid) {
+        val xys = indis
             .stream()
             .map(Indi::point)
             .filter(i -> {
-                final var x = i.x().u();
-                final var y = i.y().u();
+                final double x = i.x().u();
+                final double y = i.y().u();
                 return
                     (x < -0.1D || 0.1D < x) ||
                         (y < -0.1D || 0.1D < y);
             })
             .toList();
 
-        final var N = xys.size();
+        val N = xys.size();
         int cAligned = 0;
-        for (final var xy : xys) {
-            final var xySnapped = grid.snap(xy);
+        for (val xy : xys) {
+            val xySnapped = grid.snap(xy);
             if (xySnapped.equals(xy)) {
                 cAligned++;
             }
         }
-        final var percentAligned = Math.round(Math.rint(
+        val percentAligned = Math.round(Math.rint(
             (100D * cAligned) / N
         ));
 

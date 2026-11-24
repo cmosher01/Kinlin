@@ -27,9 +27,9 @@ import java.util.List;
 import static java.lang.Boolean.*;
 
 public class FamilyTreeXyEditor {
-    public static final String VERSION = FamilyTreeXyEditor.class.getPackage().getImplementationVersion();
+    public static final @NonNull String VERSION = FamilyTreeXyEditor.class.getPackage().getImplementationVersion();
 
-    private static final String TITLE = "Family Tree XY Editor";
+    private static final @NonNull String TITLE = "Family Tree XY Editor";
 
     @SneakyThrows
     public static void main(final String... args) {

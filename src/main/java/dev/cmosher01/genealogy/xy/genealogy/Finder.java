@@ -27,14 +27,14 @@ import java.util.*;
 // TODO hardcoded to Indi; how should we make it generic?
 // TODO alternative algorithm: upon initial find(), create circular Deque of all matches
 public class Finder {
-    private final @NonNull List<Indi> indis;
+    private final @NonNull List<@NonNull Indi> indis;
 
     private @NonNull String lastQuery = "";
     private int lastIndex = -1;
 
 
 
-    public Finder(final @NonNull List<Indi> indis) {
+    public Finder(final @NonNull List<@NonNull Indi> indis) {
         this.indis = indis;
 
         assert !isQuery(this.lastQuery);
@@ -42,7 +42,7 @@ public class Finder {
 
 
 
-    public Optional<Point> find(final String query) {
+    public @NonNull Optional<Point> find(final @NonNull String query) {
         Optional<Point> ret = Optional.empty();
         if (!isQuery(query)) {
             return ret;
@@ -67,7 +67,7 @@ public class Finder {
         return ret;
     }
 
-    public Optional<Point> next() {
+    public @NonNull Optional<Point> next() {
         Optional<Point> ret = Optional.empty();
         if (!isQuery(this.lastQuery)) {
             return ret;
@@ -93,7 +93,7 @@ public class Finder {
         return ret;
     }
 
-    public Optional<Point> prev() {
+    public @NonNull Optional<Point> prev() {
         Optional<Point> ret = Optional.empty();
         if (!isQuery(this.lastQuery)) {
             return ret;
@@ -121,7 +121,7 @@ public class Finder {
 
 
 
-    private Optional<Point> foundAt(final int i) {
+    private @NonNull Optional<Point> foundAt(final int i) {
         this.lastIndex = i;
         return Optional.of(this.indis.get(i).point());
     }
@@ -140,7 +140,7 @@ public class Finder {
     }
 
     private boolean matches(final int i) {
-        final var indi = this.indis.get(i).simpleName().toLowerCase();
+        val indi = this.indis.get(i).simpleName().toLowerCase();
         return indi.contains(this.lastQuery);
     }
 

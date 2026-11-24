@@ -19,6 +19,8 @@ package dev.cmosher01.genealogy.xy.genealogy;
 
 
 
+import lombok.*;
+
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.temporal.JulianFields;
@@ -26,16 +28,16 @@ import java.util.Objects;
 import java.util.regex.*;
 
 
-public class FtmDate implements Comparable<FtmDate> {
-    private static final FlaggedDate FD_UNKNOWN = new FlaggedDate(0x8000_0011L);
+public class FtmDate implements Comparable<@NonNull FtmDate> {
+    private static final @NonNull FlaggedDate FD_UNKNOWN = new FlaggedDate(0x8000_0011L);
 
-    private final FlaggedDate earliest;
-    private final FlaggedDate latest;
-    private final String other;
+    private final @NonNull FlaggedDate earliest;
+    private final @NonNull FlaggedDate latest;
+    private final @NonNull String other;
 
-    public static final FtmDate UNKNOWN = new FtmDate(FD_UNKNOWN, FD_UNKNOWN);
+    public static final @NonNull FtmDate UNKNOWN = new FtmDate(FD_UNKNOWN, FD_UNKNOWN);
 
-    private FtmDate(final long d1, final long d2, final String other) {
+    private FtmDate(final long d1, final long d2, final @NonNull String other) {
         FlaggedDate fd1 = new FlaggedDate(d1);
         FlaggedDate fd2 = new FlaggedDate(d2);
 
@@ -54,14 +56,14 @@ public class FtmDate implements Comparable<FtmDate> {
         this.other = other;
     }
 
-    private FtmDate(FlaggedDate fd1, FlaggedDate fd2) {
+    private FtmDate(final @NonNull FlaggedDate fd1, final @NonNull FlaggedDate fd2) {
         this.earliest = fd1;
         this.latest = fd2;
         this.other = "";
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         final String ret;
         if (this.earliest.unknown() && this.latest.unknown()) {
             ret = "?";
@@ -72,9 +74,9 @@ public class FtmDate implements Comparable<FtmDate> {
         } else if (!this.earliest.equals(this.latest)) {
             ret = String.format("c%d", (this.earliest.asSimpleYear()+this.latest.asSimpleYear())/2);
         } else {
-            final var d = this.earliest; // either one, because they are equal
-            final var y = d.asSimpleYear();
-            final var a = d.about() ? "c" : "";
+            val d = this.earliest; // either one, because they are equal
+            val y = d.asSimpleYear();
+            val a = d.about() ? "c" : "";
             ret = String.format("%s%d", a, y);
         }
         return ret;
@@ -99,20 +101,20 @@ public class FtmDate implements Comparable<FtmDate> {
         return this.earliest.asSimpleYM();
     }
 
-    private static final Pattern ONE_DATE = Pattern.compile("^(\\d+)$");
-    private static final Pattern TWO_DATES = Pattern.compile("^(\\d+):(\\d+)$");
+    private static final @NonNull Pattern ONE_DATE = Pattern.compile("^(\\d+)$");
+    private static final @NonNull Pattern TWO_DATES = Pattern.compile("^(\\d+):(\\d+)$");
 
-    public static FtmDate fromFtmFactDate(final String d) {
+    public static @NonNull FtmDate fromFtmFactDate(final String d) {
         if (Objects.isNull(d)) {
             return UNKNOWN;
         }
         Matcher m;
         if ((m = ONE_DATE.matcher(d)).matches()) {
-            final long date = Long.parseLong(m.group(1), 10);
+            val date = Long.parseLong(m.group(1), 10);
             return new FtmDate(date, date, "");
         } else if ((m = TWO_DATES.matcher(d)).matches()) {
-            final long date1 = Long.parseLong(m.group(1), 10);
-            final long date2 = Long.parseLong(m.group(2), 10);
+            val date1 = Long.parseLong(m.group(1), 10);
+            val date2 = Long.parseLong(m.group(2), 10);
             return new FtmDate(date1, date2, "");
         } else {
             return new FtmDate(0, 0, d);
@@ -121,7 +123,7 @@ public class FtmDate implements Comparable<FtmDate> {
 
     @Override
     // not consistent with equals
-    public int compareTo(FtmDate that) {
+    public int compareTo(@NonNull FtmDate that) {
         return this.earliest.compareTo(that.earliest);
     }
 
@@ -133,11 +135,11 @@ public class FtmDate implements Comparable<FtmDate> {
         return this.earliest.unknown() && this.latest.unknown();
     }
 
-    private static class FlaggedDate implements Comparable<FlaggedDate> {
+    private static class FlaggedDate implements Comparable<@NonNull FlaggedDate> {
         private final long flags;
         private final boolean unknown;
         private final long d;
-        private final LocalDate ld;
+        private final @NonNull LocalDate ld;
         private final boolean before;
         private final boolean after;
         private final boolean about;
@@ -153,7 +155,7 @@ public class FtmDate implements Comparable<FtmDate> {
             this.d = (Integer.MAX_VALUE & n) >> 9;
 
             this.ld = LocalDate.MIN.with(JulianFields.JULIAN_DAY, this.d);
-            final BigInteger f = BigInteger.valueOf(this.flags);
+            val f = BigInteger.valueOf(this.flags);
             this.before = f.testBit(0);
             this.after = f.testBit(1);
             this.about = this.before && this.after;
@@ -192,13 +194,12 @@ public class FtmDate implements Comparable<FtmDate> {
         }
 
         @Override
-        // not consistent with equals
-        public int compareTo(final FlaggedDate o) {
+        public int compareTo(final @NonNull FlaggedDate o) {
             return Long.compare(this.d, o.d);
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(final Object o) {
             if (Objects.isNull(o) || !(o instanceof FlaggedDate that)) {
                 return false;
             }

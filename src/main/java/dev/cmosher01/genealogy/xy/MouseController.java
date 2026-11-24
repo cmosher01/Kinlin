@@ -18,7 +18,7 @@
 package dev.cmosher01.genealogy.xy;
 
 import dev.cmosher01.genealogy.xy.genealogy.*;
-import lombok.val;
+import lombok.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -115,20 +115,21 @@ import static dev.cmosher01.genealogy.xy.Swings.pointOf;
  */
 public class MouseController {
     public MouseController(
-        final MouseView viewMouse,
-        final MainView viewMain,
-        final FrameView viewFrame,
-        final StatusBarView viewStatusBar,
-        final ZoomPanModel modelZoomPan,
-        final ZoomPanMouseController controllerZoomPan,
-        final StatusBarModel modelStatus,
-        final ChartMouseController controllerChart,
-        final DragSelectionController<?> controllerDragSelection) {
+        final @NonNull MouseView viewMouse,
+        final @NonNull MainView viewMain,
+        final @NonNull FrameView viewFrame,
+        final @NonNull StatusBarView viewStatusBar,
+        final @NonNull ZoomPanModel modelZoomPan,
+        final @NonNull ZoomPanMouseController controllerZoomPan,
+        final @NonNull StatusBarModel modelStatus,
+        final @NonNull ChartMouseController controllerChart,
+        final @NonNull DragSelectionController<?> controllerDragSelection
+    ) {
         val mouse = new MouseAdapter() {
             private boolean dragged;
 
             @Override
-            public void mouseMoved(final MouseEvent e) {
+            public void mouseMoved(final @NonNull MouseEvent e) {
                 val at = pointOf(e);
                 modelStatus.set(viewMain, at);
                 viewStatusBar.refresh();
@@ -137,7 +138,7 @@ public class MouseController {
 
 
             @Override
-            public void mousePressed(final MouseEvent e) {
+            public void mousePressed(final @NonNull MouseEvent e) {
                 val at = pointOf(e);
                 val cnvAt = modelZoomPan.viewportToCanvas(at);
 
@@ -155,7 +156,7 @@ public class MouseController {
             }
 
             @Override
-            public void mouseDragged(final MouseEvent e) {
+            public void mouseDragged(final @NonNull MouseEvent e) {
                 val at = pointOf(e);
 
                 this.dragged = true;
@@ -176,7 +177,7 @@ public class MouseController {
             }
 
             @Override
-            public void mouseReleased(final MouseEvent e) {
+            public void mouseReleased(final @NonNull MouseEvent e) {
                 if (controllerDragSelection.selecting()) {
                     controllerDragSelection.release();
                 } else if (controllerChart.has()) {
@@ -195,14 +196,14 @@ public class MouseController {
 
 
             @Override
-            public void mouseClicked(final MouseEvent e) {
+            public void mouseClicked(final @NonNull MouseEvent e) {
                 e.consume();
             }
 
 
 
             @Override
-            public void mouseWheelMoved(final MouseWheelEvent e) {
+            public void mouseWheelMoved(final @NonNull MouseWheelEvent e) {
                 val at = pointOf(e);
 
                 controllerZoomPan.rotate(at, e.getWheelRotation());
@@ -264,7 +265,7 @@ public class MouseController {
 
 
 
-    private static Point2D.Double clipPoint(final Point p, final JComponent view) {
+    private static @NonNull Point2D.Double clipPoint(final @NonNull Point p, final @NonNull JComponent view) {
         return new Point2D.Double(
             Math.clamp(p.x, 0, view.getWidth()),
             Math.clamp(p.y, 0, view.getHeight()));

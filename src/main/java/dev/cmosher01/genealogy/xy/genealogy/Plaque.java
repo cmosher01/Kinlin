@@ -28,20 +28,13 @@ import java.text.AttributedString;
 import java.util.*;
 
 
+@RequiredArgsConstructor
 public class Plaque {
     private final @NonNull GedcomIndiName name;
     private final @NonNull String lifespan;
     private final @NonNull String place;
 
-    private TextBlock text;
-
-
-
-    public Plaque(final @NonNull GedcomIndiName name, final @NonNull String lifespan, final @NonNull String place) {
-        this.name = name;
-        this.lifespan = lifespan;
-        this.place = place;
-    }
+    private @NonNull TextBlock text = TextBlock.EMPTY;
 
 
 

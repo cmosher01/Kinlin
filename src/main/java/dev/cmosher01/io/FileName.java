@@ -24,14 +24,14 @@ import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 public final class FileName {
-    private static final String DOT = ".";
-    private static final String REGEX_DOT = Pattern.quote(DOT);
+    private static final @NonNull String DOT = ".";
+    private static final @NonNull String REGEX_DOT = Pattern.quote(DOT);
     private static final int KEEP_TRAILING_EMPTY_STRINGS = -1;
 
 
 
     private final @NonNull String name;
-    private final @NonNull List<String> extensions;
+    private final @NonNull List<@NonNull String> extensions;
 
 
 
@@ -87,7 +87,7 @@ public final class FileName {
 
 
 
-    public @NonNull List<String> extensions() {
+    public @NonNull List<@NonNull String> extensions() {
         return this.extensions;
     }
 
@@ -133,7 +133,7 @@ public final class FileName {
         return !s.isEmpty() && s.codePoints().allMatch(c -> c == '.');
     }
 
-    private static @NonNull List<String> split(final @NonNull String s) {
+    private static @NonNull List<@NonNull String> split(final @NonNull String s) {
         return List.of(s.split(REGEX_DOT, KEEP_TRAILING_EMPTY_STRINGS));
     }
 }

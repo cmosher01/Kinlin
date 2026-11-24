@@ -101,27 +101,27 @@ public class ZoomPanModel {
         this.panY += dy;
     }
 
-    public Point2D.Double canvasToViewport(final Point2D p) {
+    public @NonNull Point2D.Double canvasToViewport(final @NonNull Point2D p) {
         return new Point2D.Double(zoomFactor*p.getX()+panX, zoomFactor*p.getY()+panY);
     }
 
-    public Point canvasToViewport(final Point p) {
+    public @NonNull Point canvasToViewport(final @NonNull Point p) {
         val x = p.x().u()*this.zoomFactor + this.panX;
         val y = p.y().u()*this.zoomFactor + this.panY;
         return new Point(new Coord(x), new Coord(y));
     }
 
-    public Point2D.Double viewportToCanvas(final Point2D p) {
+    public @NonNull Point2D.Double viewportToCanvas(final @NonNull Point2D p) {
         return new Point2D.Double((p.getX()-panX)/zoomFactor, (p.getY()-panY)/zoomFactor);
     }
 
-    public Point viewportToCanvas(final Point p) {
+    public @NonNull Point viewportToCanvas(final @NonNull Point p) {
         val x = (p.x().u()-this.panX) / this.zoomFactor;
         val y = (p.y().u()-this.panY) / this.zoomFactor;
         return new Point(new Coord(x), new Coord(y));
     }
 
-    public Rectangle2D.Double viewportToCanvas(final Rectangle2D v) {
+    public @NonNull Rectangle2D.Double viewportToCanvas(final @NonNull Rectangle2D v) {
         final var vTL = new Point2D.Double(v.getX(), v.getY());
         final var cTL = viewportToCanvas(vTL);
         final var vBR = new Point2D.Double(v.getX()+v.getWidth(), v.getY()+v.getHeight());
@@ -129,11 +129,11 @@ public class ZoomPanModel {
         return new Rectangle2D.Double(cTL.x, cTL.y, cBR.x-cTL.x, cBR.y-cTL.y);
     }
 
-    public void setZoomOutMinFromBounds(final Rect b) {
+    public void setZoomOutMinFromBounds(final @NonNull Rect b) {
         setZoomOutMinFromBounds(Awts.rect(b));
     }
 
-    public void setZoomOutMinFromBounds(final Rectangle2D b) {
+    public void setZoomOutMinFromBounds(final @NonNull Rectangle2D b) {
         if (!b.isEmpty()) {
             this.zoomOutMin = DIMENSION_MIN / Math.min(b.getWidth(), b.getHeight());
         }

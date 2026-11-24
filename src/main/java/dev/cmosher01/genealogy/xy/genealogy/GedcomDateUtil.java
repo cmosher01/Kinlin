@@ -27,7 +27,7 @@ import java.util.*;
 
 @Slf4j
 public class GedcomDateUtil {
-    public static long calcBirthForSort(final String birth) {
+    public static long calcBirthForSort(final @NonNull String birth) {
         val db = toDateStrict(birth);
         val d = db.getStartDate().getApproxDay().asDate();
         if (d.getTime() == 0) {
@@ -41,7 +41,7 @@ public class GedcomDateUtil {
         return 100L*year+month;
     }
 
-    public static @NonNull String getLifespan(final String birth, final String death) {
+    public static @NonNull String getLifespan(final @NonNull String birth, final @NonNull String death) {
         val db = toDateLenient(birth);
         val dd = toDateLenient(death);
         if (db.equals("?") && dd.equals("?")) {
@@ -52,7 +52,7 @@ public class GedcomDateUtil {
 
 
 
-    private static DatePeriod toDateStrict(final String sDate) {
+    private static @NonNull DatePeriod toDateStrict(final @NonNull String sDate) {
         try {
             return new GedcomDateValueParser(new StringReader(sDate)).parse();
         } catch (final Exception e) {
@@ -63,7 +63,7 @@ public class GedcomDateUtil {
         }
     }
 
-    private static String toDateLenient(final String s) {
+    private static @NonNull String toDateLenient(final @NonNull String s) {
         String ret = "?";
         if (!s.isBlank()) {
             try {
@@ -88,7 +88,7 @@ public class GedcomDateUtil {
         return ret;
     }
 
-    private static String dateString(final DatePeriod period) {
+    private static @NonNull String dateString(final @NonNull DatePeriod period) {
         // We are only interested in BIRTH and DEATH dates, which are not time periods
         // (i.e., not "FROM start TO end"), so here we just choose the START date.
         // (Not to be confused with "BET x AND y" or "AFT x" or "BEF y", which are acceptable.)

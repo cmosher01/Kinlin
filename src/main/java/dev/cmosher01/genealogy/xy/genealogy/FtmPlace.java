@@ -18,39 +18,38 @@
 package dev.cmosher01.genealogy.xy.genealogy;
 
 
-import org.slf4j.*;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.regex.*;
 
 // Taken from Ftm-Web-View
 
-public class Place
-{
-    private static final Logger LOG =  LoggerFactory.getLogger(Place.class);
+@Slf4j
+public class FtmPlace
+{   private final @NonNull List<@NonNull String> hierarchy;
+    private final @NonNull String description;
 
-    private final List<String> hierarchy;
-    private final String description;
-
-    private Place(List<String> hierarchy, String description) {
+    private FtmPlace(final @NonNull List<@NonNull String> hierarchy, final @NonNull String description) {
         this.hierarchy = hierarchy;
         this.description = description;
     }
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return this.description;
     }
 
-    public static Place fromFtmPlace(final String s) {
-        final Place place = new Builder(s).build();
-        LOG.debug("FtmPlace=\"{}\" --> \"{}\"", s, place);
+    public static @NonNull FtmPlace fromFtmPlace(final String s) {
+        final FtmPlace place = new Builder(s).build();
+        log.debug("FtmPlace=\"{}\" --> \"{}\"", s, place);
         return place;
     }
 
     @Override
     public boolean equals(final Object object) {
-        if (!(object instanceof Place that)) {
+        if (!(object instanceof FtmPlace that)) {
             return false;
         }
         return this.hierarchy.equals(that.hierarchy);
@@ -73,26 +72,26 @@ public class Place
 
 
     private static class Builder {
-        private String description;
-        private final List<String> hierarchy = new ArrayList<>(5);
+        private @NonNull String description;
+        private final @NonNull List<@NonNull String> hierarchy = new ArrayList<>(5);
 
         public Builder(final String description) {
             if (Objects.isNull(description) || description.isBlank()) {
                 this.description = "";
             } else {
                 // default value if any parsing fails:
-                this.description = String.format("\u201C%s\u201D", description);
+                this.description = String.format("\u201C%s\u201D", description.strip());
                 // try to parse
                 try {
-                    parseDescription(description);
+                    parseDescription(description.strip());
                 } catch (final Throwable e) {
-                    LOG.warn("unknown place name format for {}", description, e);
+                    log.warn("unknown place name format for {}", description, e);
                 }
             }
         }
 
-        public Place build() {
-            return new Place(hierarchy, description);
+        public @NonNull FtmPlace build() {
+            return new FtmPlace(hierarchy, description);
         }
 
 
@@ -134,7 +133,7 @@ public class Place
                 /Hamilton, Madison, New York, USA|/0.7474722/-1.318502
                 /Place, Name w/some slash/es | and, vertical | bars|//
          */
-        private static final Pattern FTM_PLACE_WITH_VERTICALBAR = Pattern.compile("^/(?<name>.*)\\|(?<code>[^/|]*?)/(?<lat>[^/|]*?)/(?<lon>[^/|]*?)$");
+        private static final @NonNull Pattern FTM_PLACE_WITH_VERTICALBAR = Pattern.compile("^/(?<name>.*)\\|(?<code>[^/|]*?)/(?<lat>[^/|]*?)/(?<lon>[^/|]*?)$");
 
         /*
                 /Room 401, Flint Hall, Syracuse University/Syracuse/Onondaga/New York/USA/11269/0.7513314/-1.329023
@@ -142,15 +141,15 @@ public class Place
 
             Use the first capture group ("name") from the first pattern as input to the second pattern:
         */
-        private static final Pattern FTM_PLACE_WITH_SLASH = Pattern.compile("^/(?<name>.*)/(?<code>[^/|]*?)/(?<lat>[^/|]*?)/(?<lon>[^/|]*?)$");
+        private static final @NonNull Pattern FTM_PLACE_WITH_SLASH = Pattern.compile("^/(?<name>.*)/(?<code>[^/|]*?)/(?<lat>[^/|]*?)/(?<lon>[^/|]*?)$");
 
-        private static final Pattern FTM_PLACE_HIERARCHICAL = Pattern.compile("^(?<p0>.*)/(?<p1>[^/|]*?)/(?<p2>[^/|]*?)/(?<p3>[^/|]*?)/(?<p4>[^/|]*?)$");
+        private static final @NonNull Pattern FTM_PLACE_HIERARCHICAL = Pattern.compile("^(?<p0>.*)/(?<p1>[^/|]*?)/(?<p2>[^/|]*?)/(?<p3>[^/|]*?)/(?<p4>[^/|]*?)$");
 
 
         private void parseDescription(final String description) {
             //-------------------------------------------------------
             {
-                final Matcher withBar = FTM_PLACE_WITH_VERTICALBAR.matcher(description);
+                val withBar = FTM_PLACE_WITH_VERTICALBAR.matcher(description);
                 if (withBar.matches()) {
                     parseAndAddHierarchy(withBar.group("name"));
 
@@ -160,9 +159,9 @@ public class Place
             }
             //-------------------------------------------------------
             {
-                final Matcher withSlash = FTM_PLACE_WITH_SLASH.matcher(description);
+                val withSlash = FTM_PLACE_WITH_SLASH.matcher(description);
                 if (withSlash.matches()) {
-                    final Matcher hier = FTM_PLACE_HIERARCHICAL.matcher(withSlash.group("name"));
+                    val hier = FTM_PLACE_HIERARCHICAL.matcher(withSlash.group("name"));
                     if (hier.matches()) {
                         parseAndAddHierarchy(hier.group("p0"));
                         addHierarchy(hier.group("p1"));

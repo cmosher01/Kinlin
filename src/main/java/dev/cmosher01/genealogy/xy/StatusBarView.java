@@ -17,17 +17,19 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import lombok.NonNull;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public final class StatusBarView extends JPanel {
-    private static final Font FONT = new Font("Courier New", Font.PLAIN, 14);
+    private static final @NonNull Font FONT = new Font("Courier New", Font.PLAIN, 14);
 
-    private final StatusBarModel model;
-    private final JLabel label;
+    private final @NonNull StatusBarModel model;
+    private final @NonNull JLabel label;
 
-    public StatusBarView(final StatusBarModel model) {
+    public StatusBarView(final @NonNull StatusBarModel model) {
         super(new BorderLayout());
         this.model = model;
 

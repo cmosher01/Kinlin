@@ -17,17 +17,17 @@
 
 package dev.cmosher01.genealogy.xy;
 
-import lombok.val;
+import lombok.*;
 
 import java.nio.file.Path;
 import java.util.prefs.Preferences;
 
 public class UserPrefs {
-    public static Preferences prefs() {
+    public static @NonNull Preferences prefs() {
         return Preferences.userNodeForPackage(UserPrefs.class);
     }
 
-    public static Path dir() {
+    public static @NonNull Path dir() {
         val cur = prefs().get("dir", "").strip();
         val sys = System.getProperty("user.home", "").strip();
 
@@ -43,7 +43,7 @@ public class UserPrefs {
         return Path.of(prefs().get("dir", def).strip());
     }
 
-    public static void dir(final Path dir) {
+    public static void dir(final @NonNull Path dir) {
         prefs().put("dir", dir.toString().strip());
     }
 }

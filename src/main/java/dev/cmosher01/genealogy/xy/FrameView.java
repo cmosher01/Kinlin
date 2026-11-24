@@ -17,7 +17,7 @@
 
 package dev.cmosher01.genealogy.xy;
 
-import lombok.val;
+import lombok.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,17 +25,17 @@ import java.awt.*;
 import static java.awt.BorderLayout.*;
 
 public class FrameView extends JFrame {
-    // set to ture for testing purposes (the green should never be visible in the GUI)
+    // set to true for testing purposes (the green should never be visible in the GUI)
 //    private static final boolean DEBUG_GREEN_BACKGROUND = true;
     private static final boolean DEBUG_GREEN_BACKGROUND = false;
 
     private static final Component CENTER_ON_SCREEN = null;
-    private static final Toolkit TK = Toolkit.getDefaultToolkit();
+    private static final @NonNull Toolkit TK = Toolkit.getDefaultToolkit();
 
-    private final DocumentModel modelDocument;
-    private final DialogViews dialogs = new DialogViews(this);
+    private final @NonNull DocumentModel modelDocument;
+    private final @NonNull DialogViews dialogs = new DialogViews(this);
 
-    public FrameView(final DocumentModel modelDocument, final MenuView viewMenu, final MouseView viewMouse, final MainView viewMain, final StatusBarView viewStatusBar) {
+    public FrameView(final @NonNull DocumentModel modelDocument, final @NonNull MenuView viewMenu, final @NonNull MouseView viewMouse, final @NonNull MainView viewMain, final @NonNull StatusBarView viewStatusBar) {
         this.modelDocument = modelDocument;
 
         setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -57,7 +57,7 @@ public class FrameView extends JFrame {
         }
     }
 
-    private static JPanel compose(final Component front, final Component back) {
+    private static @NonNull JPanel compose(final @NonNull Component front, final @NonNull Component back) {
         val p = new JPanel();
         p.setLayout(new OverlayLayout(p));
         p.add(back);
@@ -73,7 +73,7 @@ public class FrameView extends JFrame {
         setTitle(this.modelDocument.getTitle());
     }
 
-    public DialogViews dialogs() {
+    public @NonNull DialogViews dialogs() {
         return this.dialogs;
     }
 }

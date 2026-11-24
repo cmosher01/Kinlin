@@ -28,7 +28,7 @@ import java.util.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ChartModel {
-    private static final Outset BOUNDS_OUTSET = new Outset(new GrowTerm(100D)); // TODO
+    private static final @NonNull Outset BOUNDS_OUTSET = new Outset(new GrowTerm(100D)); // TODO
 
 
 
@@ -37,7 +37,7 @@ public class ChartModel {
 
     @Getter private final @NonNull Optional<GedcomTree> tree;
 
-    private Rect bounds;
+    private @NonNull Rect bounds = Rect.CENTERED_UNIT_SQUARE;
 
     @Getter private final @NonNull IndiSelectionModel selection;
 
@@ -45,7 +45,7 @@ public class ChartModel {
     private final @NonNull Grid grid = new Grid();
 
 
-    public ChartModel(final @NonNull List<Indi> indis, final @NonNull List<Fami> famis, final @NonNull Optional<GedcomTree> tree) {
+    public ChartModel(final @NonNull List<@NonNull Indi> indis, final @NonNull List<@NonNull Fami> famis, final @NonNull Optional<GedcomTree> tree) {
         this.indis = indis;
         this.famis = famis;
         this.tree = tree;
@@ -57,7 +57,7 @@ public class ChartModel {
     public void refresh(final @NonNull FontModel fonts) {
         refreshIndis(fonts);
         refreshFamis(fonts);
-        this.bounds = bounds(indis);
+        updateBounds();
     }
 
     private void refreshIndis(final @NonNull FontModel fonts) {
@@ -65,7 +65,7 @@ public class ChartModel {
     }
 
     private void refreshFamis(final @NonNull FontModel fonts) {
-        this.famis.forEach(i -> i.refresh(fonts));
+        this.famis.forEach(f -> f.refresh(fonts));
     }
 
 
@@ -74,7 +74,7 @@ public class ChartModel {
         this.bounds = bounds(this.indis);
     }
 
-    private static Rect bounds(final @NonNull List<Indi> indis) {
+    private static @NonNull Rect bounds(final @NonNull List<@NonNull Indi> indis) {
         return Rect.bounds(indis.stream().map(Indi::bounds).toList());
     }
 
@@ -105,7 +105,7 @@ public class ChartModel {
         return false;
     }
 
-    public Optional<Indi> getAt(final Point at) {
+    public @NonNull Optional<Indi> getAt(final @NonNull Point at) {
         for (val i : this.indis.reversed()) {
             if (i.bounds().contains(at)) {
                 return Optional.of(i);
@@ -114,11 +114,11 @@ public class ChartModel {
         return Optional.empty();
     }
 
-    List<Indi> indis() {
+    @NonNull List<@NonNull Indi> indis() {
         return this.indis;
     }
 
-    List<Fami> famis() {
+    @NonNull List<@NonNull Fami> famis() {
         return this.famis;
     }
 
@@ -173,7 +173,7 @@ public class ChartModel {
         this.selection.selectAll();
     }
 
-    public void moveSelection(Point2D.Double d) {
+    public void moveSelection(final @NonNull Point2D.Double d) {
         this.selection.move(d, this.grid);
     }
 
@@ -181,11 +181,11 @@ public class ChartModel {
         new GridSettingsDialog(viewFrame, this.grid).dialog();
     }
 
-    public Optional<Rect> selectionBounds() {
+    public @NonNull Optional<Rect> selectionBounds() {
         return this.selection.bounds();
     }
 
-    public List<Indi> getSelectedIndis() {
+    public @NonNull List<@NonNull Indi> getSelectedIndis() {
         return this.selection.getSelection();
     }
 

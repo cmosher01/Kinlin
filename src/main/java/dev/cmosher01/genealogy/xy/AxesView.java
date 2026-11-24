@@ -28,20 +28,20 @@ import static dev.cmosher01.genealogy.xy.Solarized.BASE__1_GRAY__BRT;
 
 @RequiredArgsConstructor
 public class AxesView {
-    private static final Point2D.Double ORIGIN = new Point2D.Double();
+    private static final @NonNull Point2D.Double ORIGIN = new Point2D.Double();
 
-    private static final Color AXES_COLOR = BASE__1_GRAY__BRT;
-    private static final Stroke AXES_STROKE = Swings.simpleStroke();
+    private static final @NonNull Color AXES_COLOR = BASE__1_GRAY__BRT;
+    private static final @NonNull Stroke AXES_STROKE = Swings.simpleStroke();
 
-    private final ZoomPanModel modelZoomPan;
+    private final @NonNull ZoomPanModel modelZoomPan;
 
-    public void paint(final Graphics2D g, final double w, final double h) {
+    public void paint(final @NonNull Graphics2D g, final double w, final double h) {
         g.setStroke(AXES_STROKE);
         g.setColor(AXES_COLOR);
         axesClipped(g, w, h);
     }
 
-    private void axesClipped(final Graphics2D g, final double w, final double h) {
+    private void axesClipped(final @NonNull Graphics2D g, final double w, final double h) {
         // L = left, R = right, T = top, B = bottom
         val origin = this.modelZoomPan.canvasToViewport(ORIGIN);
         val y = origin.y;

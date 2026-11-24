@@ -22,9 +22,9 @@ import manifold.ext.rt.api.*;
 
 import java.util.Objects;
 
-public record Point(@NonNull Coord x = Coord.ORIGIN, @NonNull Coord y = Coord.ORIGIN) implements ComparableUsing<Point> {
-    public static Point ORIGIN = new Point();
-    public static Point NULL = new Point(Coord.NULL, Coord.NULL);
+public record Point(@NonNull Coord x = Coord.ORIGIN, @NonNull Coord y = Coord.ORIGIN) implements ComparableUsing<@NonNull Point> {
+    public static @NonNull Point ORIGIN = new Point();
+    public static @NonNull Point NULL = new Point(Coord.NULL, Coord.NULL);
 
     @Override
     public boolean equals(final @Self Object o) {

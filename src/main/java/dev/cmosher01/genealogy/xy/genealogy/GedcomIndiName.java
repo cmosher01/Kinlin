@@ -17,6 +17,8 @@
 
 package dev.cmosher01.genealogy.xy.genealogy;
 
+import lombok.*;
+
 import java.util.List;
 import java.util.regex.*;
 
@@ -52,10 +54,10 @@ at least one character, except "/".
 
 Member variables represent: given0 "/" sur "/" given1
 */
-    private static final Pattern PAT_NAME = Pattern.compile("(.*)/([^/]*?)/([^/]*?)");
+    private static final @NonNull Pattern PAT_NAME = Pattern.compile("(.*)/([^/]*?)/([^/]*?)");
 
-    public static GedcomIndiName create(final String gedcomName) {
-        final Matcher matcher = PAT_NAME.matcher(gedcomName);
+    public static @NonNull GedcomIndiName create(final @NonNull String gedcomName) {
+        val matcher = PAT_NAME.matcher(gedcomName);
         if (!matcher.matches()) {
             return new GedcomIndiName(gedcomName, "", "");
         }
@@ -65,7 +67,7 @@ Member variables represent: given0 "/" sur "/" given1
             matcher.group(3).strip());
     }
 
-    public String tildeGiven() {
+    public @NonNull String tildeGiven() {
         if (!given0().isBlank() && !given1().isBlank()) {
             return given0()+" ~ "+given1();
         }
@@ -80,7 +82,7 @@ Member variables represent: given0 "/" sur "/" given1
 
 
 
-    public String simple() {
+    public @NonNull String simple() {
         return (given0()+" "+sur()+" "+given1()).strip();
     }
 
@@ -110,12 +112,12 @@ Member variables represent: given0 "/" sur "/" given1
         UNKNOWN,
     }
 
-    public List<Token> tokenized() {
+    public @NonNull List<@NonNull Token> tokenized() {
         final List<Token> ret;
 
-        final var g0 = !given0().isBlank();
-        final var s  = !sur   ().isBlank();
-        final var g1 = !given1().isBlank();
+        val g0 = !given0().isBlank();
+        val s  = !sur   ().isBlank();
+        val g1 = !given1().isBlank();
 
         /*  */ if (!g0 && !s  && !g1) {
             ret = List.of(Token.UNKNOWN, Token.NULL, Token.NULL, Token.NULL, Token.NULL);

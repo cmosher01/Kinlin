@@ -17,25 +17,24 @@
 
 package dev.cmosher01.genealogy.xy;
 
-import lombok.val;
+import lombok.*;
 
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
+@RequiredArgsConstructor
 public class ZoomPanMouseController {
-    private final ZoomPanModel zp;
+    private final @NonNull ZoomPanModel zp;
 
     private Point2D.Double ptDragPivot;
 
-    public ZoomPanMouseController(final ZoomPanModel zp) {
-        this.zp = zp;
-    }
 
-    public void press(final Point2D.Double at) {
+
+    public void press(final @NonNull Point2D.Double at) {
         this.ptDragPivot = at;
     }
 
-    public void drag(final Point2D.Double at) {
+    public void drag(final @NonNull Point2D.Double at) {
         if (Objects.nonNull(this.ptDragPivot)) {
             val d = Swings.delta(this.ptDragPivot, at);
             this.zp.pan(d.getX(), d.getY());
@@ -47,7 +46,9 @@ public class ZoomPanMouseController {
         this.ptDragPivot = null;
     }
 
-    public void rotate(final Point2D.Double at, final int clicks) {
+
+
+    public void rotate(final @NonNull Point2D.Double at, final int clicks) {
         this.zp.zoom(clicks, at.getX(), at.getY());
     }
 }

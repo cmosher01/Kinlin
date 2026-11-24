@@ -24,13 +24,13 @@ import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 
 public final class FontContext {
-    private static final @NonNull BufferedImage IMG_ARGB = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-    private static @NonNull FontRenderContext CTX = getFontRenderContext();
-
     @Deprecated
     private FontContext() {
         throw new UnsupportedOperationException();
     }
+
+    private static final @NonNull BufferedImage IMG_ARGB = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+    private static @NonNull FontRenderContext CTX = getFontRenderContext();
 
     public static @NonNull FontRenderContext ctx() {
         return CTX;

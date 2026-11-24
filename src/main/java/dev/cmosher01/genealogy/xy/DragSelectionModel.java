@@ -17,10 +17,12 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import lombok.NonNull;
+
 import java.awt.geom.*;
 
 public class DragSelectionModel {
-    private final Rectangle2D.Double bounds = new Rectangle2D.Double();
+    private final @NonNull Rectangle2D.Double bounds = new Rectangle2D.Double();
 
 
 
@@ -28,11 +30,11 @@ public class DragSelectionModel {
         return !this.bounds.isEmpty();
     }
 
-    public Rectangle2D.Double bounds() {
+    public @NonNull Rectangle2D.Double bounds() {
         return (Rectangle2D.Double)this.bounds.getBounds2D();
     }
 
-    public void set(final Point2D a, final Point2D b) {
+    public void set(final @NonNull Point2D a, final @NonNull Point2D b) {
         this.bounds.setFrameFromDiagonal(a, b);
         forceNonEmpty();
     }

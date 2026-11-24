@@ -26,7 +26,7 @@ import java.util.Objects;
  * Line segment, defined by its two endpoints. Non-directional.
  * Line(a,b) is identical to Line(b,a), for any two Point objects a and b
  */
-public record Line(@NonNull Point a, @NonNull Point b) implements ComparableUsing<Line> {
+public record Line(@NonNull Point a, @NonNull Point b = a) implements ComparableUsing<@NonNull Line> {
     @Override
     public boolean equals(final @Self Object o) {
         return
@@ -53,7 +53,7 @@ public record Line(@NonNull Point a, @NonNull Point b) implements ComparableUsin
         return a.distance(b);
     }
 
-    public @NonNull Point section(final Proportion p) {
+    public @NonNull Point section(final @NonNull Proportion p) {
         return new Point(
             new Coord(~p * a.x.u + p * b.x.u),
             new Coord(~p * a.y.u + p * b.y.u));

@@ -164,13 +164,13 @@ public class DocumentController {
     public static final boolean ATTENDED = true;
     public static final boolean UNATTENDED = false;
 
-    private final DocumentModel document;
-    private final ZoomPanModel zp;
-    private final FrameView viewFrame;
-    private final MenuView viewMenu;
-    private final MainView viewMain;
-    private final ChartView viewChart; // TODO can this refer to a DocumentView instead?
-    private final ChartCommandController controllerChartCommand;
+    private final @NonNull DocumentModel document;
+    private final @NonNull ZoomPanModel zp;
+    private final @NonNull FrameView viewFrame;
+    private final @NonNull MenuView viewMenu;
+    private final @NonNull MainView viewMain;
+    private final @NonNull ChartView viewChart; // TODO can this refer to a DocumentView instead?
+    private final @NonNull ChartCommandController controllerChartCommand;
 
 
 
@@ -180,13 +180,13 @@ public class DocumentController {
     }
 
     // open the first path, ignore the rest
-    public void open(final List<Path> paths) {
+    public void open(final @NonNull List<@NonNull Path> paths) {
         if (!paths.isEmpty()) {
             open(paths.getFirst());
         }
     }
 
-    public void open(final Path path) {
+    public void open(final @NonNull Path path) {
         try {
             this.document.open(path);
         } catch (final Exception e) {

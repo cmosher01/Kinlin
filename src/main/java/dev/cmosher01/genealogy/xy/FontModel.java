@@ -38,7 +38,7 @@ public class FontModel {
             Fonts.registerOrFallback(FILENAME_BOLD);
         }
 
-        this.palette = new FontPalette(8.0D, family);
+        this.palette = new FontPalette(7.0D, family);
     }
 
     public @NonNull FontPalette palette() {

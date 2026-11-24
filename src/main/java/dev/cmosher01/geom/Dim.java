@@ -33,13 +33,12 @@ import java.util.Objects;
 // (beware can be infinite (positive) or NaN)
 // DOMAIN OF ALLOWABLE VALUES: NaN, positive zero, any positive normal double number
 // NON-ALLOWABLE VALUES: negative zero, any negative normal double number, negative infinity, positive infinity
-public record Dim(@NonNull Double n = DoubleUtil.ZERO) implements ComparableUsing<Dim> {
-    public static final Dim NULL = new Dim(Double.NaN);
-    public static final Dim ZERO = new Dim();
-    public static final Dim ONE = new Dim(DoubleUtil.ONE);
+public record Dim(@NonNull Double n = DoubleUtil.ZERO) implements ComparableUsing<@NonNull Dim> {
+    public static final @NonNull Dim NULL = new Dim(Double.NaN);
+    public static final @NonNull Dim ZERO = new Dim();
+    public static final @NonNull Dim ONE = new Dim(DoubleUtil.ONE);
 
     public Dim {
-//        n = Math.clamp(n, 0D, Double.POSITIVE_INFINITY);
         n = Domain.ABS0_FIN.filter(n);
     }
 

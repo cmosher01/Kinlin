@@ -27,17 +27,17 @@ import java.util.Optional;
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @RequiredArgsConstructor
 public class ChartMouseController {
-    private final ZoomPanModel zp;
-    private final DocumentModel model;
-    private final MenuView viewMenu;
+    private @NonNull final ZoomPanModel zp;
+    private @NonNull final DocumentModel model;
+    private @NonNull final MenuView viewMenu;
 
-    private Optional<Indi> optItem = Optional.empty();
-    private Optional<Point2D.Double> optptDragPivot = Optional.empty();
+    private @NonNull Optional<Indi> optItem = Optional.empty();
+    private @NonNull Optional<Point2D.Double> optptDragPivot = Optional.empty();
     private boolean wasSelected;
 
 
 
-    public boolean want(final Point2D.Double at) {
+    public boolean want(final @NonNull Point2D.Double at) {
         val optModel = this.model.getModel();
         this.optItem = optModel.isPresent() ? optModel.get().getAt(Awts.point(at)) : Optional.empty();
         val want = this.optItem.isPresent();
@@ -63,7 +63,7 @@ public class ChartMouseController {
         }
     }
 
-    public void drag(final Point2D.Double at) {
+    public void drag(final @NonNull Point2D.Double at) {
         if (has()) {
             val chart = this.model.getModel().get();
             val d = Swings.delta(this.optptDragPivot.get(), at);

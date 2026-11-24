@@ -56,7 +56,7 @@ public class Indi {
 
 
     @Override
-    public String toString() {
+    public @NonNull String toString() {
         return this.simpleName();
     }
 
@@ -118,8 +118,8 @@ public class Indi {
     }
 
     private void refreshFamis(final @NonNull FontModel fonts) {
-        this.rFamiParentIn.forEach(i -> i.refresh(fonts));
-        this.rFamiChildIn.forEach(i -> i.refresh(fonts));
+        this.rFamiParentIn.forEach(f -> f.refresh(fonts));
+        this.rFamiChildIn.forEach(f -> f.refresh(fonts));
     }
 
     public boolean isModified() {
@@ -142,7 +142,7 @@ public class Indi {
         this.rFamiParentIn.forEach(f -> f.select(selected));
     }
 
-    public boolean intersects(final Rectangle2D.Double r) {
+    public boolean intersects(final @NonNull Rectangle2D.Double r) {
         return Rect.intersect(bounds(), Awts.rect(r));
     }
 
@@ -166,11 +166,11 @@ public class Indi {
             return;
         }
 
-        final String xy = XyValue.convertToXY(this.pt.get());
-        final Optional<TreeNode<GedcomLine>> existingXyNode = findChild(this.id.node(), XyValue.GED_TAG);
-        final TreeNode<GedcomLine> newNode = new TreeNode<>(this.id.node().getObject().createChild(XyValue.GED_TAG, xy));
+        val xy = XyValue.convertToXY(this.pt.get());
+        val existingXyNode = findChild(this.id.node(), XyValue.GED_TAG);
+        val newNode = new TreeNode<>(this.id.node().getObject().createChild(XyValue.GED_TAG, xy));
         if (existingXyNode.isPresent()) {
-            final TreeNode<GedcomLine> oldNode = existingXyNode.get();
+            val oldNode = existingXyNode.get();
             if (this.pt.hasOriginal()) {
                 oldNode.setObject(oldNode.getObject().replaceValue(xy));
             } else {
@@ -189,16 +189,16 @@ public class Indi {
 
 
     public @NonNull List<@NonNull Indi> getRelatives() {
-        final var rindi = new ArrayList<Indi>();
+        val rindi = new ArrayList<Indi>();
 
         // parents and siblings
-        for (final var fami : this.rFamiChildIn) {
+        for (val fami : this.rFamiChildIn) {
             rindi.addAll(fami.getParents());
             rindi.addAll(fami.getChildren());
         }
 
         // spouses and children
-        for (final var fami : this.rFamiParentIn) {
+        for (val fami : this.rFamiParentIn) {
             rindi.addAll(fami.getParents());
             rindi.addAll(fami.getChildren());
         }
@@ -215,8 +215,8 @@ public class Indi {
 
 
 
-    private static Optional<TreeNode<GedcomLine>> findChild(final TreeNode<GedcomLine> parent, final String tag) {
-        for (final TreeNode<GedcomLine> child : parent) {
+    private static @NonNull Optional<TreeNode<@NonNull GedcomLine>> findChild(final @NonNull TreeNode<@NonNull GedcomLine> parent, final @NonNull String tag) {
+        for (val child : parent) {
             if (child.getObject().getTagString().equals(tag)) {
                 return Optional.of(child);
             }

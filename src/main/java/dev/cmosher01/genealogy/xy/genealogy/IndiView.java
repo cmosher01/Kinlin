@@ -28,8 +28,8 @@ import static dev.cmosher01.geom.Awts.rect;
 
 public class IndiView {
     private static final double MIN_ZOOM_DETAIL = 0.08D;
-    private static final Color SELECTED_FILL_COLOR = Swings.mix(Solarized.MAGENTA, Solarized.BASE__2_BEIGE_DRK, .2);
-    private static final Color NONSELECTED_FILL_COLOR = Swings.mix(Solarized.BASE__3_BEIGE_BRT, Solarized.BASE__1_GRAY__BRT, .6);
+    private static final @NonNull Color SELECTED_FILL_COLOR = Swings.mix(Solarized.MAGENTA, Solarized.BASE__2_BEIGE_DRK, .2);
+    private static final @NonNull Color NONSELECTED_FILL_COLOR = Swings.mix(Solarized.BASE__3_BEIGE_BRT, Solarized.BASE__1_GRAY__BRT, .6);
 
     private final @NonNull Indi model;
     private final @NonNull ZoomPanModel modelZoomPan;
@@ -46,7 +46,7 @@ public class IndiView {
 
     private static final boolean SHOW_PLAQUE_BG = false;
 
-    public void paint(final Graphics2D g) {
+    public void paint(final @NonNull Graphics2D g) {
         if (this.model.selected()) {
             g.setColor(SELECTED_FILL_COLOR);
         } else {
@@ -89,13 +89,13 @@ public class IndiView {
         return MIN_ZOOM_DETAIL <= this.modelZoomPan.zoomFactor();
     }
 
-    void addFamiViewsFrom(final @NonNull Map<Fami, FamiView> mapFamiToView) {
+    void addFamiViewsFrom(final @NonNull Map<@NonNull Fami, @NonNull FamiView> mapFamiToView) {
         for (val f : this.model().famis()) {
             this.rFami.add(mapFamiToView.get(f));
         }
     }
 
-    Set<FamiView> getFamis() {
+    @NonNull Set<@NonNull FamiView> getFamis() {
         return this.rFami;
     }
 }

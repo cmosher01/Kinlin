@@ -17,19 +17,19 @@
 
 package dev.cmosher01.genealogy.xy;
 
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.awt.geom.Point2D;
 
 
 @RequiredArgsConstructor
 public class DragSelectionController<T> {
-    private final DragSelectionModel model;
-    private final DocumentModel modelDocument;
-    private final ZoomPanModel zp;
-    private final MenuView viewMenu;
+    private final @NonNull DragSelectionModel model;
+    private final @NonNull DocumentModel modelDocument;
+    private final @NonNull ZoomPanModel zp;
+    private final @NonNull MenuView viewMenu;
 
-    private Selectable<?> getSelectable() {
+    private @NonNull Selectable<?> getSelectable() {
         if (this.modelDocument.getModel().isEmpty()) {
             throw new IllegalStateException();
         }
@@ -42,7 +42,7 @@ public class DragSelectionController<T> {
 
 
 
-    public void press(final Point2D.Double at) {
+    public void press(final @NonNull Point2D.Double at) {
         this.ptOrig = at;
         this.ptCurr = at;
 
@@ -51,7 +51,7 @@ public class DragSelectionController<T> {
         this.viewMenu.refresh();
     }
 
-    public void drag(final Point2D.Double at) {
+    public void drag(final @NonNull Point2D.Double at) {
         if (!at.equals(this.ptCurr)) {
             this.ptCurr = at;
 

@@ -20,7 +20,7 @@ package dev.cmosher01.geom;
 import lombok.NonNull;
 
 public record Xlation(@NonNull MoveTerm dx = MoveTerm.IDENTITY, @NonNull MoveTerm dy = dx) {
-    public static final Xlation IDENTITY = new Xlation();
+    public static final @NonNull Xlation IDENTITY = new Xlation();
 
     public @NonNull Xlation unaryMinus() {
         return new Xlation(-dx, -dy);

@@ -27,11 +27,11 @@ import java.util.List;
 
 
 public class FamilyTreeXyEditorApplication {
-    public void run(final @NonNull List<String> args) throws InterruptedException, InvocationTargetException {
+    public void run(final @NonNull List<@NonNull String> args) throws InterruptedException, InvocationTargetException {
         SwingUtilities.invokeAndWait(() -> mainMvc(args));
     }
 
-    private void mainMvc(final @NonNull List<String> args) {
+    private void mainMvc(final @NonNull List<@NonNull String> args) {
         postSwingSetup();
 
         // MODEL

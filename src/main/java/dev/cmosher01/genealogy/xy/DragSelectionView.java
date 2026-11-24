@@ -17,19 +17,19 @@
 
 package dev.cmosher01.genealogy.xy;
 
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.awt.*;
 
 @RequiredArgsConstructor
 public class DragSelectionView {
-    private static final Color RECT_STROKE_COLOR = Solarized.MAGENTA;
-    private static final Color RECT_FILL_COLOR = new Color(
+    private static final @NonNull Color RECT_STROKE_COLOR = Solarized.MAGENTA;
+    private static final @NonNull Color RECT_FILL_COLOR = new Color(
         RECT_STROKE_COLOR.getRed(), RECT_STROKE_COLOR.getGreen(), RECT_STROKE_COLOR.getBlue(), 32);
 
-    private final DragSelectionModel model;
+    private final @NonNull DragSelectionModel model;
 
-    public void paint(final Graphics2D g, ZoomPanModel zp) {
+    public void paint(final @NonNull Graphics2D g, final @NonNull ZoomPanModel zp) {
         if (this.model.selecting()) {
             g.setColor(RECT_FILL_COLOR);
             g.fill(zp.viewportToCanvas(this.model.bounds()));

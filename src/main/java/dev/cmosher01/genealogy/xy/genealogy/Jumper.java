@@ -56,6 +56,7 @@ state transitions:
 
 
 import dev.cmosher01.geom.Point;
+import lombok.NonNull;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -67,16 +68,16 @@ public class Jumper {
         sj, Sj, sJ, SJ
     }
 
-    private final AtomicReference<Point> J = new AtomicReference<>(Point.NULL);
-    private final AtomicReference<Point> S = new AtomicReference<>(Point.NULL);
+    private final @NonNull AtomicReference<Point> J = new AtomicReference<>(Point.NULL);
+    private final @NonNull AtomicReference<Point> S = new AtomicReference<>(Point.NULL);
 
-    private State state = sj;
+    private @NonNull State state = sj;
 
     // We don't get notified when the user changes the selection,
     // so we need to check which action the user did to the
     // selection before jump command.
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public void selectionDelta(final Optional<Point> selection) {
+    public void selectionDelta(final @NonNull Optional<Point> selection) {
         if (selection.isPresent()) {
             this.S.set(selection.get());
             userAddedToSelection();
@@ -129,7 +130,7 @@ public class Jumper {
     // j  = user initiates jump command
     // Returns a point to the caller, who is responsible
     // for scrolling to that point (if it exists)
-    public Optional<Point> jump(final Point ptCurrPos) {
+    public @NonNull Optional<Point> jump(final @NonNull Point ptCurrPos) {
         Optional<Point> ret = Optional.empty();
         switch (this.state) {
             case sj -> {

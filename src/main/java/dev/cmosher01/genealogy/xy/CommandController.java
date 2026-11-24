@@ -25,8 +25,8 @@ import java.util.*;
 
 @RequiredArgsConstructor
 public class CommandController {
-    private final FrameView viewFrame;
-    private final MenuView viewMenu;
+    private final @NonNull FrameView viewFrame;
+    private final @NonNull MenuView viewMenu;
 
 
 

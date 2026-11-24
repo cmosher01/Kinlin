@@ -117,7 +117,7 @@ public class XyValue {
 
 
 
-    public static String convertToXY(final @NonNull Point pt) {
+    public static @NonNull String convertToXY(final @NonNull Point pt) {
         return String.format("%.2f %.2f", pt.x().u(), pt.y().u());
     }
 

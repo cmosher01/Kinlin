@@ -33,21 +33,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+@RequiredArgsConstructor
 public class DocumentModel {
     @Getter
-    private Optional<ChartModel> model = Optional.empty();
+    private @NonNull Optional<ChartModel> model = Optional.empty();
+
+    private final @NonNull FontModel modelFont;
 
     private @NonNull Optional<Path> file = Optional.empty();
-    private FileName filename;
-    private final @NonNull FontModel modelFont;
+    private @NonNull FileName filename = FileName.of("");
     private boolean dirty ;
-
-    public DocumentModel(final @NonNull FontModel modelFont) {
-        this.modelFont = modelFont;
-    }
-
-
-
 
 
 

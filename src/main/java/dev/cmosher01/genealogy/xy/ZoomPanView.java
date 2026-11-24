@@ -17,15 +17,15 @@
 
 package dev.cmosher01.genealogy.xy;
 
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.awt.*;
 
 @RequiredArgsConstructor
 public class ZoomPanView {
-    private final ZoomPanModel model;
+    private final @NonNull ZoomPanModel model;
 
-    public void paint(final Graphics2D g) {
+    public void paint(final @NonNull Graphics2D g) {
         g.translate(this.model.panX(), this.model.panY());
         g.scale(this.model.zoomFactor(), this.model.zoomFactor());
     }

@@ -75,7 +75,7 @@ public class MovablePoint {
 
     private static final boolean FAIL_SAFE = true; // TODO
 //    private static final boolean FAIL_SAFE = false;
-    private static final Point POINT_RANDOM = new Point(new Coord(73D), new Coord(37D));
+    private static final @NonNull Point POINT_RANDOM = new Point(new Coord(73D), new Coord(37D));
     /**
      * Gets the resulting point, in this order of priority:
      * user modified, layout modified, original point.

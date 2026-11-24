@@ -18,6 +18,7 @@ package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.geom.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.*;
 
 import java.util.*;
@@ -34,27 +35,27 @@ import java.util.stream.*;
 
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+@Slf4j
 public class Layout {
-    private static final Logger LOG = LoggerFactory.getLogger(Layout.class);
     private static final double MAX_LEVEL = 5000.0D;
-    private static final MoveTerm MAX_WIDTH = new MoveTerm(54D); // TODO calculate max width?
+    private static final @NonNull MoveTerm MAX_WIDTH = new MoveTerm(54D); // TODO calculate max width?
     private static final double GEN_HEIGHT = 108D;
-    private static final MoveTerm DX_INDIVIDUAL = new MoveTerm(1.2D * MAX_WIDTH.d);
-    private static final MoveTerm DY_INDIVIDUAL = new MoveTerm(GEN_HEIGHT); // TODO is this good?
-    private static final MoveTerm DX_FAMILY = new MoveTerm(5.0D * MAX_WIDTH.d());
-    private static final Xlation RIGHT_OF = new Xlation(DX_INDIVIDUAL, MoveTerm.IDENTITY);
-    private static final Xlation ABOVE = new Xlation(MoveTerm.IDENTITY, -DY_INDIVIDUAL);
-    private static final Xlation BELOW = new Xlation(MoveTerm.IDENTITY, DY_INDIVIDUAL);
-    private static final Xlation GEN_BELOW = new Xlation(MoveTerm.IDENTITY, new MoveTerm(1.2D * DY_INDIVIDUAL.d()));
+    private static final @NonNull MoveTerm DX_INDIVIDUAL = new MoveTerm(1.2D * MAX_WIDTH.d);
+    private static final @NonNull MoveTerm DY_INDIVIDUAL = new MoveTerm(GEN_HEIGHT); // TODO is this good?
+    private static final @NonNull MoveTerm DX_FAMILY = new MoveTerm(5.0D * MAX_WIDTH.d());
+    private static final @NonNull Xlation RIGHT_OF = new Xlation(DX_INDIVIDUAL, MoveTerm.IDENTITY);
+    private static final @NonNull Xlation ABOVE = new Xlation(MoveTerm.IDENTITY, -DY_INDIVIDUAL);
+    private static final @NonNull Xlation BELOW = new Xlation(MoveTerm.IDENTITY, DY_INDIVIDUAL);
+    private static final @NonNull Xlation GEN_BELOW = new Xlation(MoveTerm.IDENTITY, new MoveTerm(1.2D * DY_INDIVIDUAL.d()));
 
 
 
-    private final List<Individual> indis;
-    private final List<Family> famis;
+    private final @NonNull List<@NonNull Individual> indis;
+    private final @NonNull List<@NonNull Family> famis;
 
 
 
-    public Layout(final List<Indi> indis, final List<Fami> famis) {
+    public Layout(final @NonNull List<@NonNull Indi> indis, final @NonNull List<@NonNull Fami> famis) {
         this.indis = IntStream.range(0, indis.size())
                 .mapToObj(i -> new Individual(indis.get(i), i))
                 .collect(Collectors.toList());
@@ -67,27 +68,27 @@ public class Layout {
                 .collect(Collectors.toList());
 
         this.famis.forEach(f -> {
-            final Fami fami = f.fami;
+            val fami = f.fami;
 
-            final Optional<Indi> husb = fami.getHusb();
+            val husb = fami.getHusb();
             f.husb = getIdxOfSpouseOrNegativeOne(mapIndis, husb);
-            final Optional<Indi> wife = fami.getWife();
+            val wife = fami.getWife();
             f.wife = getIdxOfSpouseOrNegativeOne(mapIndis, wife);
 
             addSpouse(mapIndis, f, husb, wife);
             addSpouse(mapIndis, f, wife, husb);
 
             fami.getChildren().forEach(c -> {
-                final Individual cChild = mapIndis.get(c);
+                val cChild = mapIndis.get(c);
                 cChild.idxChildToFamily = f.idx;
                 f.ridxChild.add(cChild.idx);
                 if (husb.isPresent()) {
-                    final Individual cHusb = mapIndis.get(husb.get());
+                    val cHusb = mapIndis.get(husb.get());
                     cHusb.ridxChild.add(mapIndis.get(c).idx);
                     cChild.idxFather = cHusb.idx;
                 }
                 if (wife.isPresent()) {
-                    final Individual cWife = mapIndis.get(wife.get());
+                    val cWife = mapIndis.get(wife.get());
                     cWife.ridxChild.add(mapIndis.get(c).idx);
                     cChild.idxMother = cWife.idx;
                 }
@@ -114,7 +115,7 @@ public class Layout {
         /* indexes into indis list */
         private int husb = -1;
         private int wife = -1;
-        private final List<Integer> ridxChild = new ArrayList<>();
+        private final @NonNull List<@NonNull Integer> ridxChild = new ArrayList<>();
         private List<Integer> ridxChildSortedCache = null;
 
 
@@ -123,9 +124,9 @@ public class Layout {
             this.idx = idx;
         }
 
-        public List<Integer> getSortedChildren() {
+        public @NonNull List<@NonNull Integer> getSortedChildren() {
             if (Objects.isNull(this.ridxChildSortedCache)) {
-                final var newList = new ArrayList<>(this.ridxChild);
+                val newList = new ArrayList<>(this.ridxChild);
                 newList.sort(Comparator.comparing(i -> Layout.this.indis.get(i).getBirthForSort()));
                 this.ridxChildSortedCache = Collections.unmodifiableList(newList);
             }
@@ -139,8 +140,8 @@ public class Layout {
 // used to classify families into use cases concerning placed vs. unplaced parents and children
 
         public boolean hasPlacedChildren() {
-            for (final var i : this.ridxChild) {
-                final var optIdv = findIdvByIdx(i);
+            for (val i : this.ridxChild) {
+                val optIdv = findIdvByIdx(i);
                 if (optIdv.isPresent() && optIdv.get().isPlaced()) {
                     return true;
                 }
@@ -153,8 +154,8 @@ public class Layout {
          * @return 0, 1, or 2
          */
         public int cParents() {
-            final var optHusb = findIdvByIdx(this.husb);
-            final var optWife = findIdvByIdx(this.wife);
+            val optHusb = findIdvByIdx(this.husb);
+            val optWife = findIdvByIdx(this.wife);
 
             int c = 0;
             if (optHusb.isPresent()) {
@@ -174,8 +175,8 @@ public class Layout {
          * @return 0, 1, or 2
          */
         public int cPlacedParents() {
-            final var optHusb = findIdvByIdx(this.husb);
-            final var optWife = findIdvByIdx(this.wife);
+            val optHusb = findIdvByIdx(this.husb);
+            val optWife = findIdvByIdx(this.wife);
 
             int c = 0;
             if (optHusb.isPresent() && optHusb.get().isPlaced()) {
@@ -192,9 +193,9 @@ public class Layout {
          *
          * @return husband if present, otherwise wife if present, otherwise empty
          */
-        private Optional<Individual> preferHusband() {
-            final var optHusb = findIdvByIdx(this.husb);
-            final var optWife = findIdvByIdx(this.wife);
+        private @NonNull Optional<Individual> preferHusband() {
+            val optHusb = findIdvByIdx(this.husb);
+            val optWife = findIdvByIdx(this.wife);
 
             final Optional<Individual> optParent;
             if (optHusb.isPresent() && optWife.isPresent()) {
@@ -214,9 +215,9 @@ public class Layout {
          * (if there are any children at all)
          * @return first child if any, otherwise empty
          */
-        private Optional<Individual> firstChild() {
+        private @NonNull Optional<Individual> firstChild() {
             // Get first child in fml.
-            final var riChild = getSortedChildren();
+            val riChild = getSortedChildren();
             if (riChild.isEmpty()) {
                 return Optional.empty();
             }
@@ -236,15 +237,15 @@ public class Layout {
         private final Layout layout = Layout.this;
 
         private final int sex; // 0=unknown, 1=male, 2=female
-        private Point location = Point.ORIGIN;
+        private @NonNull Point location = Point.ORIGIN;
 
         private final Indi indi;
         /* indexes into indis list */
         private final int idx;
         private int idxFather = -1;
         private int idxMother = -1;
-        private final List<Integer> ridxSpouse = new ArrayList<>();
-        private final List<Integer> ridxChild = new ArrayList<>();
+        private final @NonNull List<@NonNull Integer> ridxSpouse = new ArrayList<>();
+        private final @NonNull List<@NonNull Integer> ridxChild = new ArrayList<>();
         /* indexes into famis list */
         private int idxChildToFamily = -1;
         private final List<Integer> ridxSpouseToFamily = new ArrayList<>();
@@ -255,13 +256,13 @@ public class Layout {
         private Individual house;
 
 
-        public Individual(final Indi indi, final int idx) {
+        public Individual(final @NonNull Indi indi, final int idx) {
             this.indi = indi;
             this.idx = idx;
             this.sex = indi.getSex();
         }
 
-        public Indi getOrigIndi() {
+        public @NonNull Indi getOrigIndi() {
             return this.indi;
         }
 
@@ -276,8 +277,8 @@ public class Layout {
             moveYto(new Coord((MAX_LEVEL - this.level) * GEN_HEIGHT));
         }
 
-        void addRelativesTo(final Deque<LevelSetting> levelSettingDeque) {
-            final int lev = this.level;
+        void addRelativesTo(final @NonNull Deque<@NonNull LevelSetting> levelSettingDeque) {
+            val lev = this.level;
 
             //father
             if (idxFather >= 0) {
@@ -290,33 +291,33 @@ public class Layout {
 
             //siblings
             if (idxChildToFamily >= 0) {
-                final Family fami = layout.famis.get(idxChildToFamily);
+                val fami = layout.famis.get(idxChildToFamily);
                 for (int i = 0; i < fami.ridxChild.size(); ++i) {
                     levelSettingDeque.offer(new LevelSetting(layout.indis.get(fami.ridxChild.get(i)), lev));
                 }
             }
 
             //children
-            for (final Integer i : ridxChild) {
+            for (val i : ridxChild) {
                 levelSettingDeque.offer(new LevelSetting(layout.indis.get(i), lev - 1));
             }
 
             //spouses
-            for (final Integer i : ridxSpouse) {
+            for (val i : ridxSpouse) {
                 levelSettingDeque.offer(new LevelSetting(layout.indis.get(i), lev));
             }
         }
 
-        void moveToAndLayOut(final Point to) {
+        void moveToAndLayOut(final @NonNull Point to) {
             this.location = to;
             layOut();
         }
 
-        void moveXto(final Coord x) {
+        void moveXto(final @NonNull Coord x) {
             this.location = new Point(x, this.location.y());
         }
 
-        void moveYto(final Coord y) {
+        void moveYto(final @NonNull Coord y) {
             this.location = new Point(this.location.x(), y);
         }
 
@@ -326,14 +327,14 @@ public class Layout {
             }
         }
 
-        void setRootWithSpouses(final Individual proot) {
+        void setRootWithSpouses(final @NonNull Individual proot) {
             if (mark) {
                 return;
             }
 
             final List<Individual> spouses = new ArrayList<>();
             buildSpouseGroupInto(spouses);
-            for (final Individual spouse : spouses) {
+            for (val spouse : spouses) {
                 if (spouse == this || spouse.idxFather < 0) {
                     spouse.house = proot;
                     spouse.mark = true;
@@ -341,20 +342,20 @@ public class Layout {
             }
         }
 
-        void setSeqWithSpouses(final List<Coord> lev_bounds, final boolean left, final List<Individual> cleannext) {
+        void setSeqWithSpouses(final @NonNull List<@NonNull Coord> lev_bounds, final boolean left, final @NonNull List<@NonNull Individual> cleannext) {
             final LinkedList<Individual> spouses = new LinkedList<>();
             buildSpouseGroupInto(spouses);
-            final Iterator<Individual> i = spouses.descendingIterator();
+            val i = spouses.descendingIterator();
             while (i.hasNext()) {
-                final Individual indi = i.next();
+                val indi = i.next();
                 if (indi.idxFather >= 0) {
-                    final Individual parent = layout.indis.get(indi.idxFather);
+                    val parent = layout.indis.get(indi.idxFather);
                     if (parent.house != null && parent.house != house) {
                         cleannext.add(parent.house);
                     }
                 }
                 if (indi.idxMother >= 0) {
-                    final Individual parent = layout.indis.get(indi.idxMother);
+                    val parent = layout.indis.get(indi.idxMother);
                     if (parent.house != null && parent.house != house) {
                         cleannext.add(parent.house);
                     }
@@ -373,7 +374,7 @@ public class Layout {
                 while (pindi != null) {
                     boolean found = false;
                     for (int sp = 0; !found && sp < pindi.ridxSpouse.size(); ++sp) {
-                        final Individual pspou = layout.indis.get(pindi.ridxSpouse.get(sp));
+                        val pspou = layout.indis.get(pindi.ridxSpouse.get(sp));
                         if (!pspou.mark && pspou.idxFather < 0 && pspou != this && !left_sps.contains(pspou)) {
                             found = true;
                             pindi = pspou;
@@ -393,7 +394,7 @@ public class Layout {
                 while (pindi != null) {
                     boolean found = false;
                     for (int sp = 0; !found && sp < pindi.ridxSpouse.size(); ++sp) {
-                        final Individual pspou = layout.indis.get(pindi.ridxSpouse.get(sp));
+                        val pspou = layout.indis.get(pindi.ridxSpouse.get(sp));
                         if (!pspou.mark && pspou.idxFather < 0 && pspou != this && !left_sps.contains(pspou) && !right_sps.contains(pspou)) {
                             found = true;
                             pindi = pspou;
@@ -406,14 +407,14 @@ public class Layout {
                 }
             }
             //add (to the right) all remaining spouses
-            for (final Individual pspou : spouses) {
+            for (val pspou : spouses) {
                 if (!pspou.mark && pspou.idxFather < 0 && !left_sps.contains(pspou) && !right_sps.contains(pspou)) {
                     right_sps.add(pspou);
                 }
             }
 
             if (!left) {
-                final LinkedList<Individual> t = left_sps;
+                val t = left_sps;
                 left_sps = right_sps;
                 right_sps = t;
             }
@@ -422,16 +423,16 @@ public class Layout {
             right_sps.iterator().forEachRemaining(s -> displaySpouses(lev_bounds, s));
         }
 
-        private void buildSpouseGroupInto(final Collection<Individual> spouses) {
+        private void buildSpouseGroupInto(final @NonNull Collection<@NonNull Individual> spouses) {
             final LinkedList<Individual> todo = new LinkedList<>();
             if (!mark) {
                 todo.addLast(this);
             }
             while (!todo.isEmpty()) {
-                final Individual spouse = todo.removeFirst();
+                val spouse = todo.removeFirst();
                 spouses.add(spouse);
                 for (int s = 0; s < spouse.ridxSpouse.size(); ++s) {
-                    final Individual spouse2 = layout.indis.get(spouse.ridxSpouse.get(s));
+                    val spouse2 = layout.indis.get(spouse.ridxSpouse.get(s));
                     if (!spouse2.mark && !spouses.contains(spouse2)) {
                         todo.addLast(spouse2);
                     }
@@ -439,7 +440,7 @@ public class Layout {
             }
         }
 
-        private void displaySpouses(final List<Coord> xForLevel, final Individual spouse) {
+        private void displaySpouses(final @NonNull List<@NonNull Coord> xForLevel, final @NonNull Individual spouse) {
             spouse.moveXto(xForLevel.get(spouse.level));
             spouse.mark = true;
             xForLevel.set(spouse.level, (spouse.location.x() + MAX_WIDTH) + MAX_WIDTH);
@@ -457,7 +458,7 @@ public class Layout {
             return !getLocationOrOriginal().equals(Point.ORIGIN);
         }
 
-        public Point getLocationOrOriginal() {
+        public @NonNull Point getLocationOrOriginal() {
             final Point ret;
             if (this.location.equals(Point.ORIGIN)) {
                 ret = this.indi.getMovablePoint().getOrElse(Point.ORIGIN);
@@ -606,7 +607,7 @@ public class Layout {
         this.famis.forEach(this::cleanFamily);
     }
 
-    private void cleanFamily(final Family fml) {
+    private void cleanFamily(final @NonNull Family fml) {
         // WARNING: values within each "if" block can modify the
         // results of future if statement conditions. Don't
         // rearrange or refactor without careful testing.
@@ -718,8 +719,8 @@ public class Layout {
     //      Place first child (if any) below bottom of tree.
     //
     // assume there are no placed children (i.e., no children, or only unplaced children)
-    private void placeFirstChildOfFamilyAtBottom(final Family fml) {
-        final var optFirstChild = fml.firstChild();
+    private void placeFirstChildOfFamilyAtBottom(final @NonNull Family fml) {
+        val optFirstChild = fml.firstChild();
         if (optFirstChild.isPresent()) {
             optFirstChild.get().moveToAndLayOut(getBottomLeftPosition() + GEN_BELOW);
         }
@@ -734,8 +735,8 @@ public class Layout {
     //      No children, or only unplaced children, in family.
     //
     //      Place husband below bottom of tree (or next to spouse, if any other???)
-    private void placeParentAtBottom(final Family fml) {
-        final Optional<Individual> optParent = fml.preferHusband();
+    private void placeParentAtBottom(final @NonNull Family fml) {
+        val optParent = fml.preferHusband();
         if (optParent.isPresent()) {
             optParent.get().moveToAndLayOut(getBottomLeftPosition() + BELOW);
         }
@@ -750,27 +751,27 @@ public class Layout {
     //      No children, or only unplaced children, in family.
     //
     //      Place first child (if any) (at left-most parent x, below bottom-most parent y)
-    private void placeFirstUnplacedChildOfFamilyBelowParents(final Family fml) {
+    private void placeFirstUnplacedChildOfFamilyBelowParents(final @NonNull Family fml) {
         // Get leftmost parent
-        final Optional<Individual> optLeftmostParent = findLeftmost(List.of(fml.husb, fml.wife));
+        val optLeftmostParent = findLeftmost(List.of(fml.husb, fml.wife));
         if (optLeftmostParent.isEmpty()) {
             // should never happen
             return;
         }
         // Get bottommost parent
-        final Optional<Individual> optBottomParent = findBottommost(List.of(fml.husb, fml.wife));
+        val optBottomParent = findBottommost(List.of(fml.husb, fml.wife));
         if (optBottomParent.isEmpty()) {
             // should never happen
             return;
         }
 
         // calculate new position: (left-most parent x, bottom-most parent y)
-        final var bottomleft = new Point(
+        val bottomleft = new Point(
             optLeftmostParent.get().getLocationOrOriginal().x(),
             optBottomParent.get().getLocationOrOriginal().y());
 
         // Get first child in fml.
-        final var optFirstChild = fml.firstChild();
+        val optFirstChild = fml.firstChild();
         if (optFirstChild.isEmpty()) {
             // should never happen
             return;
@@ -789,17 +790,17 @@ public class Layout {
     //      At least one placed child within family
     //
     //      Place unplaced parent to right of placed parent.
-    private void placeUnplacedSpouseToRightOfPlacedSpouse(final Family fml) {
-        final var optHusb = findIdvByIdx(fml.husb);
+    private void placeUnplacedSpouseToRightOfPlacedSpouse(final @NonNull Family fml) {
+        val optHusb = findIdvByIdx(fml.husb);
         if (optHusb.isEmpty()) {
             return; // should never happen
         }
-        final var h = optHusb.get();
-        final var optWife = findIdvByIdx(fml.wife);
+        val h = optHusb.get();
+        val optWife = findIdvByIdx(fml.wife);
         if (optWife.isEmpty()) {
             return; // should never happen
         }
-        final var w = optWife.get();
+        val w = optWife.get();
 
         if (h.isPlaced()) {
             w.moveToAndLayOut(h.getLocationOrOriginal() + RIGHT_OF);
@@ -822,21 +823,21 @@ public class Layout {
     //      At least one placed child within family
     //
     //      Place any and all unplaced other children to right of rightmost placed child.
-    private void placeSubsequentUnplacedChildrenOfFamily(final Family fml) {
-        final var optRight = findRightmost(fml.ridxChild);
+    private void placeSubsequentUnplacedChildrenOfFamily(final @NonNull Family fml) {
+        val optRight = findRightmost(fml.ridxChild);
         if (optRight.isEmpty()) { // probably shouldn't ever happen
             return;
         }
 
-        final var riChild = fml.getSortedChildren();
+        val riChild = fml.getSortedChildren();
 
         // prevChild starts as the rightmost placed child, and
         // then walks through each unplaced child as it gets placed
-        Individual prevChild = optRight.get();
-        for (final int iChild : riChild) {
-            final var opt = findIdvByIdx(iChild);
+        var prevChild = optRight.get();
+        for (val iChild : riChild) {
+            val opt = findIdvByIdx(iChild);
             if (opt.isPresent() && !opt.get().isPlaced()) {
-                final var currChild = opt.get();
+                val currChild = opt.get();
                 currChild.moveToAndLayOut(prevChild.getLocationOrOriginal() + RIGHT_OF);
                 prevChild = currChild;
             }
@@ -854,15 +855,15 @@ public class Layout {
     //      Place husband (at leftmost placed child x, above topmost placed child y).
     //
     // if there are no placed children, does nothing
-    private void placeParentAboveChildren(final Family fml) {
-        final var optLeftmost = findLeftmost(fml.ridxChild);
-        final var optTopmost = findTopmost(fml.ridxChild);
+    private void placeParentAboveChildren(final @NonNull Family fml) {
+        val optLeftmost = findLeftmost(fml.ridxChild);
+        val optTopmost = findTopmost(fml.ridxChild);
         if (optLeftmost.isPresent() && optTopmost.isPresent()) {
-            final var topleft = new Point(
+            val topleft = new Point(
                 optLeftmost.get().getLocationOrOriginal().x(),
                 optTopmost.get().getLocationOrOriginal().y());
 
-            final Optional<Individual> optParent = fml.preferHusband();
+            val optParent = fml.preferHusband();
             if (optParent.isPresent()) {
                 optParent.get().moveToAndLayOut(topleft + ABOVE);
             }
@@ -874,31 +875,31 @@ public class Layout {
     // these four "find{Xxx}most" functions aren't particularly efficient,
     // but they are only ever called with a handful of indexes.
 
-    private Optional<Individual> findLeftmost(final List<Integer> ridx) {
+    private @NonNull Optional<Individual> findLeftmost(final @NonNull List<@NonNull Integer> ridx) {
         return streamPlacedIndividuals(ridx).min(comparingX());
     }
 
-    private Optional<Individual> findRightmost(final List<Integer> ridx) {
+    private @NonNull Optional<Individual> findRightmost(final @NonNull List<@NonNull Integer> ridx) {
         return streamPlacedIndividuals(ridx).max(comparingX());
     }
 
-    private Optional<Individual> findTopmost(final List<Integer> ridx) {
+    private @NonNull Optional<Individual> findTopmost(final @NonNull List<@NonNull Integer> ridx) {
         return streamPlacedIndividuals(ridx).min(comparingY());
     }
 
-    private Optional<Individual> findBottommost(final List<Integer> ridx) {
+    private @NonNull Optional<Individual> findBottommost(final @NonNull List<@NonNull Integer> ridx) {
         return streamPlacedIndividuals(ridx).max(comparingY());
     }
 
-    private static Comparator<Individual> comparingX() {
+    private static @NonNull Comparator<@NonNull Individual> comparingX() {
         return Comparator.comparing(idv -> idv.getLocationOrOriginal().x());
     }
 
-    private static Comparator<Individual> comparingY() {
+    private static @NonNull Comparator<@NonNull Individual> comparingY() {
         return Comparator.comparing(idv -> idv.getLocationOrOriginal().y());
     }
 
-    private Stream<Individual> streamPlacedIndividuals(final List<Integer> ridx) {
+    private @NonNull Stream<@NonNull Individual> streamPlacedIndividuals(final @NonNull List<@NonNull Integer> ridx) {
         return
             ridx
             .stream()
@@ -916,11 +917,11 @@ public class Layout {
      *
      * @return point (minx,maxy)
      */
-    private Point getBottomLeftPosition() {
+    private @NonNull Point getBottomLeftPosition() {
         double minx = Double.POSITIVE_INFINITY;
         double maxy = Double.NEGATIVE_INFINITY;
-        for (final var idv : this.indis) {
-            final var pos = idv.getLocationOrOriginal();
+        for (val idv : this.indis) {
+            val pos = idv.getLocationOrOriginal();
             if (!pos.equals(Point.ORIGIN)) {
                 final double x = pos.x().u();
                 if (Double.compare(x, minx) < 0) {
@@ -944,7 +945,7 @@ public class Layout {
      * @param idx index into list of all Individual objects
      * @return the Individual, if found, or empty() if not.
      */
-    private Optional<Individual> findIdvByIdx(final int idx) {
+    private @NonNull Optional<Individual> findIdvByIdx(final int idx) {
         var ret = Optional.<Individual>empty();
         if (0 <= idx && idx < this.indis.size()) {
             ret = Optional.of(this.indis.get(idx));
@@ -970,14 +971,14 @@ public class Layout {
             return;
         }
 
-        LOG.debug("set generation levels (also sets position on y-axis)");
+        log.debug("set generation levels (also sets position on y-axis)");
         {
             resetMarks();
             int batch = 0;
             boolean someleft = true;
             while (someleft) {
                 someleft = false;
-                for (final Individual indi : this.indis) {
+                for (val indi : this.indis) {
                     if (!indi.mark) {
                         someleft = true;
                         setIslandLevels(indi, batch++ * 5);
@@ -986,24 +987,24 @@ public class Layout {
             }
         }
 
-        LOG.debug("normalize indis' level nums");
+        log.debug("normalize indis' level nums");
         final int cLev; //count of levels
         {
             final int levMax = this.indis.stream().mapToInt(i -> i.level).max().getAsInt();
             final int levMin = this.indis.stream().mapToInt(i -> i.level).min().getAsInt();
 
             cLev = levMax - levMin + 1;
-            for (final Individual indi : this.indis) {
+            for (val indi : this.indis) {
                 indi.level -= levMin;
             }
         }
 
 
-        LOG.debug("calc max male-branch-descendant-generations size for all indis");
+        log.debug("calc max male-branch-descendant-generations size for all indis");
         {
             resetMarks();
             // Finding branches
-            for (final Individual indi : this.indis) {
+            for (val indi : this.indis) {
                 int c = (indi.sex == 1) ? 1 : 0;
 
                 final Set<Integer> setIndi = new HashSet<>();// guard against loops
@@ -1029,21 +1030,21 @@ public class Layout {
                         .collect(Collectors.toCollection(LinkedList::new));
 
 
-        LOG.debug("Labeling branches");
+        log.debug("Labeling branches");
 
         resetMarks();
 
-        for (final Individual indi : qToClean) {
+        for (val indi : qToClean) {
             final Deque<Individual> todo = new LinkedList<>();
 
             indi.setRootWithSpouses(indi);
             todo.addLast(indi);
             while (!todo.isEmpty()) {
-                final Individual pgmi = todo.removeFirst();
+                val pgmi = todo.removeFirst();
                 for (int j = 0; j < pgmi.ridxSpouseToFamily.size(); ++j) {
-                    final Family fami = this.famis.get(pgmi.ridxSpouseToFamily.get(j));
+                    val fami = this.famis.get(pgmi.ridxSpouseToFamily.get(j));
                     for (int k = 0; k < fami.ridxChild.size(); ++k) {
-                        final Individual pchil = this.indis.get(fami.ridxChild.get(k));
+                        val pchil = this.indis.get(fami.ridxChild.get(k));
                         if (!pchil.mark) {
                             pchil.setRootWithSpouses(indi);
                             if (pchil.sex == 1) {
@@ -1056,21 +1057,21 @@ public class Layout {
         }
 
 
-        LOG.debug("build new list with only house heads");
+        log.debug("build new list with only house heads");
         final Deque<Individual> rptoclean2 = new LinkedList<>();
         final Set<Individual> settoclean2 = new HashSet<>();
         {
             // Finding progenitors
             //make a list of all house heads
             final Set<Integer> setheads = new HashSet<>();
-            for (final Individual pindi : this.indis) {
+            for (val pindi : this.indis) {
                 if (pindi.house != null) {
                     setheads.add(pindi.house.idx);
                 }
             }
 
             // put house heads on rptoclean2 list in order of processing
-            for (final Individual psec : qToClean) {
+            for (val psec : qToClean) {
                 if (setheads.contains(psec.idx)) {
                     rptoclean2.add(psec);
                     settoclean2.add(psec);
@@ -1085,11 +1086,11 @@ public class Layout {
         }
 
         resetMarks();
-        LOG.debug("Moving branches");
+        log.debug("Moving branches");
         while (!rptoclean2.isEmpty()) {
-            final Individual psec = rptoclean2.remove();
+            val psec = rptoclean2.remove();
             settoclean2.remove(psec);
-            LOG.debug("branch head: {}", psec.indi.simpleName());
+            log.debug("branch head: {}", psec.indi.simpleName());
 
             final List<Individual> nexthouse = new ArrayList<>();
 
@@ -1098,13 +1099,13 @@ public class Layout {
             todo.add(psec);
             guard.add(psec);
             while (!todo.isEmpty()) {
-                final Individual pgmi = todo.removeFirst();
+                val pgmi = todo.removeFirst();
                 final List<Individual> cleannext = new ArrayList<>();
                 pgmi.setSeqWithSpouses(xForLevel, false, cleannext);
                 nexthouse.addAll(cleannext);
 
                 for (int j = 0; j < pgmi.ridxSpouseToFamily.size(); ++j) {
-                    final Family fami = this.famis.get(pgmi.ridxSpouseToFamily.get(j));
+                    val fami = this.famis.get(pgmi.ridxSpouseToFamily.get(j));
                     final List<Integer> riChild = fami.getSortedChildren();
                     int nch = riChild.size();
                     if (nch > 0) {
@@ -1113,8 +1114,8 @@ public class Layout {
                         int sp1 = -1;
                         int sp2 = -1;
                         for (int ch = 0; ch < nch; ++ch) {
-                            final int fch = flop(ch, nch);
-                            final Individual chil = this.indis.get(riChild.get(fch));
+                            val fch = flop(ch, nch);
+                            val chil = this.indis.get(riChild.get(fch));
                             if (!chil.ridxSpouse.isEmpty()) {
                                 if (sp1 < 0) {
                                     sp1 = fch;
@@ -1140,7 +1141,7 @@ public class Layout {
 
                         boolean left = (nch > 1);
                         for (int k = 0; k < nch; ++k) {
-                            final Individual pchil = this.indis.get(riChild2.get(k));
+                            val pchil = this.indis.get(riChild2.get(k));
                             final List<Individual> cleannext2 = new ArrayList<>();
                             pchil.setSeqWithSpouses(xForLevel, left, cleannext2);
                             nexthouse.addAll(cleannext2);
@@ -1172,7 +1173,7 @@ public class Layout {
                 }
             }
 
-            for (final Individual pindi : nexthouse) {
+            for (val pindi : nexthouse) {
                 if (settoclean2.contains(pindi)) {
                     rptoclean2.remove(pindi);
                     rptoclean2.add(pindi);
@@ -1203,12 +1204,12 @@ public class Layout {
         this.indis.forEach(i -> i.mark = false);
     }
 
-    private void setIslandLevels(final Individual indi, final int level) {
+    private void setIslandLevels(final @NonNull Individual indi, final int level) {
         final Deque<LevelSetting> levelSettingDeque = new LinkedList<>();
         levelSettingDeque.offer(new LevelSetting(indi,level));
 
         while (!levelSettingDeque.isEmpty()) {
-            final LevelSetting setting = levelSettingDeque.poll();
+            val setting = levelSettingDeque.poll();
             if (!setting.indi.mark) {
                 setting.indi.mark = true;
                 setting.indi.setLevel(setting.level);
@@ -1219,17 +1220,17 @@ public class Layout {
 
 
 
-    private static int getIdxOfSpouseOrNegativeOne(final Map<Indi, Individual> mapIndis, final Optional<Indi> spouse) {
+    private static int getIdxOfSpouseOrNegativeOne(final @NonNull Map<@NonNull Indi, @NonNull Individual> mapIndis, final @NonNull Optional<Indi> spouse) {
         if (spouse.isEmpty()) {
             return -1;
         }
-        final var optIdv = Optional.ofNullable(mapIndis.get(spouse.get()));
+        val optIdv = Optional.ofNullable(mapIndis.get(spouse.get()));
         return optIdv.map(i -> i.idx).orElse(-1);
     }
 
-    private static void addSpouse(Map<Indi, Individual> mapIndis, Family fami, Optional<Indi> indi, Optional<Indi> spouse) {
+    private static void addSpouse(final @NonNull Map<@NonNull Indi, @NonNull Individual> mapIndis, final @NonNull Family fami, final @NonNull Optional<Indi> indi, final @NonNull Optional<Indi> spouse) {
         if (indi.isPresent()) {
-            final Individual cindi = mapIndis.get(indi.get());
+            val cindi = mapIndis.get(indi.get());
             cindi.ridxSpouseToFamily.add(fami.idx);
             spouse.ifPresent(i -> cindi.ridxSpouse.add(mapIndis.get(i).idx));
         }
@@ -1240,7 +1241,7 @@ public class Layout {
         return (ch == 2*h) ? h : nch-(h+1);
     }
 
-    private static Comparator<Individual> primaryHouse() {
+    private static @NonNull Comparator<@NonNull Individual> primaryHouse() {
         return Comparator
             .comparingInt((Individual i) -> i.maxMale)
             .thenComparingInt(i -> i.level)

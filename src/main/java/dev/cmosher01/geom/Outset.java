@@ -20,7 +20,7 @@ package dev.cmosher01.geom;
 import lombok.NonNull;
 
 public record Outset(@NonNull GrowTerm w = GrowTerm.IDENTITY, @NonNull GrowTerm h = w) {
-    public static final Outset IDENTITY = new Outset();
+    public static final @NonNull Outset IDENTITY = new Outset();
 
     public @NonNull Outset unaryMinus() {
         return new Outset(-w, -h);

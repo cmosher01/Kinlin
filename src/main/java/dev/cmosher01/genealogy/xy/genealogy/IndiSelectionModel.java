@@ -25,7 +25,7 @@ import java.awt.geom.*;
 import java.util.*;
 
 @RequiredArgsConstructor
-public class IndiSelectionModel implements Selectable<Indi> {
+public class IndiSelectionModel implements Selectable<@NonNull Indi> {
     private final @NonNull List<@NonNull Indi> universe;
 
     /**
@@ -36,7 +36,7 @@ public class IndiSelectionModel implements Selectable<Indi> {
 
 
 
-    public Optional<Rect> bounds() {
+    public @NonNull Optional<Rect> bounds() {
         if (selection.isEmpty()) {
             return Optional.empty();
         }
@@ -61,7 +61,7 @@ public class IndiSelectionModel implements Selectable<Indi> {
     }
 
     @Override
-    public void setFromRectangle(final Rectangle2D.Double r) {
+    public void setFromRectangle(final @NonNull Rectangle2D.Double r) {
         for (val indi : this.universe.reversed()) {
             val hit = indi.intersects(r);
             select(indi, hit);
@@ -69,7 +69,7 @@ public class IndiSelectionModel implements Selectable<Indi> {
     }
 
     @Override
-    public void move(final Point2D.Double delta, final @NonNull Grid grid) {
+    public void move(final @NonNull Point2D.Double delta, final @NonNull Grid grid) {
         if (this.selForUndo.isEmpty()) {
             this.selection.forEach(indi -> this.selForUndo.put(indi, new IndiMovement(indi)));
         }
@@ -98,7 +98,7 @@ public class IndiSelectionModel implements Selectable<Indi> {
     }
 
     @Override
-    public Optional<Point> center() {
+    public @NonNull Optional<Point> center() {
         if (this.selection.isEmpty()) {
             return Optional.empty();
         }
@@ -109,7 +109,7 @@ public class IndiSelectionModel implements Selectable<Indi> {
         return !this.selection.isEmpty();
     }
 
-    public List<Indi> getSelection() {
+    public @NonNull List<@NonNull Indi> getSelection() {
         return new ArrayList<>(this.selection);
     }
 

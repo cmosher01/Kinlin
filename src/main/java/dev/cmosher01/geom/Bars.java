@@ -39,7 +39,7 @@ public record Bars(@NonNull Line center, @NonNull Dim vertical) {
         return new Bars(center + d, vertical);
     }
 
-    public @NonNull Point section(final Proportion p, final boolean top = false) {
+    public @NonNull Point section(final @NonNull Proportion p, final boolean top = false) {
         return one(top).section(p);
     }
 

@@ -23,12 +23,12 @@ import manifold.ext.rt.api.*;
 
 import java.util.Objects;
 
-public record Proportion(@NonNull Double k = identity) implements ComparableUsing<Proportion> {
-    private static final Double identity = DoubleUtil.ONE;
-    public static final Proportion IDENTITY = new Proportion();
-    public static final Proportion NULL = new Proportion(Double.NaN);
-    public static final Proportion NONE = new Proportion(0D);
-    public static final Proportion HALF = new Proportion(0.5D);
+public record Proportion(@NonNull Double k = identity) implements ComparableUsing<@NonNull Proportion> {
+    private static final @NonNull Double identity = DoubleUtil.ONE;
+    public static final @NonNull Proportion IDENTITY = new Proportion();
+    public static final @NonNull Proportion NULL = new Proportion(Double.NaN);
+    public static final @NonNull Proportion NONE = new Proportion(0D);
+    public static final @NonNull Proportion HALF = new Proportion(0.5D);
 
     // input value is abs, clear at zero, and clamped to [0,1], Nan is allowed
     public Proportion {
@@ -57,7 +57,7 @@ public record Proportion(@NonNull Double k = identity) implements ComparableUsin
     public @NonNull Proportion inv() {
         return new Proportion(identity - k);
     }
-    public Double times(Double o) {
+    public @NonNull Double times(final @NonNull Double o) {
         return k * o;
     }
 

@@ -17,6 +17,8 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import lombok.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -27,10 +29,10 @@ import java.util.Optional;
  * JOptionPane subclass that provides a timeout.
  */
 public class TimedOptionPane extends JOptionPane {
-    private static final KeyboardFocusManager KFM = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+    private static final @NonNull KeyboardFocusManager KFM = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 
-    private final Timer timer = new Timer(1000, e -> updateTimeout());
-    private final String messageTemplate;
+    private final @NonNull Timer timer = new Timer(1000, e -> updateTimeout());
+    private final @NonNull String messageTemplate;
     private JDialog dialog;
     private int secondsRemaining;
 
@@ -44,11 +46,11 @@ public class TimedOptionPane extends JOptionPane {
     @SuppressWarnings("MagicConstant")
     private TimedOptionPane(
         final int timeoutSeconds,
-        final Object message,
+        final @NonNull Object message,
         final int messageType,
         final int optionType,
         final Icon icon,
-        final Object[] options,
+        final @NonNull Object[] options,
         final Object initialValue
     ) {
         super(message, messageType, optionType, icon, options, initialValue);
@@ -60,26 +62,24 @@ public class TimedOptionPane extends JOptionPane {
         }
     }
 
-    public static Object showTimedOptionDialog(
+    public static @NonNull Object showTimedOptionDialog(
         final int timeoutSeconds,
-        final Component parentComponent,
-        final Object message,
-        final String title,
+        final @NonNull Component parentComponent,
+        final @NonNull Object message,
+        final @NonNull String title,
         final int optionType,
         final int messageType,
         final Icon icon,
-        final Object[] options,
+        final @NonNull Object[] options,
         final Object initialValue
     ) {
-        final TimedOptionPane t = new TimedOptionPane(timeoutSeconds, message, messageType, optionType, icon, options, initialValue);
+        val t = new TimedOptionPane(timeoutSeconds, message, messageType, optionType, icon, options, initialValue);
         t.dialog = t.createDialog(parentComponent, title);
 
         t.addPropertyChangeListener(VALUE_PROPERTY, e -> t.dialog.dispose());
 
         final KeyEventDispatcher detectKeypress = e -> {
             if (e.getID() == KeyEvent.KEY_PRESSED) {
-//                System.out.println("key press detected");
-                // the user is here, so stop the countdown
                 t.timer.stop();
             }
             return false;
@@ -88,8 +88,6 @@ public class TimedOptionPane extends JOptionPane {
         final MouseListener detectMouseclick = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//                System.out.println("mouse click detected");
-                // the user is here, so stop the countdown
                 t.timer.stop();
             }
         };
@@ -129,21 +127,21 @@ public class TimedOptionPane extends JOptionPane {
      * Use of this is optional; the TimedOptionPane will still work even without using a TimerButton.
      */
     public static class TimerButton {
-        private String format;
+        private @NonNull String format;
 
         /**
          * @param s format string with "%d" that gets substituted with the seconds remaining
          */
-        public TimerButton(final String s) {
+        public TimerButton(final @NonNull String s) {
             this.format = s;
         }
 
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return this.format;
         }
 
-        private void set(final String template, final int seconds) {
+        private void set(final @NonNull String template, final int seconds) {
             this.format = String.format(template, seconds);
         }
     }

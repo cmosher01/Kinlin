@@ -17,22 +17,24 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import lombok.NonNull;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 public abstract class Canvas extends JPanel {
-    private static final LayoutManager NO_LAYOUT_MANAGER = null;
+    private static final @NonNull LayoutManager NO_LAYOUT_MANAGER = null;
     private static final boolean DOUBLE_BUFFERED = true;
 
-    public Canvas(final Color bg) {
+    public Canvas(final @NonNull Color bg) {
         super(NO_LAYOUT_MANAGER, DOUBLE_BUFFERED);
         setOpaque(true);
         setBackground(bg);
     }
 
     @Override
-    protected void paintComponent(final Graphics g0) {
+    protected void paintComponent(final @NonNull Graphics g0) {
         super.paintComponent(g0);
 
         if (!(g0 instanceof Graphics2D g)) {

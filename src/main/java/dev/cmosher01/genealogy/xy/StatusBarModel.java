@@ -17,7 +17,7 @@
 
 package dev.cmosher01.genealogy.xy;
 
-import lombok.val;
+import lombok.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,44 +25,38 @@ import java.awt.geom.Point2D;
 import java.util.*;
 
 @SuppressWarnings({"OptionalUsedAsFieldOrParameterType"})
+@RequiredArgsConstructor
 public final class StatusBarModel {
     @SuppressWarnings("UnnecessaryUnicodeEscape")
-    private static final String TIMES = "\u00d7";
+    private static final @NonNull String TIMES = "\u00d7";
 
-    private static final Point2D.Double NAN = new Point2D.Double(Double.NaN, Double.NaN);
+    private static final @NonNull Point2D.Double NAN = new Point2D.Double(Double.NaN, Double.NaN);
     private static final double MOUSE_INFO_DY = +1.0D;
     private static final double MOUSE_PANE_DY = +1.0D;
 
+    private final @NonNull ZoomPanModel zp;
 
-
-    private final ZoomPanModel zp;
-
-    private String s = " ";
-    private Point2D.Double canvas_mouseEvntPrev = NAN;
-
-
-
-    public StatusBarModel(final ZoomPanModel zp) {
-        this.zp = zp;
-    }
+    private @NonNull String s = " ";
+    private @NonNull Point2D.Double canvas_mouseEvntPrev = NAN;
 
 
 
-    public String get() {
+
+    public @NonNull String get() {
         return this.s;
     }
 
-    public void set(final MainView view) {
+    public void set(final @NonNull MainView view) {
         set(view, Optional.empty());
     }
 
-    public void set(final MainView view, final Point2D mouse) {
+    public void set(final @NonNull MainView view, final @NonNull Point2D mouse) {
         set(view, Optional.of(new Point2D.Double(mouse.getX(), mouse.getY())));
     }
 
 
 
-    private void set(final MainView view, final Optional<Point2D.Double> opt_vwport_mouseEvnt) {
+    private void set(final @NonNull MainView view, final @NonNull Optional<Point2D.Double> opt_vwport_mouseEvnt) {
         val mouse = mouse(view, opt_vwport_mouseEvnt);
         val clip = view.clip();
         this.s = String.format("zoom=%012.8f%s window=(%.1f,%.1f)[%.1f%s%.1f] mouse=(%.2f,%.2f)",
@@ -72,7 +66,7 @@ public final class StatusBarModel {
     }
 
     // gets the current mouse position in canvas coordinates
-    private Point2D.Double mouse(final MainView view, final Optional<Point2D.Double> opt_vwport_mouseEvnt) {
+    private @NonNull Point2D.Double mouse(final @NonNull MainView view, final @NonNull Optional<Point2D.Double> opt_vwport_mouseEvnt) {
         Optional<Point2D.Double> opt_canvas_mouseEvnt = Optional.empty();
         if (opt_vwport_mouseEvnt.isPresent()) {
             this.canvas_mouseEvntPrev = this.zp.viewportToCanvas(opt_vwport_mouseEvnt.get());

@@ -17,15 +17,17 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import lombok.NonNull;
+
 import javax.swing.*;
 import java.io.Closeable;
 
 public class StatusBarController implements Closeable {
     public int STATUS_REFRESH_MILLIS = 500;
 
-    private final Timer timer;
+    private final @NonNull Timer timer;
 
-    public StatusBarController(final StatusBarModel modelStatus, final StatusBarView viewStatusBar, final MainView viewMain) {
+    public StatusBarController(final @NonNull StatusBarModel modelStatus, final @NonNull StatusBarView viewStatusBar, final @NonNull MainView viewMain) {
         this.timer = new Timer(STATUS_REFRESH_MILLIS, e -> {
             modelStatus.set(viewMain);
             viewStatusBar.refresh();

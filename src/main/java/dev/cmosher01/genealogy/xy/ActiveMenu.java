@@ -17,29 +17,31 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import lombok.*;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class ActiveMenu extends AbstractAction {
-    private JMenuItem menu;
-    private Runnable lambda;
+    private @NonNull JMenuItem menu;
+    private @NonNull Runnable lambda;
 
-    public static ActiveMenu create(final String name, final KeyStroke accel) {
-        final var o = new ActiveMenu(name);
+    public static @NonNull ActiveMenu create(final @NonNull String name, final KeyStroke accel) {
+        val o = new ActiveMenu(name);
         o.menu = new JMenuItem(o);
         o.menu.setAccelerator(accel);
         return o;
     }
 
-    private ActiveMenu(final String name) {
+    private ActiveMenu(final @NonNull String name) {
         super(name);
     }
 
-    public JMenuItem menu() {
+    public @NonNull JMenuItem menu() {
         return this.menu;
     }
 
-    public void setAction(final Runnable lambda) {
+    public void setAction(final @NonNull Runnable lambda) {
         this.lambda = lambda;
     }
 

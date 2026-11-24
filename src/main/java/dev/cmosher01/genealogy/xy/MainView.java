@@ -18,7 +18,7 @@
 package dev.cmosher01.genealogy.xy;
 
 import dev.cmosher01.genealogy.xy.genealogy.ChartView;
-import lombok.val;
+import lombok.*;
 
 import java.awt.*;
 import java.awt.geom.*;
@@ -26,19 +26,19 @@ import java.awt.geom.*;
 import static dev.cmosher01.genealogy.xy.Solarized.*;
 
 public final class MainView extends Canvas {
-    private static final Color BACKGROUND_COLOR = BASE__1_GRAY__BRT;
+    private static final @NonNull Color BACKGROUND_COLOR = BASE__1_GRAY__BRT;
 
 
 
-    private final ZoomPanModel modelZoomPan;
-    private final ZoomPanView viewZoomPan;
-    private final DocumentModel modelDocument;
-    private final ChartView viewChart;
-    private final DragSelectionView viewDragSelection;
-    private final AxesView viewAxes;
+    private final @NonNull ZoomPanModel modelZoomPan;
+    private final @NonNull ZoomPanView viewZoomPan;
+    private final @NonNull DocumentModel modelDocument;
+    private final @NonNull ChartView viewChart;
+    private final @NonNull DragSelectionView viewDragSelection;
+    private final @NonNull AxesView viewAxes;
 
 
-    public MainView(final ZoomPanModel modelZoomPan, final ZoomPanView viewZoomPan, final DocumentModel modelDocument, final ChartView viewChart, final DragSelectionView viewDragSelection, final AxesView viewAxes) {
+    public MainView(final @NonNull ZoomPanModel modelZoomPan, final @NonNull ZoomPanView viewZoomPan, final @NonNull DocumentModel modelDocument, final @NonNull ChartView viewChart, final @NonNull DragSelectionView viewDragSelection, final @NonNull AxesView viewAxes) {
         super(BACKGROUND_COLOR);
         this.modelZoomPan = modelZoomPan;
         this.viewZoomPan = viewZoomPan;
@@ -51,7 +51,7 @@ public final class MainView extends Canvas {
 
 
     @Override
-    public void paint(final Graphics2D g) {
+    public void paint(final @NonNull Graphics2D g) {
         if (this.modelDocument.isPresent()) {
             this.viewZoomPan.paint(g);
             this.viewChart.paintBackground(g, viewportClip());
@@ -67,7 +67,7 @@ public final class MainView extends Canvas {
      * Calculates the clipping rectangle in canvas coordinates
      * @return clipping rect
      */
-    public Rectangle2D.Double clip() {
+    public @NonNull Rectangle2D.Double clip() {
         return this.modelZoomPan.viewportToCanvas(viewportClip());
     }
 }

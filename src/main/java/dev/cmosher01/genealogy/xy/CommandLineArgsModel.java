@@ -17,7 +17,9 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import lombok.NonNull;
+
 import java.util.List;
 
-public record CommandLineArgsModel(List<String> args) {
+public record CommandLineArgsModel(@NonNull List<@NonNull String> args) {
 }

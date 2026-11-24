@@ -19,38 +19,35 @@ package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.*;
 import dev.cmosher01.geom.*;
-import lombok.val;
+import lombok.*;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
+import java.util.List;
 
 import static dev.cmosher01.genealogy.xy.Solarized.*;
 
+@RequiredArgsConstructor
 public class ChartView {
     private static final boolean ALWAYS_SHOW_ALL_FAMILY_LINES = false;
 
     private static final boolean BOUNDS_FILL = true;
-    private static final Color BOUNDS_FILL_COLOR = BASE__2_BEIGE_DRK;
+    private static final @NonNull Color BOUNDS_FILL_COLOR = BASE__2_BEIGE_DRK;
 
     private static final boolean BOUNDS_DRAW = true;
-    private static final Color BOUNDS_DRAW_COLOR = BASE_01_GRAY__DRK;
-    private static final Stroke BOUNDS_DRAW_STROKE = new BasicStroke(5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
+    private static final @NonNull Color BOUNDS_DRAW_COLOR = BASE_01_GRAY__DRK;
+    private static final @NonNull Stroke BOUNDS_DRAW_STROKE = new BasicStroke(5F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND);
 
 
-    private final DocumentModel doc;
-    private final ArrayList<IndiView> viewIndis = new ArrayList<>();
-    private final ArrayList<FamiView> viewFamis = new ArrayList<>();
+    private final @NonNull DocumentModel doc;
     private final ZoomPanModel modelZoomPan;
-
-    public ChartView(final DocumentModel doc, final ZoomPanModel modelZoomPan) {
-        this.doc = doc;
-        this.modelZoomPan = modelZoomPan;
-    }
+    private final @NonNull List<@NonNull IndiView> viewIndis = new ArrayList<>();
+    private final @NonNull List<@NonNull FamiView> viewFamis = new ArrayList<>();
 
 
 
-    public void paintBackground(final Graphics2D g, final Rectangle2D clip) {
+    public void paintBackground(final @NonNull Graphics2D g, final @NonNull Rectangle2D clip) {
         if (this.doc.isEmpty()) {
             return;
         }
@@ -70,7 +67,7 @@ public class ChartView {
         }
     }
 
-    public void paint(final Graphics2D g, final Rectangle2D clip) {
+    public void paint(final @NonNull Graphics2D g, final @NonNull Rectangle2D clip) {
         g.setStroke(Swings.simpleStroke());
         g.setColor(Solarized.BASE_02_BLACK_BRT);
 
@@ -81,7 +78,7 @@ public class ChartView {
                 }
             });
         } else {
-            final Set<FamiView> setFami = Collections.newSetFromMap(new IdentityHashMap<>());
+            val setFami = Collections.<FamiView>newSetFromMap(new IdentityHashMap<>());
             this.viewIndis.forEach(i -> {
                 if (Awts.rect(i.model().bounds()).intersects(clip)) {
                     setFami.addAll(i.getFamis());

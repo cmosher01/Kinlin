@@ -17,7 +17,7 @@
 
 package dev.cmosher01.util;
 
-import lombok.val;
+import lombok.*;
 
 import java.util.*;
 
@@ -94,12 +94,12 @@ public class ModificationTracker {
 
 
 
-    private final Stack<Modification> undoables = new Stack<>();
-    private final Stack<Modification> redoables = new Stack<>();
+    private final @NonNull Stack<@NonNull Modification> undoables = new Stack<>();
+    private final @NonNull Stack<@NonNull Modification> redoables = new Stack<>();
 
 
 
-    public void make(final Modification c) {
+    public void make(final @NonNull Modification c) {
         c.make();
         this.undoables.push(c);
         this.redoables.clear();

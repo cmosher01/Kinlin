@@ -26,8 +26,8 @@ import java.util.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Fami {
-    private final @NonNull ArrayList<@NonNull Indi> rIndiParents = new ArrayList<>(2);
-    private final @NonNull ArrayList<@NonNull Indi> rIndiChildren = new ArrayList<>(2);
+    private final @NonNull List<@NonNull Indi> rIndiParents = new ArrayList<>(2);
+    private final @NonNull List<@NonNull Indi> rIndiChildren = new ArrayList<>(2);
 
 
 
@@ -36,7 +36,7 @@ public class Fami {
     /*    +-----+          */ @Getter private @NonNull Optional<OrthogonalLine> descentBarMiddle = Optional.empty();
     /*          |          */ @Getter private @NonNull Optional<OrthogonalLine> descentBarChilds = Optional.empty();
     /*  +----+--+--+----+  */ @Getter private @NonNull Optional<OrthogonalLine> barChildren = Optional.empty();
-    /*  |    |     |    |  */ @Getter private @NonNull ArrayList<OrthogonalLine> rBarChild = new ArrayList<>();
+    /*  |    |     |    |  */ @Getter private @NonNull List<@NonNull OrthogonalLine> rBarChild = new ArrayList<>();
 
     private double duDistanceForDescentOnParentBars;
     private double dyDescentMiddleAboveChild;
@@ -44,7 +44,7 @@ public class Fami {
     private double dyBarChild;
     private double parentBarHeight;
 
-    @Getter private Rect bounds;
+    @Getter private @NonNull Rect bounds = Rect.UNIT_SQUARE;
 
     private boolean selected;
 
@@ -83,9 +83,9 @@ public class Fami {
         }
 
         if (this.barParents.isPresent() && this.barChildren.isPresent()) {
-            final Point descentBarParentStart = calcDescentBarParentStart(this.barParents.get(), this.barChildren.get().midpoint());
-            final Point descentBarChildsStart = calcDescentBarChildsStart(descentBarParentStart.x(), this.barChildren.get());
-            final Coord descentBarMiddleY = calcDescentBarMiddleY(descentBarChildsStart.y(), this.rIndiChildren.size() <= 1);
+            val descentBarParentStart = calcDescentBarParentStart(this.barParents.get(), this.barChildren.get().midpoint());
+            val descentBarChildsStart = calcDescentBarChildsStart(descentBarParentStart.x(), this.barChildren.get());
+            val descentBarMiddleY = calcDescentBarMiddleY(descentBarChildsStart.y(), this.rIndiChildren.size() <= 1);
 
             buildDescentBars(descentBarParentStart, descentBarMiddleY, descentBarChildsStart);
         }
@@ -109,13 +109,13 @@ public class Fami {
 
     private boolean noRelativesSelected() {
         boolean ret = true;
-        for (final var c : this.rIndiParents) {
+        for (val c : this.rIndiParents) {
             if (c.selected()) {
                 ret = false;
                 break;
             }
         }
-        for (final var c : this.rIndiChildren) {
+        for (val c : this.rIndiChildren) {
             if (c.selected()) {
                 ret = false;
                 break;
@@ -126,7 +126,7 @@ public class Fami {
 
 
 
-    private static @NonNull Optional<Bars> buildParentsBar(final @NonNull List<Indi> parents, final double parentBarHeight) {
+    private static @NonNull Optional<Bars> buildParentsBar(final @NonNull List<@NonNull Indi> parents, final double parentBarHeight) {
         final Optional<Bars> ret;
         if (parents.isEmpty()) {
             // no parents, no bar
@@ -155,7 +155,7 @@ public class Fami {
 
 
     // throws if given empty list
-    private @NonNull OrthogonalLine buildChildsBar(final @NonNull List<Indi> rChild) {
+    private @NonNull OrthogonalLine buildChildsBar(final @NonNull List<@NonNull Indi> rChild) {
         if (rChild.isEmpty()) {
             throw new IllegalStateException();
         }
@@ -183,7 +183,7 @@ public class Fami {
         return new OrthogonalLine(OrthogonalLine.Orient.H, new Coord(xLft), new Coord(xRgt), new Coord(yTop));
     }
 
-    private @NonNull ArrayList<OrthogonalLine> buildChildBars(final @NonNull List<Indi> rChild, final @NonNull OrthogonalLine barChildren) {
+    private @NonNull List<@NonNull OrthogonalLine> buildChildBars(final @NonNull List<@NonNull Indi> rChild, final @NonNull OrthogonalLine barChildren) {
         val rBarChild = new ArrayList<OrthogonalLine>(rChild.size());
         for (val child : rChild) {
             val x = new Coord(xChild(child));
@@ -214,7 +214,7 @@ public class Fami {
      * @param midpointChild the midpoint of the horizontal childsBar
      * @return descentBarParent starting point
      */
-    private @NonNull Point calcDescentBarParentStart(final Bars barParents, final Point midpointChild) {
+    private @NonNull Point calcDescentBarParentStart(final @NonNull Bars barParents, final @NonNull Point midpointChild) {
         // Figure out which parent is closest to the child bar midpoint
         // (and calculate the parent bar start point, near that parent)
         final Line bar;
@@ -230,10 +230,10 @@ public class Fami {
         // The ratio should never be more than halfway from near to far.
 
         // total distance (use min to prevent division by zero later)
-        final double D = Math.max(0.1D, bar.length().n());
+        val D = Math.max(0.1D, bar.length().n());
 
         // absolute distance along line from starting point
-        final double d = this.duDistanceForDescentOnParentBars;
+        val d = this.duDistanceForDescentOnParentBars;
 
         return bar.section(new Proportion(Math.min(d/D, 0.5D)));
     }
@@ -243,7 +243,7 @@ public class Fami {
         always look visually appealing. We move the starting point towards the parent's
         bar starting point, but don't get too close to the ends of the childsBar.
      */
-    private Point calcDescentBarChildsStart(final Coord descentBarParentX, final OrthogonalLine childsBar) {
+    private @NonNull Point calcDescentBarChildsStart(final @NonNull Coord descentBarParentX, final @NonNull OrthogonalLine childsBar) {
         /*
             Not this (center of bar)
               ===
@@ -308,7 +308,7 @@ public class Fami {
         return new Point(x, childsBar.pos());
     }
 
-    private Coord calcDescentBarMiddleY(final Coord descentBarChildsY, final boolean singletonChild) {
+    private @NonNull Coord calcDescentBarMiddleY(final @NonNull Coord descentBarChildsY, final boolean singletonChild) {
         // calculate height of middle descent bar (which is hidden if there's only one child)
         /*
 
@@ -346,7 +346,7 @@ public class Fami {
         return descentBarMiddleY;
     }
 
-    private void buildDescentBars(final Point descentBarParentTop, final Coord descentBarMiddleY, final Point descentBarChildsBtm) {
+    private void buildDescentBars(final @NonNull Point descentBarParentTop, final @NonNull Coord descentBarMiddleY, final @NonNull Point descentBarChildsBtm) {
         this.descentBarParent = Optional.of(new OrthogonalLine(OrthogonalLine.Orient.V, descentBarParentTop.y(), descentBarMiddleY, descentBarParentTop.x()));
         this.descentBarChilds = Optional.of(new OrthogonalLine(OrthogonalLine.Orient.V, descentBarChildsBtm.y(), descentBarMiddleY, descentBarChildsBtm.x()));
         this.descentBarMiddle = Optional.of(new OrthogonalLine(OrthogonalLine.Orient.H, this.descentBarParent.get().pos(), this.descentBarChilds.get().pos(), descentBarMiddleY));
@@ -370,15 +370,16 @@ public class Fami {
 
 
     // These three methods are used only by the Layout algorithms
-    List<@NonNull Indi> getChildren() {
+    @NonNull List<@NonNull Indi> getChildren() {
         return new ArrayList<>(this.rIndiChildren);
     }
 
-    List<@NonNull Indi> getParents() {
+    @NonNull List<@NonNull Indi> getParents() {
         return new ArrayList<>(this.rIndiParents);
     }
 
-    Optional<Indi> getHusb() {
+    // TODO in case parent's sex is unknown, fall back to HUSB/WIFE
+    @NonNull Optional<Indi> getHusb() {
         for (val parent : this.rIndiParents) {
             if (parent.getSex() == 1) {
                 return Optional.of(parent);
@@ -387,7 +388,7 @@ public class Fami {
         return Optional.empty();
     }
 
-    Optional<Indi> getWife() {
+    @NonNull Optional<Indi> getWife() {
         for (val parent : this.rIndiParents) {
             if (parent.getSex() == 2) {
                 return Optional.of(parent);
@@ -424,7 +425,7 @@ public class Fami {
         this.bounds = Rect.bounds(rects);
     }
 
-    private static Rect boundsOfLine(final @NonNull Line line) {
+    private static @NonNull Rect boundsOfLine(final @NonNull Line line) {
         val ax = new Dim(line.a().x().u());
         val bx = new Dim(line.b().x().u());
         val x = (ax + bx).half();

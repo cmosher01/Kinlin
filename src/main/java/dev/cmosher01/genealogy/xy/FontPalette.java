@@ -57,26 +57,26 @@ public class FontPalette {
         this.widthMax = widthMax;
     }
 
-    public Font plain() {
+    public @NonNull Font plain() {
         return this.plain;
     }
 
-    public Font bold() {
+    public @NonNull Font bold() {
         return this.bold;
     }
 
-    public Font small() {
+    public @NonNull Font small() {
         return this.small;
     }
 
-    public Dim widthMax() {
+    public @NonNull Dim widthMax() {
         return this.widthMax;
     }
 
 
 
     private static final int COUNT_EM = 16;
-    private static final String PLAQUE_MAX = "M".repeat(COUNT_EM);
+    private static final @NonNull String PLAQUE_MAX = "M".repeat(COUNT_EM);
 
     private static @NonNull Dim maxWidth(final @NonNull FontPalette f) {
         val attrs = f.bold().getAttributes();

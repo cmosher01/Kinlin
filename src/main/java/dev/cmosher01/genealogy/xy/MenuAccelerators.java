@@ -17,6 +17,8 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import lombok.NonNull;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -26,7 +28,7 @@ import static javax.swing.KeyStroke.*;
 
 @SuppressWarnings("MagicConstant")
 public final class MenuAccelerators {
-    private static final Desktop DT = Desktop.getDesktop();
+    private static final @NonNull Desktop DT = Desktop.getDesktop();
     private static final KeyStroke NO_ACCEL = null;
     private static final int NO_MODIFIERS = 0;
     private static final int CMD = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();

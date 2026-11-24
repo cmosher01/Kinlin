@@ -17,6 +17,8 @@
 
 package dev.cmosher01.genealogy.xy;
 
+import lombok.NonNull;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.*;
@@ -30,37 +32,37 @@ public final class Swings {
         throw new UnsupportedOperationException();
     }
 
-    public static Point2D.Double pointOf(final MouseEvent e) {
+    public static @NonNull Point2D.Double pointOf(final @NonNull MouseEvent e) {
         return pt2d(e.getPoint());
     }
 
-    public static Point2D.Double pt2d(final Point2D pt) {
+    public static @NonNull Point2D.Double pt2d(final @NonNull Point2D pt) {
         return new Point2D.Double(pt.getX(), pt.getY());
     }
 
-    public static Rectangle2D.Double outset(final Rectangle2D r, final double d) {
+    public static @NonNull Rectangle2D.Double outset(final @NonNull Rectangle2D r, final double d) {
         return new Rectangle2D.Double(r.getX()-d, r.getY()-d, r.getWidth()+2*d, r.getHeight()+2*d);
     }
 
-    public static Point2D.Double delta(final Point2D from, final Point2D to) {
+    public static @NonNull Point2D.Double delta(final @NonNull Point2D from, final @NonNull Point2D to) {
         return new Point2D.Double(to.getX()-from.getX(), to.getY()-from.getY());
     }
 
-    private static final Stroke STROKE_SIMPLE = new BasicStroke(1F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+    private static final @NonNull Stroke STROKE_SIMPLE = new BasicStroke(1F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
 
-    public static Stroke simpleStroke() {
+    public static @NonNull Stroke simpleStroke() {
         return STROKE_SIMPLE;
     }
 
-    public static Stroke simpleStroke(final float width) {
+    public static @NonNull Stroke simpleStroke(final float width) {
         return new BasicStroke(width, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
     }
 
-    public static Dimension scale(final double scale, final Dimension dim) {
+    public static @NonNull Dimension scale(final double scale, final @NonNull Dimension dim) {
         return new Dimension(toInt(scale*dim.getWidth()), toInt(scale*dim.getHeight()));
     }
 
-    public static final Map<RenderingHints.Key, Object> GLOBAL_RENDERING_HINTS = Map.of(
+    public static final @NonNull Map<RenderingHints.@NonNull Key, @NonNull Object> GLOBAL_RENDERING_HINTS = Map.of(
         KEY_RENDERING, VALUE_RENDER_SPEED,
         KEY_ANTIALIASING, VALUE_ANTIALIAS_ON, //
         KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON, //
@@ -76,7 +78,7 @@ public final class Swings {
         return (int)Math.round(Math.rint(d));
     }
 
-    public static Color mix(final Color c1, final Color c2, final double ratio) {
+    public static @NonNull Color mix(final @NonNull Color c1, final @NonNull Color c2, final double ratio) {
         final double r = Math.max(0D, Math.min(1D, ratio));
         final int rd = (int)(r*c1.getRed  () + (1-r)*c2.getRed  ());
         final int gn = (int)(r*c1.getGreen() + (1-r)*c2.getGreen());

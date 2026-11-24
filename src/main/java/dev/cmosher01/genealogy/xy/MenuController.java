@@ -18,13 +18,13 @@
 package dev.cmosher01.genealogy.xy;
 
 import dev.cmosher01.genealogy.xy.genealogy.ChartCommandController;
+import lombok.NonNull;
 
 /**
- * Sets itself as a listener of actions on the menu view,
- * in order to forward them to the command controller
+ * Configures the menu items (in the menu view) with the actions to run (in the appropriate controller).
  */
 public class MenuController {
-    public MenuController(final MenuView view, final DocumentController controllerDocument, final CommandController controllerCommand, final QuitController controllerQuit, final ChartCommandController controllerChart) {
+    public MenuController(final @NonNull MenuView view, final @NonNull DocumentController controllerDocument, final @NonNull CommandController controllerCommand, final @NonNull QuitController controllerQuit, final @NonNull ChartCommandController controllerChart) {
         view.setNew(controllerCommand::newFile);
         view.setOpen(controllerDocument::open);
         view.setClose(controllerDocument::close);

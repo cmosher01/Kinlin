@@ -17,7 +17,7 @@
 
 package dev.cmosher01.genealogy.xy;
 
-import lombok.val;
+import lombok.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +29,7 @@ import java.util.List;
 import static java.awt.Desktop.Action.*;
 
 public class DesktopController {
-    public DesktopController(final CommandController controllerCommand, final DocumentController controllerDocument, final QuitController quit) {
+    public DesktopController(final @NonNull CommandController controllerCommand, final @NonNull DocumentController controllerDocument, final @NonNull QuitController quit) {
         if (!Desktop.isDesktopSupported() || GraphicsEnvironment.isHeadless()) {
             return;
         }
@@ -55,7 +55,7 @@ public class DesktopController {
         }
     }
 
-    private static List<Path> toPaths(final List<File> files) {
+    private static @NonNull List<@NonNull Path> toPaths(final @NonNull List<@NonNull File> files) {
         return files.stream().map(File::toPath).toList();
     }
 }

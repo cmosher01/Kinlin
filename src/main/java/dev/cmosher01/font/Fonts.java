@@ -25,7 +25,12 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
-public class Fonts {
+public final class Fonts {
+    @Deprecated
+    private Fonts() {
+        throw new UnsupportedOperationException();
+    }
+
     private static final GraphicsEnvironment ENV = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
     public static void dumpFamilies() {

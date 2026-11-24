@@ -65,13 +65,13 @@ public class GridSettingsDialog {
         }
     }
 
-    private static String s(final double d) {
+    private static @NonNull String s(final double d) {
         return Integer.toString(DoubleUtil.asInt(d), 10);
     }
 
     private void setGrid(final @NonNull JTextComponent txGrid, final @NonNull JTextComponent txOffset) throws NumberFormatException {
-        val k = Integer.parseInt(txGrid.getText().strip());
-        val d = Integer.parseInt(txOffset.getText().strip());
+        val k = Math.clamp(Integer.parseInt(txGrid.getText().strip()), Grids.MIN_GRID.k().intValue(), Grids.MAX_GRID.k().intValue());
+        val d = Integer.parseInt(txOffset.getText().strip()) % k;
 
         this.grid.setX(new Quantizer(new ScaleFactor(DoubleUtil.fp(k)), new MoveTerm(DoubleUtil.fp(d))));
         this.grid.setY(this.grid.getX());

@@ -29,6 +29,8 @@ import java.util.*;
 
 
 
+// TODO verify handling of each column with respect to NULL values
+
 public final class IoFtm {
     @Deprecated
     private IoFtm() {
@@ -53,10 +55,10 @@ public final class IoFtm {
         return new ChartModel(indis, famis, Optional.empty());
     }
 
-    private static @NonNull List<Indi> buildIndis(final @NonNull Connection conn, final @NonNull Map<String, Indi> mapIdToIndi) throws SQLException, IOException {
+    private static @NonNull List<Indi> buildIndis(final @NonNull Connection conn, final @NonNull Map<@NonNull String, @NonNull Indi> mapIdToIndi) throws SQLException, IOException {
         val indis = new ArrayList<Indi>();
-        try (final PreparedStatement select = conn.prepareStatement(getRes("Indi.sql"))) {
-            try (final ResultSet rs = select.executeQuery()) {
+        try (val select = conn.prepareStatement(getRes("Indi.sql"))) {
+            try (val rs = select.executeQuery()) {
                 while (rs.next()) {
                     val indi = buildIndi(rs);
                     mapIdToIndi.put(indi.key(), indi);
@@ -96,14 +98,14 @@ public final class IoFtm {
     }
 
     private static @NonNull String getPlace(final @NonNull ResultSet rs) throws SQLException {
-        val birthplace = Place.fromFtmPlace(rs.getString("birthplace"));
-        val anyplace = Place.fromFtmPlace(rs.getString("anyplace"));
+        val birthplace = FtmPlace.fromFtmPlace(rs.getString("birthplace"));
+        val anyplace = FtmPlace.fromFtmPlace(rs.getString("anyplace"));
         return (birthplace.toString().isBlank() ? anyplace : birthplace).toString();
     }
 
     private static @NonNull String getLifespan(final String sDateBirth, final String sDateDeath) {
-        final FtmDate db = FtmDate.fromFtmFactDate(sDateBirth);
-        final FtmDate dd = FtmDate.fromFtmFactDate(sDateDeath);
+        val db = FtmDate.fromFtmFactDate(sDateBirth);
+        val dd = FtmDate.fromFtmFactDate(sDateDeath);
         if (db.unknown() && dd.unknown()) {
             return "";
         }

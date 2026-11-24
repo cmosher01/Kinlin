@@ -73,7 +73,7 @@ public final class IoGedcom {
 
 
 
-    private static @NonNull List<Indi> buildIndis(final @NonNull GedcomTree tree, final @NonNull Map<String, Indi> mapIdToIndi) {
+    private static @NonNull List<@NonNull Indi> buildIndis(final @NonNull GedcomTree tree, final @NonNull Map<@NonNull String, @NonNull Indi> mapIdToIndi) {
         val indis = new ArrayList<Indi>();
         tree.getRoot().forEach(nodeIndi -> {
             if (nodeIndi.getObject().getTag().equals(GedcomTag.INDI)) {
@@ -85,7 +85,7 @@ public final class IoGedcom {
         return indis;
     }
 
-    private static @NonNull Indi buildIndi(final @NonNull TreeNode<GedcomLine> node) {
+    private static @NonNull Indi buildIndi(final @NonNull TreeNode<@NonNull GedcomLine> node) {
         val id = new IndividualId(node);
 
         // sex and birthdate are only used as hints by the automatic layout algorithms
@@ -99,7 +99,7 @@ public final class IoGedcom {
         return new Indi(id, sex, birth, plaque, pt);
     }
 
-    private static @NonNull Plaque buildPlaque(final @NonNull TreeNode<GedcomLine> node) {
+    private static @NonNull Plaque buildPlaque(final @NonNull TreeNode<@NonNull GedcomLine> node) {
         val name = GedcomIndiName.create(getValue(node, GedcomTag.NAME.toString()));
         val lifespan = GedcomDateUtil.getLifespan(getEventDate(node, GedcomTag.BIRT.toString()), getEventDate(node, GedcomTag.DEAT.toString()));
         val place = getPlace(node);
@@ -108,7 +108,7 @@ public final class IoGedcom {
 
 
 
-    private static @NonNull String getPlace(final @NonNull TreeNode<GedcomLine> nodeIndi) {
+    private static @NonNull String getPlace(final @NonNull TreeNode<@NonNull GedcomLine> nodeIndi) {
         val birthplace = getBirthPlace(nodeIndi).strip();
         if (!birthplace.isBlank()) {
             return birthplace;
@@ -116,7 +116,7 @@ public final class IoGedcom {
         return getAnyPlace(nodeIndi).strip();
     }
 
-    private static @NonNull String getBirthPlace(final @NonNull TreeNode<GedcomLine> node) {
+    private static @NonNull String getBirthPlace(final @NonNull TreeNode<@NonNull GedcomLine> node) {
         for (val c : node) {
             if (c.getObject().getTagString().equals(GedcomTag.BIRT.toString())) {
                 return getValue(c, GedcomTag.PLAC.toString());
@@ -125,7 +125,7 @@ public final class IoGedcom {
         return "";
     }
 
-    private static @NonNull String getAnyPlace(final @NonNull TreeNode<GedcomLine> node) {
+    private static @NonNull String getAnyPlace(final @NonNull TreeNode<@NonNull GedcomLine> node) {
         for (val c : node) {
             val p = getValue(c, GedcomTag.PLAC.toString());
             if (!p.isBlank()) {
@@ -137,7 +137,7 @@ public final class IoGedcom {
 
 
 
-    private static @NonNull String getEventDate(final @NonNull TreeNode<GedcomLine> node, final @NonNull String tag) {
+    private static @NonNull String getEventDate(final @NonNull TreeNode<@NonNull GedcomLine> node, final @NonNull String tag) {
         for (val c : node) {
             if (c.getObject().getTagString().equals(tag)) {
                 return getValue(c, GedcomTag.DATE.toString());
@@ -148,7 +148,7 @@ public final class IoGedcom {
 
 
 
-    private static @NonNull String getValue(final @NonNull TreeNode<GedcomLine> node, final @NonNull String tag) {
+    private static @NonNull String getValue(final @NonNull TreeNode<@NonNull GedcomLine> node, final @NonNull String tag) {
         for (val c : node) {
             if (c.getObject().getTagString().equals(tag)) {
                 val p = c.getObject().getValue().strip();
@@ -185,7 +185,7 @@ public final class IoGedcom {
 
 
 
-    private static @NonNull ArrayList<Fami> buildFamis(final @NonNull GedcomTree tree, final @NonNull Map<String, Indi> mapIdToIndi) {
+    private static @NonNull ArrayList<Fami> buildFamis(final @NonNull GedcomTree tree, final @NonNull Map<@NonNull String, @NonNull Indi> mapIdToIndi) {
         val famis = new ArrayList<Fami>();
         tree.getRoot().forEach(nodeFami -> {
             if (nodeFami.getObject().getTag().equals(GedcomTag.FAM)) {
@@ -196,7 +196,7 @@ public final class IoGedcom {
         return famis;
     }
 
-    private static @NonNull Optional<Fami> buildFami(final @NonNull TreeNode<GedcomLine> nodeFami, final @NonNull Map<String, Indi> mapIdToIndi) {
+    private static @NonNull Optional<Fami> buildFami(final @NonNull TreeNode<@NonNull GedcomLine> nodeFami, final @NonNull Map<@NonNull String, @NonNull Indi> mapIdToIndi) {
         val fami = new Fami();
         for (val c : nodeFami) {
             val child = c.getObject();

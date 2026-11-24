@@ -37,9 +37,9 @@ public class DialogViews {
     private static final boolean SINGLE_FILE_SELECTION = false;
     private static final boolean MULTIPLE_FILE_SELECTION = true;
 
-    private final JFrame parent;
+    private final @NonNull JFrame parent;
 
-    public List<Path> chooseFilesToOpen() {
+    public @NonNull List<@NonNull Path> chooseFilesToOpen() {
         val fd = new FileDialog(this.parent, "Open...", FileDialog.LOAD);
         fd.setMultipleMode(SINGLE_FILE_SELECTION);
         fd.setDirectory(UserPrefs.dir().toString());
@@ -69,7 +69,7 @@ public class DialogViews {
 //        return ret;
 //    }
 
-    public Optional<Path> saveAsFileDialog(final Optional<Path> pathFile) {
+    public @NonNull Optional<Path> saveAsFileDialog(final @NonNull Optional<Path> pathFile) {
         val fd = new FileDialog(this.parent, "Save As...", FileDialog.SAVE);
         if (pathFile.isPresent()) {
             fd.setFile(pathFile.get().toString());
@@ -98,7 +98,7 @@ public class DialogViews {
     /**
      * @return QuitOptions: SAVE, DISCARD, CANCEL, TIMED_OUT
      */
-    public QuitOptions askSaveDiscardCancel() {
+    public @NonNull QuitOptions askSaveDiscardCancel() {
         val save = new TimedOptionPane.TimerButton("Save (%ds)");
         val discard = "Discard";
         val cancel = "Cancel";
@@ -123,7 +123,7 @@ public class DialogViews {
 
 
 
-    private static Optional<Path> parseDir(final String dir) {
+    private static @NonNull Optional<Path> parseDir(final String dir) {
         Optional<Path> ret = Optional.empty();
         if (Objects.nonNull(dir) && !dir.isBlank()) {
             val p = Path.of(dir.strip());
@@ -134,7 +134,7 @@ public class DialogViews {
         return ret;
     }
 
-    private static Optional<Path> parseFile(final String file) {
+    private static @NonNull Optional<Path> parseFile(final String file) {
         Optional<Path> ret = Optional.empty();
         if (Objects.nonNull(file) && !file.isBlank() && !file.equals(".") && !file.equals("..")) {
             val p = Path.of(file.strip());
