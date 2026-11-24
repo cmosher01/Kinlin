@@ -166,10 +166,12 @@ public class DocumentModel {
 
     public void undo() {
         this.model.ifPresent(ChartModel::undo);
+        refreshModified();
     }
 
     public void redo() {
         this.model.ifPresent(ChartModel::redo);
+        refreshModified();
     }
 
     public boolean canUndo() {

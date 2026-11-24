@@ -51,7 +51,7 @@ public class Plaque {
             paragraphs.add(new AttributedString(this.lifespan, attrsSmall));
         }
         if (!this.place.isBlank()) {
-            paragraphs.add(new AttributedString(this.place, attrsPlain));
+            paragraphs.add(new AttributedString(this.place, attrsSmall));
         }
 
         this.text = TextBlock.create(paragraphs, palette.widthMax());
