@@ -18,6 +18,7 @@
 package dev.cmosher01.genealogy.xy;
 
 import lombok.*;
+import org.jspecify.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -123,7 +124,7 @@ public class DialogViews {
 
 
 
-    private static @NonNull Optional<Path> parseDir(final String dir) {
+    private static @NonNull Optional<Path> parseDir(final @Nullable String dir) {
         Optional<Path> ret = Optional.empty();
         if (Objects.nonNull(dir) && !dir.isBlank()) {
             val p = Path.of(dir.strip());
@@ -134,7 +135,7 @@ public class DialogViews {
         return ret;
     }
 
-    private static @NonNull Optional<Path> parseFile(final String file) {
+    private static @NonNull Optional<Path> parseFile(final @Nullable String file) {
         Optional<Path> ret = Optional.empty();
         if (Objects.nonNull(file) && !file.isBlank() && !file.equals(".") && !file.equals("..")) {
             val p = Path.of(file.strip());

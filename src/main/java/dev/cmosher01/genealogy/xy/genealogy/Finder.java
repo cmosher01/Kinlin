@@ -21,6 +21,7 @@ package dev.cmosher01.genealogy.xy.genealogy;
 import dev.cmosher01.genealogy.xy.*;
 import dev.cmosher01.geom.Point;
 import lombok.*;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -175,7 +176,7 @@ public class Finder {
 
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private static boolean isQuery(final String query) {
+    private static boolean isQuery(final @Nullable String query) {
         return Objects.nonNull(query) && !query.isBlank();
     }
 }

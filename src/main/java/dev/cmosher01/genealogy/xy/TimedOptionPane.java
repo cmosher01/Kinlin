@@ -39,7 +39,7 @@ public class TimedOptionPane extends JOptionPane {
 
 
     // guaranteed not to collide with JOptionPane return values (YES_OPTION, NO_OPTION, etc.)
-    public static final Object TIMEOUT = TimedOptionPane.class;
+    public static final @NonNull Object TIMEOUT = TimedOptionPane.class;
 
 
 

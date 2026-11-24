@@ -19,6 +19,7 @@ package dev.cmosher01.math.doubles;
 
 import lombok.NonNull;
 import manifold.ext.rt.api.ComparableUsing.Operator;
+import org.jspecify.annotations.Nullable;
 
 import static dev.cmosher01.math.doubles.DoubleUtil.*;
 import static manifold.ext.rt.api.ComparableUsing.Operator.*;
@@ -40,7 +41,7 @@ public final class DoubleExtUtil {
      * @param x any object
      * @return true if "nearly" the same number
      */
-    public static boolean equals(final @NonNull Double a, final Object x) {
+    public static boolean equals(final @NonNull Double a, final @Nullable Object x) {
         return x instanceof Number b && Nearness.near(a, b.doubleValue());
     }
 
@@ -67,19 +68,19 @@ public final class DoubleExtUtil {
             ));
     }
 
-    public static boolean isNegative(final Double d) {
+    public static boolean isNegative(final @NonNull Double d) {
         return DoubleUtil.isNegative(d);
     }
-    public static boolean isPositive(final Double d) {
+    public static boolean isPositive(final @NonNull Double d) {
         return DoubleUtil.isPositive(d);
     }
-    public static boolean isFinite(final Double d) {
+    public static boolean isFinite(final @NonNull Double d) {
         return Double.isFinite(d);
     }
-    public static @NonNull Double inv(final Double d) {
+    public static @NonNull Double inv(final @NonNull Double d) {
         return ONE/d;
     }
-    public static boolean isExactlyZero(final Double d) {
+    public static boolean isExactlyZero(final @NonNull Double d) {
         return 0L == Double.doubleToRawLongBits(Math.abs(d));
     }
 }

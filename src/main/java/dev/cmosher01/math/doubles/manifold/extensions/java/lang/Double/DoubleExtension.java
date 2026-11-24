@@ -20,6 +20,7 @@ package dev.cmosher01.math.doubles.manifold.extensions.java.lang.Double;
 import dev.cmosher01.math.doubles.DoubleExtUtil;
 import lombok.NonNull;
 import manifold.ext.rt.api.*;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Augment java.long.Double.
@@ -29,7 +30,7 @@ import manifold.ext.rt.api.*;
 public abstract class DoubleExtension implements ComparableUsing<Double> {
     @Extension
     @Intercept
-    public static boolean equals(final @This Double self, final Object that) {
+    public static boolean equals(final @This Double self, final @Nullable Object that) {
         return DoubleExtUtil.equals(self, that);
     }
 

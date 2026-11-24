@@ -20,6 +20,8 @@ package dev.cmosher01.genealogy.xy.genealogy;
 
 
 import lombok.*;
+import lombok.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -104,7 +106,7 @@ public class FtmDate implements Comparable<@NonNull FtmDate> {
     private static final @NonNull Pattern ONE_DATE = Pattern.compile("^(\\d+)$");
     private static final @NonNull Pattern TWO_DATES = Pattern.compile("^(\\d+):(\\d+)$");
 
-    public static @NonNull FtmDate fromFtmFactDate(final String d) {
+    public static @NonNull FtmDate fromFtmFactDate(final @Nullable String d) {
         if (Objects.isNull(d)) {
             return UNKNOWN;
         }
@@ -199,7 +201,7 @@ public class FtmDate implements Comparable<@NonNull FtmDate> {
         }
 
         @Override
-        public boolean equals(final Object o) {
+        public boolean equals(final @Nullable Object o) {
             if (Objects.isNull(o) || !(o instanceof FlaggedDate that)) {
                 return false;
             }

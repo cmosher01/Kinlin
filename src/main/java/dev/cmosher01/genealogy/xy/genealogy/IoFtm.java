@@ -19,6 +19,7 @@ package dev.cmosher01.genealogy.xy.genealogy;
 
 import dev.cmosher01.genealogy.xy.MovablePoint;
 import lombok.*;
+import org.jspecify.annotations.Nullable;
 import org.sqlite.SQLiteConfig;
 
 import java.io.*;
@@ -93,7 +94,7 @@ public final class IoFtm {
         return new Plaque(name, lifespan, place);
     }
 
-    private static long calcBirthForSort(final String sDateBirth) {
+    private static long calcBirthForSort(final @Nullable String sDateBirth) {
         return FtmDate.fromFtmFactDate(sDateBirth).ym();
     }
 
@@ -103,7 +104,7 @@ public final class IoFtm {
         return (birthplace.toString().isBlank() ? anyplace : birthplace).toString();
     }
 
-    private static @NonNull String getLifespan(final String sDateBirth, final String sDateDeath) {
+    private static @NonNull String getLifespan(final @Nullable String sDateBirth, final @Nullable String sDateDeath) {
         val db = FtmDate.fromFtmFactDate(sDateBirth);
         val dd = FtmDate.fromFtmFactDate(sDateDeath);
         if (db.unknown() && dd.unknown()) {

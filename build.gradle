@@ -74,6 +74,8 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:latest.release'
     implementation 'org.slf4j:slf4j-simple:latest.release'
 
+    implementation 'org.jspecify:jspecify:latest.release'
+
 
 
     testImplementation 'org.junit.jupiter:junit-jupiter:latest.release'

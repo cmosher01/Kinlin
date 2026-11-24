@@ -18,6 +18,7 @@
 package dev.cmosher01.io;
 
 import lombok.*;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -45,7 +46,7 @@ public final class FileName {
      * @param filename full name of file, for example from File.getName() or Path.getName().toString()
      *                 Do not include any directory names or path separators.
      */
-    public static @NonNull FileName of(final String filename) {
+    public static @NonNull FileName of(final @Nullable String filename) {
         final FileName o;
 
         if (Objects.isNull(filename)) {
@@ -115,9 +116,9 @@ public final class FileName {
 
 
     @Override
-    public boolean equals(final Object objects) {
+    public boolean equals(final @Nullable Object o) {
         return
-            objects instanceof FileName that &&
+            o instanceof FileName that &&
             this.name().equals(that.name()) &&
             this.extensions().equals(that.extensions());
     }

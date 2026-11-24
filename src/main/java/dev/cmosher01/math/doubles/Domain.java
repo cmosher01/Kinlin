@@ -44,6 +44,7 @@ import lombok.*;
     f	f	t	[-∞,-0)+(+0,+∞]	non0
     f	f	f	(-∞,-0)+(+0,+∞)	non0_fin
  */
+@RequiredArgsConstructor
 public class Domain {
     public static final @NonNull Domain ABS0     = new Domain(true ,true ,true );
     public static final @NonNull Domain ABS0_FIN = new Domain(true ,true ,false);
@@ -58,13 +59,7 @@ public class Domain {
     private final boolean zero;
     private final boolean infinite;
 
-    public Domain(boolean absolute, boolean zero, boolean infinite) {
-        this.absolute = absolute;
-        this.zero = zero;
-        this.infinite = infinite;
-    }
-
-    public Double filter(@NonNull Double n) {
+    public @NonNull Double filter(@NonNull Double n) {
         if (n == ZERO) {
             n = this.zero ? clearAtZero(n) : NaN;
         }

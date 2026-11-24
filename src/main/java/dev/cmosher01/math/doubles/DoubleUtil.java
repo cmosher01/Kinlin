@@ -18,6 +18,9 @@
 package dev.cmosher01.math.doubles;
 
 import lombok.*;
+import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
 
 public final class DoubleUtil {
     @Deprecated
@@ -25,11 +28,11 @@ public final class DoubleUtil {
         throw new UnsupportedOperationException();
     }
 
-    public static final Double ONE = fp(1D);
-    public static final Double POSITIVE_ZERO = ONE / Double.POSITIVE_INFINITY;
-    public static final Double NEGATIVE_ZERO = ONE / Double.NEGATIVE_INFINITY;
-    public static final Double ZERO = POSITIVE_ZERO; // a more convenient name
-    public static final Double EPSILON = Math.ulp(ONE);
+    public static final @NonNull Double ONE = fp(1D);
+    public static final @NonNull Double POSITIVE_ZERO = ONE / Double.POSITIVE_INFINITY;
+    public static final @NonNull Double NEGATIVE_ZERO = ONE / Double.NEGATIVE_INFINITY;
+    public static final @NonNull Double ZERO = POSITIVE_ZERO; // a more convenient name
+    public static final @NonNull Double EPSILON = Math.ulp(ONE);
 
     // these methods work with inputs of any double,
     // including NaN, +/-INF, +/-0, or any regular double
@@ -61,7 +64,10 @@ public final class DoubleUtil {
         val v = fp(Character.getNumericValue(c));
         return v < 0D ? Double.NaN : v;
     }
-    public static @NonNull Double fp(final /*@Nullable*/ Object o) {
+    public static @NonNull Double fp(final @Nullable Object o) {
+        if (Objects.isNull(o)) {
+            return Double.NaN;
+        }
         try {
             return switch (o) {
                 case Boolean b -> fp(b.booleanValue());
@@ -95,24 +101,24 @@ public final class DoubleUtil {
 
 
     // returns: if n is near 0, then +0.0D, else n
-    public static Double clearToPosZero(final Double n) {
+    public static @NonNull Double clearToPosZero(final @NonNull Double n) {
         return n == ZERO ? POSITIVE_ZERO : n;
     }
     // returns: if n is near 0, then -0.0D, else n
-    public static Double clearToNegZero(final Double n) {
+    public static @NonNull Double clearToNegZero(final @NonNull Double n) {
         return n == ZERO ? NEGATIVE_ZERO : n;
     }
     // returns: if n is near 0, then -0.0 or +0.0 (preserving the sign of n),
     // else n
     // note: NaN is _always_ positive and is never near zero
-    public static Double clearAtZero(final Double n) {
+    public static @NonNull Double clearAtZero(final @NonNull Double n) {
         return n != ZERO ? n : (isPositive(n) ? POSITIVE_ZERO : NEGATIVE_ZERO);
     }
     // returns: if n is near i, then i, else n
     // returns NaN if n is NaN
     // if i == 0 and n is near zero, the result will be +0.0D (even if n is negative)
     // to avoid this behavior call one of the clearXxxZero methods
-    public static Double clearAt(final Double n, final int i) {
+    public static @NonNull Double clearAt(final @NonNull Double n, final int i) {
         return n == fp(i) ? i : n;
     }
 
@@ -162,12 +168,12 @@ public final class DoubleUtil {
 //    }
 
     /** dMin <= d && d <= dMax */
-    public static boolean between(final Double dMin, final Double d, final Double dMax) {
+    public static boolean between(final @NonNull Double dMin, final @NonNull Double d, final @NonNull Double dMax) {
         return dMin <= d && d <= dMax;
     }
 
     /** mid-tol <= d && d <= mid+tol */
-    public static boolean within(final Double d, final Double mid, final Double tol) {
+    public static boolean within(final @NonNull Double d, final @NonNull Double mid, final @NonNull Double tol) {
         return between(mid-tol, d, mid+tol);
     }
 

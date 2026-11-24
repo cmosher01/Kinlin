@@ -28,12 +28,12 @@ import java.util.*;
 
 @RequiredArgsConstructor
 public class XyValue {
-    public static final String GED_TAG = "_XY";
+    public static final @NonNull String GED_TAG = "_XY";
 
     private final boolean exists;
-    private final Coord x;
-    private final Coord y;
-    private final String error;
+    private final @NonNull Coord x;
+    private final @NonNull Coord y;
+    private final @NonNull String error;
 
     public static XyValue create(final @NonNull String s) {
         if (s.isBlank()) {
@@ -79,7 +79,7 @@ public class XyValue {
         return new XyValue(new Coord(x), new Coord(y), exists, error);
     }
 
-    private XyValue(Coord x, Coord y, boolean exists, String error) {
+    private XyValue(final @NonNull Coord x, final @NonNull Coord y, boolean exists, final @NonNull String error) {
         this.x = x;
         this.y = y;
         this.exists = exists;

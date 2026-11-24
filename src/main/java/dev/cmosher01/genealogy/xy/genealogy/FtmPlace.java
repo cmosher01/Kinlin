@@ -20,6 +20,7 @@ package dev.cmosher01.genealogy.xy.genealogy;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.regex.*;
@@ -41,14 +42,14 @@ public class FtmPlace
         return this.description;
     }
 
-    public static @NonNull FtmPlace fromFtmPlace(final String s) {
+    public static @NonNull FtmPlace fromFtmPlace(final @Nullable String s) {
         final FtmPlace place = new Builder(s).build();
         log.debug("FtmPlace=\"{}\" --> \"{}\"", s, place);
         return place;
     }
 
     @Override
-    public boolean equals(final Object object) {
+    public boolean equals(final @Nullable Object object) {
         if (!(object instanceof FtmPlace that)) {
             return false;
         }
@@ -75,7 +76,7 @@ public class FtmPlace
         private @NonNull String description;
         private final @NonNull List<@NonNull String> hierarchy = new ArrayList<>(5);
 
-        public Builder(final String description) {
+        public Builder(final @Nullable String description) {
             if (Objects.isNull(description) || description.isBlank()) {
                 this.description = "";
             } else {
@@ -146,7 +147,7 @@ public class FtmPlace
         private static final @NonNull Pattern FTM_PLACE_HIERARCHICAL = Pattern.compile("^(?<p0>.*)/(?<p1>[^/|]*?)/(?<p2>[^/|]*?)/(?<p3>[^/|]*?)/(?<p4>[^/|]*?)$");
 
 
-        private void parseDescription(final String description) {
+        private void parseDescription(final @NonNull String description) {
             //-------------------------------------------------------
             {
                 val withBar = FTM_PLACE_WITH_VERTICALBAR.matcher(description);
@@ -182,15 +183,17 @@ public class FtmPlace
             this.description = String.join(", ", this.hierarchy);
         }
 
-        private void parseAndAddHierarchy(final String csvParts) {
-            Arrays.stream(csvParts.split(",")).
-                map(String::trim).
-                forEach(this::addHierarchy);
+        private void parseAndAddHierarchy(final @Nullable String csvParts) {
+            if (Objects.nonNull(csvParts)) {
+                Arrays.stream(csvParts.split(",")).
+                    map(String::trim).
+                    forEach(this::addHierarchy);
+            }
         }
 
-        private void addHierarchy(String part) {
-            if (!part.isBlank()) {
-                this.hierarchy.add(part);
+        private void addHierarchy(final @Nullable String part) {
+            if (Objects.nonNull(part) && !part.isBlank()) {
+                this.hierarchy.add(part.strip());
             }
         }
     }

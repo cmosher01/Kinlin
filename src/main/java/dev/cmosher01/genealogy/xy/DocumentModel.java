@@ -54,7 +54,7 @@ public class DocumentModel {
         return this.model.isEmpty();
     }
 
-    public ChartModel model() {
+    public @NonNull ChartModel model() {
         if (this.model.isEmpty()) {
             throw new IllegalStateException("no chart is loaded");
         }
@@ -182,11 +182,11 @@ public class DocumentModel {
 
 
 
-    public Rectangle2D bounds() {
+    public @NonNull Rectangle2D bounds() {
         return Awts.rect(this.model.get().bounds());
     }
 
-    public Rectangle2D boundsOutset() {
+    public @NonNull Rectangle2D boundsOutset() {
         return Awts.rect(this.model.get().boundsOutset());
     }
 
@@ -199,11 +199,13 @@ public class DocumentModel {
         return ZonedDateTime.now(ZoneOffset.UTC).format(TS_FORMAT);
     }
 
-    private static final String REGEX_TS = "-\\d{8}T\\d{6}Z$";
+    private static final @NonNull String REGEX_TS = "-\\d{8}T\\d{6}Z$";
 
-    private static String removeTimestamp(final String name) {
+    private static @NonNull String removeTimestamp(final @NonNull String name) {
         return name.replaceAll(REGEX_TS, "");
     }
+
+
 
     public boolean hasSelected() {
         return this.model.isPresent() && this.model.get().hasSelected();
